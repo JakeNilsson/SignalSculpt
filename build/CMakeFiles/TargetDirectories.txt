@@ -1,0 +1,11 @@
+/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles/SignalSculpt.dir
+/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles/edit_cache.dir
+/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles/rebuild_cache.dir
+/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/SDL/CMakeFiles/sdl_headers_copy.dir
+/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/SDL/CMakeFiles/SDL2main.dir
+/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/SDL/CMakeFiles/SDL2.dir
+/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/SDL/CMakeFiles/SDL2-static.dir
+/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/SDL/CMakeFiles/SDL2_test.dir
+/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/SDL/CMakeFiles/uninstall.dir
+/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/SDL/CMakeFiles/edit_cache.dir
+/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/SDL/CMakeFiles/rebuild_cache.dir
