@@ -1,8 +1,18 @@
 #include "imgui.h"
 #include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
+#include "imgui_node_editor.h"
+#include "imgui-knobs.h"
+
+#include "core/headers/Module.h"
+#include "modules/headers/EnvelopeModule.h"
+
 #include <SDL.h>
 #include <SDL_opengl.h>
+
+#include <vector>
+#include <memory>
+#include <algorithm>
 
 int main(int argc, char* argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
@@ -20,8 +30,18 @@ int main(int argc, char* argv[]) {
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
+
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
     ImGui_ImplSDL2_InitForOpenGL(window, gl);
     ImGui_ImplOpenGL3_Init("#version 330");
+
+    // ImGuiStyle& style = ImGui::GetStyle();
+
+    // style.WindowBorderSize = 5;  // may be able to help with style customization? this is kinda what I want + rounded corners but meh
+
+    std::vector<std::unique_ptr<Module>> modules;
 
     bool running = true;
     while (running) {
@@ -35,7 +55,37 @@ int main(int argc, char* argv[]) {
         ImGui_ImplSDL2_NewFrame();
         ImGui::NewFrame();
 
-        ImGui::ShowDemoWindow();
+        if (ImGui::BeginPopupContextVoid("##canvas_context")) {
+            ImGui::SeparatorText("MIDI");
+            
+            ImGui::SeparatorText("Generators");
+            /*if (ImGui::MenuItem("Oscillator"))
+                modules.push_back(std::make_unique<OscillatorModule>());
+            if (ImGui::MenuItem("Wavetable"))
+                modules.push_back(std::make_unique<WavetableModule>());*/
+
+            ImGui::SeparatorText("Modulators");
+            if (ImGui::MenuItem("Envelope"))
+                modules.push_back(std::make_unique<EnvelopeModule>());
+            /*if (ImGui::MenuItem("LFO"))
+                modules.push_back(std::make_unique<LFOModule>());*/
+
+            ImGui::SeparatorText("Effects");
+            /*if (ImGui::MenuItem("Filter"))
+                modules.push_back(std::make_unique<FilterModule>());*/
+
+            ImGui::EndPopup();
+        }
+
+        for(auto& module : modules) {
+            module->draw();
+        }
+
+        modules.erase(
+            std::remove_if(modules.begin(), modules.end(), 
+            [](const std::unique_ptr<Module>& m) { return !m->isOpen(); }),
+            modules.end()
+        );
 
         ImGui::Render();
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);

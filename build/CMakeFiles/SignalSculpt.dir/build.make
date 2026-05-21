@@ -69,10 +69,24 @@ include CMakeFiles/SignalSculpt.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/SignalSculpt.dir/flags.make
 
+CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.o: CMakeFiles/SignalSculpt.dir/flags.make
+CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.o: /home/broski/Documents/FSU/Class\ Notes/SignalSculpt/src/core/Module.cpp
+CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.o: CMakeFiles/SignalSculpt.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.o -MF CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.o.d -o CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.o -c "/home/broski/Documents/FSU/Class Notes/SignalSculpt/src/core/Module.cpp"
+
+CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/broski/Documents/FSU/Class Notes/SignalSculpt/src/core/Module.cpp" > CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.i
+
+CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/broski/Documents/FSU/Class Notes/SignalSculpt/src/core/Module.cpp" -o CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.s
+
 CMakeFiles/SignalSculpt.dir/src/main.cpp.o: CMakeFiles/SignalSculpt.dir/flags.make
 CMakeFiles/SignalSculpt.dir/src/main.cpp.o: /home/broski/Documents/FSU/Class\ Notes/SignalSculpt/src/main.cpp
 CMakeFiles/SignalSculpt.dir/src/main.cpp.o: CMakeFiles/SignalSculpt.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/SignalSculpt.dir/src/main.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/SignalSculpt.dir/src/main.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SignalSculpt.dir/src/main.cpp.o -MF CMakeFiles/SignalSculpt.dir/src/main.cpp.o.d -o CMakeFiles/SignalSculpt.dir/src/main.cpp.o -c "/home/broski/Documents/FSU/Class Notes/SignalSculpt/src/main.cpp"
 
 CMakeFiles/SignalSculpt.dir/src/main.cpp.i: cmake_force
@@ -83,10 +97,38 @@ CMakeFiles/SignalSculpt.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/SignalSculpt.dir/src/main.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/broski/Documents/FSU/Class Notes/SignalSculpt/src/main.cpp" -o CMakeFiles/SignalSculpt.dir/src/main.cpp.s
 
+CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.o: CMakeFiles/SignalSculpt.dir/flags.make
+CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.o: /home/broski/Documents/FSU/Class\ Notes/SignalSculpt/src/modules/EnvelopeModule.cpp
+CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.o: CMakeFiles/SignalSculpt.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.o -MF CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.o.d -o CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.o -c "/home/broski/Documents/FSU/Class Notes/SignalSculpt/src/modules/EnvelopeModule.cpp"
+
+CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/broski/Documents/FSU/Class Notes/SignalSculpt/src/modules/EnvelopeModule.cpp" > CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.i
+
+CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/broski/Documents/FSU/Class Notes/SignalSculpt/src/modules/EnvelopeModule.cpp" -o CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.s
+
+CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.o: CMakeFiles/SignalSculpt.dir/flags.make
+CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.o: /home/broski/Documents/FSU/Class\ Notes/SignalSculpt/src/widgets/EnvelopeDisplay.cpp
+CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.o: CMakeFiles/SignalSculpt.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.o -MF CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.o.d -o CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.o -c "/home/broski/Documents/FSU/Class Notes/SignalSculpt/src/widgets/EnvelopeDisplay.cpp"
+
+CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/broski/Documents/FSU/Class Notes/SignalSculpt/src/widgets/EnvelopeDisplay.cpp" > CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.i
+
+CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/broski/Documents/FSU/Class Notes/SignalSculpt/src/widgets/EnvelopeDisplay.cpp" -o CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.s
+
 CMakeFiles/SignalSculpt.dir/imgui/imgui.cpp.o: CMakeFiles/SignalSculpt.dir/flags.make
 CMakeFiles/SignalSculpt.dir/imgui/imgui.cpp.o: /home/broski/Documents/FSU/Class\ Notes/SignalSculpt/imgui/imgui.cpp
 CMakeFiles/SignalSculpt.dir/imgui/imgui.cpp.o: CMakeFiles/SignalSculpt.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui/imgui.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui/imgui.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SignalSculpt.dir/imgui/imgui.cpp.o -MF CMakeFiles/SignalSculpt.dir/imgui/imgui.cpp.o.d -o CMakeFiles/SignalSculpt.dir/imgui/imgui.cpp.o -c "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui/imgui.cpp"
 
 CMakeFiles/SignalSculpt.dir/imgui/imgui.cpp.i: cmake_force
@@ -100,7 +142,7 @@ CMakeFiles/SignalSculpt.dir/imgui/imgui.cpp.s: cmake_force
 CMakeFiles/SignalSculpt.dir/imgui/imgui_draw.cpp.o: CMakeFiles/SignalSculpt.dir/flags.make
 CMakeFiles/SignalSculpt.dir/imgui/imgui_draw.cpp.o: /home/broski/Documents/FSU/Class\ Notes/SignalSculpt/imgui/imgui_draw.cpp
 CMakeFiles/SignalSculpt.dir/imgui/imgui_draw.cpp.o: CMakeFiles/SignalSculpt.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui/imgui_draw.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui/imgui_draw.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SignalSculpt.dir/imgui/imgui_draw.cpp.o -MF CMakeFiles/SignalSculpt.dir/imgui/imgui_draw.cpp.o.d -o CMakeFiles/SignalSculpt.dir/imgui/imgui_draw.cpp.o -c "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui/imgui_draw.cpp"
 
 CMakeFiles/SignalSculpt.dir/imgui/imgui_draw.cpp.i: cmake_force
@@ -114,7 +156,7 @@ CMakeFiles/SignalSculpt.dir/imgui/imgui_draw.cpp.s: cmake_force
 CMakeFiles/SignalSculpt.dir/imgui/imgui_tables.cpp.o: CMakeFiles/SignalSculpt.dir/flags.make
 CMakeFiles/SignalSculpt.dir/imgui/imgui_tables.cpp.o: /home/broski/Documents/FSU/Class\ Notes/SignalSculpt/imgui/imgui_tables.cpp
 CMakeFiles/SignalSculpt.dir/imgui/imgui_tables.cpp.o: CMakeFiles/SignalSculpt.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui/imgui_tables.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui/imgui_tables.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SignalSculpt.dir/imgui/imgui_tables.cpp.o -MF CMakeFiles/SignalSculpt.dir/imgui/imgui_tables.cpp.o.d -o CMakeFiles/SignalSculpt.dir/imgui/imgui_tables.cpp.o -c "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui/imgui_tables.cpp"
 
 CMakeFiles/SignalSculpt.dir/imgui/imgui_tables.cpp.i: cmake_force
@@ -128,7 +170,7 @@ CMakeFiles/SignalSculpt.dir/imgui/imgui_tables.cpp.s: cmake_force
 CMakeFiles/SignalSculpt.dir/imgui/imgui_widgets.cpp.o: CMakeFiles/SignalSculpt.dir/flags.make
 CMakeFiles/SignalSculpt.dir/imgui/imgui_widgets.cpp.o: /home/broski/Documents/FSU/Class\ Notes/SignalSculpt/imgui/imgui_widgets.cpp
 CMakeFiles/SignalSculpt.dir/imgui/imgui_widgets.cpp.o: CMakeFiles/SignalSculpt.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui/imgui_widgets.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui/imgui_widgets.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SignalSculpt.dir/imgui/imgui_widgets.cpp.o -MF CMakeFiles/SignalSculpt.dir/imgui/imgui_widgets.cpp.o.d -o CMakeFiles/SignalSculpt.dir/imgui/imgui_widgets.cpp.o -c "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui/imgui_widgets.cpp"
 
 CMakeFiles/SignalSculpt.dir/imgui/imgui_widgets.cpp.i: cmake_force
@@ -142,7 +184,7 @@ CMakeFiles/SignalSculpt.dir/imgui/imgui_widgets.cpp.s: cmake_force
 CMakeFiles/SignalSculpt.dir/imgui/imgui_demo.cpp.o: CMakeFiles/SignalSculpt.dir/flags.make
 CMakeFiles/SignalSculpt.dir/imgui/imgui_demo.cpp.o: /home/broski/Documents/FSU/Class\ Notes/SignalSculpt/imgui/imgui_demo.cpp
 CMakeFiles/SignalSculpt.dir/imgui/imgui_demo.cpp.o: CMakeFiles/SignalSculpt.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui/imgui_demo.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui/imgui_demo.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SignalSculpt.dir/imgui/imgui_demo.cpp.o -MF CMakeFiles/SignalSculpt.dir/imgui/imgui_demo.cpp.o.d -o CMakeFiles/SignalSculpt.dir/imgui/imgui_demo.cpp.o -c "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui/imgui_demo.cpp"
 
 CMakeFiles/SignalSculpt.dir/imgui/imgui_demo.cpp.i: cmake_force
@@ -156,7 +198,7 @@ CMakeFiles/SignalSculpt.dir/imgui/imgui_demo.cpp.s: cmake_force
 CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_sdl2.cpp.o: CMakeFiles/SignalSculpt.dir/flags.make
 CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_sdl2.cpp.o: /home/broski/Documents/FSU/Class\ Notes/SignalSculpt/imgui/backends/imgui_impl_sdl2.cpp
 CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_sdl2.cpp.o: CMakeFiles/SignalSculpt.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_sdl2.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_sdl2.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_sdl2.cpp.o -MF CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_sdl2.cpp.o.d -o CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_sdl2.cpp.o -c "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui/backends/imgui_impl_sdl2.cpp"
 
 CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_sdl2.cpp.i: cmake_force
@@ -170,7 +212,7 @@ CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_sdl2.cpp.s: cmake_force
 CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_opengl3.cpp.o: CMakeFiles/SignalSculpt.dir/flags.make
 CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_opengl3.cpp.o: /home/broski/Documents/FSU/Class\ Notes/SignalSculpt/imgui/backends/imgui_impl_opengl3.cpp
 CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_opengl3.cpp.o: CMakeFiles/SignalSculpt.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_opengl3.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_opengl3.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_opengl3.cpp.o -MF CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_opengl3.cpp.o.d -o CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_opengl3.cpp.o -c "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui/backends/imgui_impl_opengl3.cpp"
 
 CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_opengl3.cpp.i: cmake_force
@@ -181,21 +223,102 @@ CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_opengl3.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_opengl3.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui/backends/imgui_impl_opengl3.cpp" -o CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_opengl3.cpp.s
 
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.o: CMakeFiles/SignalSculpt.dir/flags.make
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.o: /home/broski/Documents/FSU/Class\ Notes/SignalSculpt/imgui-node-editor/imgui_node_editor.cpp
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.o: CMakeFiles/SignalSculpt.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.o -MF CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.o.d -o CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.o -c "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui-node-editor/imgui_node_editor.cpp"
+
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui-node-editor/imgui_node_editor.cpp" > CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.i
+
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui-node-editor/imgui_node_editor.cpp" -o CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.s
+
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.o: CMakeFiles/SignalSculpt.dir/flags.make
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.o: /home/broski/Documents/FSU/Class\ Notes/SignalSculpt/imgui-node-editor/imgui_node_editor_api.cpp
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.o: CMakeFiles/SignalSculpt.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.o -MF CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.o.d -o CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.o -c "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui-node-editor/imgui_node_editor_api.cpp"
+
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui-node-editor/imgui_node_editor_api.cpp" > CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.i
+
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui-node-editor/imgui_node_editor_api.cpp" -o CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.s
+
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.o: CMakeFiles/SignalSculpt.dir/flags.make
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.o: /home/broski/Documents/FSU/Class\ Notes/SignalSculpt/imgui-node-editor/imgui_canvas.cpp
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.o: CMakeFiles/SignalSculpt.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.o -MF CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.o.d -o CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.o -c "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui-node-editor/imgui_canvas.cpp"
+
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui-node-editor/imgui_canvas.cpp" > CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.i
+
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui-node-editor/imgui_canvas.cpp" -o CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.s
+
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.o: CMakeFiles/SignalSculpt.dir/flags.make
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.o: /home/broski/Documents/FSU/Class\ Notes/SignalSculpt/imgui-node-editor/crude_json.cpp
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.o: CMakeFiles/SignalSculpt.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.o -MF CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.o.d -o CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.o -c "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui-node-editor/crude_json.cpp"
+
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui-node-editor/crude_json.cpp" > CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.i
+
+CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui-node-editor/crude_json.cpp" -o CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.s
+
+CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.o: CMakeFiles/SignalSculpt.dir/flags.make
+CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.o: /home/broski/Documents/FSU/Class\ Notes/SignalSculpt/imgui-knobs/imgui-knobs.cpp
+CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.o: CMakeFiles/SignalSculpt.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.o -MF CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.o.d -o CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.o -c "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui-knobs/imgui-knobs.cpp"
+
+CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui-knobs/imgui-knobs.cpp" > CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.i
+
+CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui-knobs/imgui-knobs.cpp" -o CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.s
+
 # Object files for target SignalSculpt
 SignalSculpt_OBJECTS = \
+"CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.o" \
 "CMakeFiles/SignalSculpt.dir/src/main.cpp.o" \
+"CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.o" \
+"CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.o" \
 "CMakeFiles/SignalSculpt.dir/imgui/imgui.cpp.o" \
 "CMakeFiles/SignalSculpt.dir/imgui/imgui_draw.cpp.o" \
 "CMakeFiles/SignalSculpt.dir/imgui/imgui_tables.cpp.o" \
 "CMakeFiles/SignalSculpt.dir/imgui/imgui_widgets.cpp.o" \
 "CMakeFiles/SignalSculpt.dir/imgui/imgui_demo.cpp.o" \
 "CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_sdl2.cpp.o" \
-"CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_opengl3.cpp.o"
+"CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_opengl3.cpp.o" \
+"CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.o" \
+"CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.o" \
+"CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.o" \
+"CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.o" \
+"CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.o"
 
 # External object files for target SignalSculpt
 SignalSculpt_EXTERNAL_OBJECTS =
 
+SignalSculpt: CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.o
 SignalSculpt: CMakeFiles/SignalSculpt.dir/src/main.cpp.o
+SignalSculpt: CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.o
+SignalSculpt: CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.o
 SignalSculpt: CMakeFiles/SignalSculpt.dir/imgui/imgui.cpp.o
 SignalSculpt: CMakeFiles/SignalSculpt.dir/imgui/imgui_draw.cpp.o
 SignalSculpt: CMakeFiles/SignalSculpt.dir/imgui/imgui_tables.cpp.o
@@ -203,11 +326,16 @@ SignalSculpt: CMakeFiles/SignalSculpt.dir/imgui/imgui_widgets.cpp.o
 SignalSculpt: CMakeFiles/SignalSculpt.dir/imgui/imgui_demo.cpp.o
 SignalSculpt: CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_sdl2.cpp.o
 SignalSculpt: CMakeFiles/SignalSculpt.dir/imgui/backends/imgui_impl_opengl3.cpp.o
+SignalSculpt: CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.o
+SignalSculpt: CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.o
+SignalSculpt: CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.o
+SignalSculpt: CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.o
+SignalSculpt: CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.o
 SignalSculpt: CMakeFiles/SignalSculpt.dir/build.make
 SignalSculpt: SDL/libSDL2-2.0.so.0.3300.0
 SignalSculpt: SDL/libSDL2main.a
 SignalSculpt: CMakeFiles/SignalSculpt.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable SignalSculpt"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_17) "Linking CXX executable SignalSculpt"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/SignalSculpt.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

@@ -207,6 +207,126 @@ uninstall/fast:
 	$(MAKE) $(MAKESILENT) -f SDL/CMakeFiles/uninstall.dir/build.make SDL/CMakeFiles/uninstall.dir/build
 .PHONY : uninstall/fast
 
+imgui-knobs/imgui-knobs.o: imgui-knobs/imgui-knobs.cpp.o
+.PHONY : imgui-knobs/imgui-knobs.o
+
+# target to build an object file
+imgui-knobs/imgui-knobs.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.o
+.PHONY : imgui-knobs/imgui-knobs.cpp.o
+
+imgui-knobs/imgui-knobs.i: imgui-knobs/imgui-knobs.cpp.i
+.PHONY : imgui-knobs/imgui-knobs.i
+
+# target to preprocess a source file
+imgui-knobs/imgui-knobs.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.i
+.PHONY : imgui-knobs/imgui-knobs.cpp.i
+
+imgui-knobs/imgui-knobs.s: imgui-knobs/imgui-knobs.cpp.s
+.PHONY : imgui-knobs/imgui-knobs.s
+
+# target to generate assembly for a file
+imgui-knobs/imgui-knobs.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/imgui-knobs/imgui-knobs.cpp.s
+.PHONY : imgui-knobs/imgui-knobs.cpp.s
+
+imgui-node-editor/crude_json.o: imgui-node-editor/crude_json.cpp.o
+.PHONY : imgui-node-editor/crude_json.o
+
+# target to build an object file
+imgui-node-editor/crude_json.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.o
+.PHONY : imgui-node-editor/crude_json.cpp.o
+
+imgui-node-editor/crude_json.i: imgui-node-editor/crude_json.cpp.i
+.PHONY : imgui-node-editor/crude_json.i
+
+# target to preprocess a source file
+imgui-node-editor/crude_json.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.i
+.PHONY : imgui-node-editor/crude_json.cpp.i
+
+imgui-node-editor/crude_json.s: imgui-node-editor/crude_json.cpp.s
+.PHONY : imgui-node-editor/crude_json.s
+
+# target to generate assembly for a file
+imgui-node-editor/crude_json.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/imgui-node-editor/crude_json.cpp.s
+.PHONY : imgui-node-editor/crude_json.cpp.s
+
+imgui-node-editor/imgui_canvas.o: imgui-node-editor/imgui_canvas.cpp.o
+.PHONY : imgui-node-editor/imgui_canvas.o
+
+# target to build an object file
+imgui-node-editor/imgui_canvas.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.o
+.PHONY : imgui-node-editor/imgui_canvas.cpp.o
+
+imgui-node-editor/imgui_canvas.i: imgui-node-editor/imgui_canvas.cpp.i
+.PHONY : imgui-node-editor/imgui_canvas.i
+
+# target to preprocess a source file
+imgui-node-editor/imgui_canvas.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.i
+.PHONY : imgui-node-editor/imgui_canvas.cpp.i
+
+imgui-node-editor/imgui_canvas.s: imgui-node-editor/imgui_canvas.cpp.s
+.PHONY : imgui-node-editor/imgui_canvas.s
+
+# target to generate assembly for a file
+imgui-node-editor/imgui_canvas.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_canvas.cpp.s
+.PHONY : imgui-node-editor/imgui_canvas.cpp.s
+
+imgui-node-editor/imgui_node_editor.o: imgui-node-editor/imgui_node_editor.cpp.o
+.PHONY : imgui-node-editor/imgui_node_editor.o
+
+# target to build an object file
+imgui-node-editor/imgui_node_editor.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.o
+.PHONY : imgui-node-editor/imgui_node_editor.cpp.o
+
+imgui-node-editor/imgui_node_editor.i: imgui-node-editor/imgui_node_editor.cpp.i
+.PHONY : imgui-node-editor/imgui_node_editor.i
+
+# target to preprocess a source file
+imgui-node-editor/imgui_node_editor.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.i
+.PHONY : imgui-node-editor/imgui_node_editor.cpp.i
+
+imgui-node-editor/imgui_node_editor.s: imgui-node-editor/imgui_node_editor.cpp.s
+.PHONY : imgui-node-editor/imgui_node_editor.s
+
+# target to generate assembly for a file
+imgui-node-editor/imgui_node_editor.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor.cpp.s
+.PHONY : imgui-node-editor/imgui_node_editor.cpp.s
+
+imgui-node-editor/imgui_node_editor_api.o: imgui-node-editor/imgui_node_editor_api.cpp.o
+.PHONY : imgui-node-editor/imgui_node_editor_api.o
+
+# target to build an object file
+imgui-node-editor/imgui_node_editor_api.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.o
+.PHONY : imgui-node-editor/imgui_node_editor_api.cpp.o
+
+imgui-node-editor/imgui_node_editor_api.i: imgui-node-editor/imgui_node_editor_api.cpp.i
+.PHONY : imgui-node-editor/imgui_node_editor_api.i
+
+# target to preprocess a source file
+imgui-node-editor/imgui_node_editor_api.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.i
+.PHONY : imgui-node-editor/imgui_node_editor_api.cpp.i
+
+imgui-node-editor/imgui_node_editor_api.s: imgui-node-editor/imgui_node_editor_api.cpp.s
+.PHONY : imgui-node-editor/imgui_node_editor_api.s
+
+# target to generate assembly for a file
+imgui-node-editor/imgui_node_editor_api.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/imgui-node-editor/imgui_node_editor_api.cpp.s
+.PHONY : imgui-node-editor/imgui_node_editor_api.cpp.s
+
 imgui/backends/imgui_impl_opengl3.o: imgui/backends/imgui_impl_opengl3.cpp.o
 .PHONY : imgui/backends/imgui_impl_opengl3.o
 
@@ -375,6 +495,30 @@ imgui/imgui_widgets.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/imgui/imgui_widgets.cpp.s
 .PHONY : imgui/imgui_widgets.cpp.s
 
+src/core/Module.o: src/core/Module.cpp.o
+.PHONY : src/core/Module.o
+
+# target to build an object file
+src/core/Module.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.o
+.PHONY : src/core/Module.cpp.o
+
+src/core/Module.i: src/core/Module.cpp.i
+.PHONY : src/core/Module.i
+
+# target to preprocess a source file
+src/core/Module.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.i
+.PHONY : src/core/Module.cpp.i
+
+src/core/Module.s: src/core/Module.cpp.s
+.PHONY : src/core/Module.s
+
+# target to generate assembly for a file
+src/core/Module.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/src/core/Module.cpp.s
+.PHONY : src/core/Module.cpp.s
+
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
 
@@ -399,6 +543,54 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/modules/EnvelopeModule.o: src/modules/EnvelopeModule.cpp.o
+.PHONY : src/modules/EnvelopeModule.o
+
+# target to build an object file
+src/modules/EnvelopeModule.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.o
+.PHONY : src/modules/EnvelopeModule.cpp.o
+
+src/modules/EnvelopeModule.i: src/modules/EnvelopeModule.cpp.i
+.PHONY : src/modules/EnvelopeModule.i
+
+# target to preprocess a source file
+src/modules/EnvelopeModule.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.i
+.PHONY : src/modules/EnvelopeModule.cpp.i
+
+src/modules/EnvelopeModule.s: src/modules/EnvelopeModule.cpp.s
+.PHONY : src/modules/EnvelopeModule.s
+
+# target to generate assembly for a file
+src/modules/EnvelopeModule.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/src/modules/EnvelopeModule.cpp.s
+.PHONY : src/modules/EnvelopeModule.cpp.s
+
+src/widgets/EnvelopeDisplay.o: src/widgets/EnvelopeDisplay.cpp.o
+.PHONY : src/widgets/EnvelopeDisplay.o
+
+# target to build an object file
+src/widgets/EnvelopeDisplay.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.o
+.PHONY : src/widgets/EnvelopeDisplay.cpp.o
+
+src/widgets/EnvelopeDisplay.i: src/widgets/EnvelopeDisplay.cpp.i
+.PHONY : src/widgets/EnvelopeDisplay.i
+
+# target to preprocess a source file
+src/widgets/EnvelopeDisplay.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.i
+.PHONY : src/widgets/EnvelopeDisplay.cpp.i
+
+src/widgets/EnvelopeDisplay.s: src/widgets/EnvelopeDisplay.cpp.s
+.PHONY : src/widgets/EnvelopeDisplay.s
+
+# target to generate assembly for a file
+src/widgets/EnvelopeDisplay.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SignalSculpt.dir/build.make CMakeFiles/SignalSculpt.dir/src/widgets/EnvelopeDisplay.cpp.s
+.PHONY : src/widgets/EnvelopeDisplay.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -414,6 +606,21 @@ help:
 	@echo "... SDL2_test"
 	@echo "... SDL2main"
 	@echo "... SignalSculpt"
+	@echo "... imgui-knobs/imgui-knobs.o"
+	@echo "... imgui-knobs/imgui-knobs.i"
+	@echo "... imgui-knobs/imgui-knobs.s"
+	@echo "... imgui-node-editor/crude_json.o"
+	@echo "... imgui-node-editor/crude_json.i"
+	@echo "... imgui-node-editor/crude_json.s"
+	@echo "... imgui-node-editor/imgui_canvas.o"
+	@echo "... imgui-node-editor/imgui_canvas.i"
+	@echo "... imgui-node-editor/imgui_canvas.s"
+	@echo "... imgui-node-editor/imgui_node_editor.o"
+	@echo "... imgui-node-editor/imgui_node_editor.i"
+	@echo "... imgui-node-editor/imgui_node_editor.s"
+	@echo "... imgui-node-editor/imgui_node_editor_api.o"
+	@echo "... imgui-node-editor/imgui_node_editor_api.i"
+	@echo "... imgui-node-editor/imgui_node_editor_api.s"
 	@echo "... imgui/backends/imgui_impl_opengl3.o"
 	@echo "... imgui/backends/imgui_impl_opengl3.i"
 	@echo "... imgui/backends/imgui_impl_opengl3.s"
@@ -435,9 +642,18 @@ help:
 	@echo "... imgui/imgui_widgets.o"
 	@echo "... imgui/imgui_widgets.i"
 	@echo "... imgui/imgui_widgets.s"
+	@echo "... src/core/Module.o"
+	@echo "... src/core/Module.i"
+	@echo "... src/core/Module.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
+	@echo "... src/modules/EnvelopeModule.o"
+	@echo "... src/modules/EnvelopeModule.i"
+	@echo "... src/modules/EnvelopeModule.s"
+	@echo "... src/widgets/EnvelopeDisplay.o"
+	@echo "... src/widgets/EnvelopeDisplay.i"
+	@echo "... src/widgets/EnvelopeDisplay.s"
 .PHONY : help
 
 

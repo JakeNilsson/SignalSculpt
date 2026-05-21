@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I"/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui" -I"/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui/backends" -I"/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/SDL/include" -I"/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/SDL/include/SDL2" -I"/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/SDL/include-config-/SDL2"
+CXX_INCLUDES = -I"/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui" -I"/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui/backends" -I"/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui-node-editor" -I"/home/broski/Documents/FSU/Class Notes/SignalSculpt/imgui-knobs" -I"/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/SDL/include" -I"/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/SDL/include/SDL2" -I"/home/broski/Documents/FSU/Class Notes/SignalSculpt/build/SDL/include-config-/SDL2"
 
 CXX_FLAGS = -std=gnu++17
 
