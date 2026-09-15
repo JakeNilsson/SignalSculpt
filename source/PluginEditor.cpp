@@ -13,7 +13,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (1720, 880);
+    setSize (1920, 1080);
 }
 
 PluginEditor::~PluginEditor()
@@ -37,18 +37,20 @@ juce::Rectangle<int> PluginEditor::setInversePos(juce::Rectangle<int> parentDime
 
 void PluginEditor::resized()
 {
-    const auto canvasBounds = getBounds();
+    const auto bounds = getLocalBounds();
+
+    const auto canvasBounds = bounds;
     canvas.setBounds(canvasBounds);
 
-    const auto headerBounds = setInversePos(getBounds(), 0, 0, 0, 780);
+    const auto headerBounds = setInversePos(bounds, 0, 0, 0, 970);
     header.setBounds(headerBounds);
 
-    const auto footerBounds = setInversePos(getBounds(), 0, 0, 780, 0);
+    const auto footerBounds = setInversePos(bounds, 0, 0, 970, 0);
     footer.setBounds(footerBounds);
 
-    const auto inputsTabBounds = setInversePos(getBounds(), 0, 1640, 0, 0);
+    const auto inputsTabBounds = setInversePos(bounds, 0, 1800, 0, 0);
     inputsTab.setBounds(inputsTabBounds);
 
-    const auto outputsTabBounds = setInversePos(getBounds(), 1640, 0, 0, 0);
+    const auto outputsTabBounds = setInversePos(bounds, 1800, 0, 0, 0);
     outputsTab.setBounds(outputsTabBounds);
 }
