@@ -44,13 +44,17 @@ void PluginEditor::resized()
 
     const auto headerBounds = setInversePos(bounds, 0, 0, 0, 970);
     header.setBounds(headerBounds);
+    header.setPath();
 
     const auto footerBounds = setInversePos(bounds, 0, 0, 970, 0);
     footer.setBounds(footerBounds);
+    footer.setPath();
 
     const auto inputsTabBounds = setInversePos(bounds, 0, 1800, 0, 0);
     inputsTab.setBounds(inputsTabBounds);
+    inputsTab.setPath();
 
     const auto outputsTabBounds = setInversePos(bounds, 1800, 0, 0, 0);
     outputsTab.setBounds(outputsTabBounds);
+    outputsTab.setPath();
 }
