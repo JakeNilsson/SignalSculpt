@@ -28,11 +28,13 @@ private:
     // access the processor object that created it.
     PluginProcessor& processorRef;
 
-    Header header;
-    Footer footer;
-    InputsTab inputsTab;
-    OutputsTab outputsTab;
-    Canvas canvas;
+    Colors colors;
+
+    Header header{colors};
+    Footer footer{colors};
+    InputsTab inputsTab{colors};
+    OutputsTab outputsTab{colors};
+    Canvas canvas{colors};
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

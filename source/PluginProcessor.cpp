@@ -1,5 +1,5 @@
-#include "PluginProcessor.h"
-#include "PluginEditor.h"
+#include "headers/PluginProcessor.h"
+#include "headers/PluginEditor.h"
 
 //==============================================================================
 PluginProcessor::PluginProcessor()
