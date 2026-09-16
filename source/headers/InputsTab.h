@@ -13,16 +13,6 @@ public:
         g.setColour(colors.getColor(ThemeColors::tabBG));
         g.fillRect(inputsBG);
 
-        auto textBounds = juce::Rectangle<float> (
-        0.0f,
-        0.0f,
-        inputsTab.getHeight(),
-        inputsTab.getWidth()
-    );
-
-        // Put its centre at the centre of the tab.
-        textBounds.setCentre (inputsTab.getCentre());
-
         g.saveState();
 
         g.addTransform (juce::AffineTransform::rotation (
@@ -31,23 +21,11 @@ public:
             inputsTab.getCentreY()
         ));
 
-        auto baseTypeface = juce::Typeface::createSystemTypefaceFor(
-    BinaryData::interVar_ttf, BinaryData::interVar_ttfSize);
-
-        juce::FontVariableSetting semiboldSetting[] {
-            { juce::FontFeatureTag("wght"), 600.0f }
-        };
-
-        auto semiboldTypeface = baseTypeface->cloneWithVariableSettings(semiboldSetting);
-
-        auto fontOptions = juce::FontOptions(semiboldTypeface).withPointHeight(48.0f);
-        juce::Font inputsFont(fontOptions);
-
         g.setFont(inputsFont);
 
         g.drawText ("INPUTS",
-                    textBounds,
-                    juce::Justification::centred,
+                    inputsTextBounds,
+                    juce::Justification::right,
                     false);
 
         g.restoreState();
@@ -58,13 +36,10 @@ public:
         auto width = bounds.getWidth();
         auto height = bounds.getHeight();
 
-        auto tabHeight = height * 9/40;
+        auto tabHeight = height * 8/40;
         auto handleWidth = width * 5/8;
 
         auto tabHandleDiff = width - handleWidth;
-
-        inputsTab.setBounds(0, 0, width, tabHeight);
-        inputsTab.removeFromLeft((4.f * width) / 7.f);
 
         inputsTabPath.startNewSubPath(0, 0);
         inputsTabPath.lineTo(width, 0);
@@ -77,16 +52,40 @@ public:
         inputsBG = bounds;
         inputsBG.removeFromRight((3.f * width) / 7.f);
 
-        middleTabX = 3 * width / 4;
-        middleTabY = 2 * tabHeight / 3;
+        inputsTab.setBounds(0, 0, width, tabHeight);
+        inputsTab.removeFromLeft((4.f * width) / 7.f);
+
+        inputsTextBounds.setBounds(
+            0.0f,
+            0.0f,
+            inputsTab.getHeight(),
+            inputsTab.getWidth()
+        );
+
+        inputsTextBounds.setCentre (inputsTab.getCentre());
+
+        auto baseTypeface = juce::Typeface::createSystemTypefaceFor(
+            BinaryData::interVar_ttf, BinaryData::interVar_ttfSize
+        );
+
+        juce::FontVariableSetting semiboldSetting[] {
+            { juce::FontFeatureTag("wght"), 600.0f }
+        };
+
+        auto semiboldTypeface = baseTypeface->cloneWithVariableSettings(semiboldSetting);
+
+        auto fontOptions = juce::FontOptions(semiboldTypeface).withPointHeight(48.0f);
+        inputsFont = juce::Font(fontOptions);
     }
 
 private:
     juce::Path inputsTabPath;
+
     juce::Rectangle<float> inputsBG;
     juce::Rectangle<float> inputsTab;
-    Colors &colors;
+    juce::Rectangle<float> inputsTextBounds;
 
-    float middleTabX;
-    float middleTabY;
+    juce::Font inputsFont;
+
+    Colors &colors;
 };

@@ -11,7 +11,24 @@ public:
         g.fillPath(outputsTabPath);
 
         g.setColour(colors.getColor(ThemeColors::tabBG));
-        g.fillRect(outputsTab);
+        g.fillRect(outputsBG);
+
+        g.saveState();
+
+        g.addTransform (juce::AffineTransform::rotation (
+            -juce::MathConstants<float>::halfPi,
+            outputsTab.getCentreX(),
+            outputsTab.getCentreY()
+        ));
+
+        g.setFont(outputsFont);
+
+        g.drawText ("OUTPUTS",
+                    outputsTextBounds,
+                    juce::Justification::right,
+                    false);
+
+        g.restoreState();
     };
 
     void setTabBounds() {
@@ -19,7 +36,7 @@ public:
         auto width = bounds.getWidth();
         auto height = bounds.getHeight();
 
-        auto tabHeight = height * 1/4;
+        auto tabHeight = height * 41/160; // yeah this number is crazy, it just looked the best imo don't judge me
         auto handleWidthRatio = 5.f/8.f;
 
         auto handleWidth = width * (1 - handleWidthRatio);
@@ -33,14 +50,43 @@ public:
         outputsTabPath.lineTo(width, height);
         outputsTabPath.closeSubPath();
 
-        outputsTab = bounds;
-        outputsTab.removeFromLeft((3.f * width) / 7.f);
+        outputsBG = bounds;
+        outputsBG.removeFromLeft((3.f * width) / 7.f);
+
+        outputsTab.setBounds(0, height - tabHeight, width, tabHeight);
+        outputsTab.removeFromRight((4.f * width) / 7.f);
+
+        outputsTextBounds.setBounds(
+            0.0f,
+            0.0f,
+            outputsTab.getHeight(),
+            outputsTab.getWidth()
+        );
+
+        outputsTextBounds.setCentre (outputsTab.getCentre());
+
+        auto baseTypeface = juce::Typeface::createSystemTypefaceFor(
+            BinaryData::interVar_ttf, BinaryData::interVar_ttfSize
+        );
+
+        juce::FontVariableSetting semiboldSetting[] {
+            { juce::FontFeatureTag("wght"), 600.0f }
+        };
+
+        auto semiboldTypeface = baseTypeface->cloneWithVariableSettings(semiboldSetting);
+
+        auto fontOptions = juce::FontOptions(semiboldTypeface).withPointHeight(48.0f);
+        outputsFont = juce::Font(fontOptions);
     }
 
 private:
-    juce::Label outputsLabel {"outputs", "OUTPUTS"};
-
     juce::Path outputsTabPath;
+
+    juce::Rectangle<float> outputsBG;
     juce::Rectangle<float> outputsTab;
+    juce::Rectangle<float> outputsTextBounds;
+
+    juce::Font outputsFont;
+
     Colors &colors;
 };

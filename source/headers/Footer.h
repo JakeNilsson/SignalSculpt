@@ -17,6 +17,13 @@ public:
 
         g.setColour(colors.getColor(ThemeColors::neutral));
         g.strokePath(footerDividerPath, juce::PathStrokeType(3));
+
+        g.setFont(footerFont);
+
+        g.drawText ("M A C R O S",
+                    footerTab,
+                    juce::Justification::centred,
+                    false);
     };
 
     void setTabBounds() {
@@ -48,11 +55,31 @@ public:
         footerPath.closeSubPath();
 
         footerShadow.setBounds(0, 0, width, handleHeight);
+
+        footerTab.setBounds(width - tabWidth, footerHeight, tabWidth, footerHeight);
+
+        auto baseTypeface = juce::Typeface::createSystemTypefaceFor(
+            BinaryData::interVar_ttf, BinaryData::interVar_ttfSize
+        );
+
+        juce::FontVariableSetting semiboldSetting[] {
+            { juce::FontFeatureTag("wght"), 800.0f }
+        };
+
+        auto semiboldTypeface = baseTypeface->cloneWithVariableSettings(semiboldSetting);
+
+        auto fontOptions = juce::FontOptions(semiboldTypeface).withPointHeight(64.0f);
+        footerFont = juce::Font(fontOptions);
     }
 
 private:
     juce::Path footerPath;
     juce::Path footerDividerPath;
+
     juce::Rectangle<float> footerShadow;
+    juce::Rectangle<float> footerTab;
+
+    juce::Font footerFont;
+
     Colors &colors;
 };

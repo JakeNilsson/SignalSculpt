@@ -18,6 +18,26 @@ public:
 
         g.setColour(colors.getColor(ThemeColors::neutral));
         g.strokePath(headerDividerPath, juce::PathStrokeType(3));
+
+        g.setFont(headerFont);
+
+        g.setColour(colors.getColor(ThemeColors::input));
+        g.drawText(" Signal",
+                    headerTab,
+                    juce::Justification::left,
+                    false);
+
+        g.setColour(colors.getColor(ThemeColors::neutral));
+        g.drawText(juce::String::charToString (0x2022),
+                    headerTab,
+                    juce::Justification::centred,
+                    false);
+
+        g.setColour(colors.getColor(ThemeColors::output));
+        g.drawText("Sculpt ",
+                    headerTab,
+                    juce::Justification::right,
+                    false);
     };
 
     void setTabBounds() {
@@ -48,11 +68,31 @@ public:
         headerPath.closeSubPath();
 
         headerShadow.setBounds(0, handleHeight, width, std::floor(height - handleHeight));
+
+        headerTab.setBounds(0, 0, tabWidth, headerHeight);
+
+        auto baseTypeface = juce::Typeface::createSystemTypefaceFor(
+            BinaryData::interVar_ttf, BinaryData::interVar_ttfSize
+        );
+
+        juce::FontVariableSetting semiboldSetting[] {
+            { juce::FontFeatureTag("wght"), 600.0f }
+        };
+
+        auto semiboldTypeface = baseTypeface->cloneWithVariableSettings(semiboldSetting);
+
+        auto fontOptions = juce::FontOptions(semiboldTypeface).withPointHeight(64.0f);
+        headerFont = juce::Font(fontOptions);
     }
 
 private:
     juce::Path headerPath;
     juce::Path headerDividerPath;
+
     juce::Rectangle<float> headerShadow;
+    juce::Rectangle<float> headerTab;
+
+    juce::Font headerFont;
+
     Colors &colors;
 };
