@@ -42,19 +42,19 @@ void PluginEditor::resized()
     const auto canvasBounds = bounds;
     canvas.setBounds(canvasBounds);
 
-    const auto headerBounds = setInversePos(bounds, 0, 0, 0, 970);
+    const auto headerBounds = setInversePos(bounds, 0, 0, 0, 860);
     header.setBounds(headerBounds);
-    header.setPath();
+    header.setTabBounds();
 
-    const auto footerBounds = setInversePos(bounds, 0, 0, 970, 0);
+    const auto footerBounds = setInversePos(bounds, 0, 0, 860, 0);
     footer.setBounds(footerBounds);
-    footer.setPath();
+    footer.setTabBounds();
 
-    const auto inputsTabBounds = setInversePos(bounds, 0, 1800, 0, 0);
+    const auto inputsTabBounds = setInversePos(bounds, 0, 1800, 110, 0);
     inputsTab.setBounds(inputsTabBounds);
-    inputsTab.setPath();
+    inputsTab.setTabBounds();
 
-    const auto outputsTabBounds = setInversePos(bounds, 1800, 0, 0, 0);
+    const auto outputsTabBounds = setInversePos(bounds, 1800, 0, 0, 110);
     outputsTab.setBounds(outputsTabBounds);
-    outputsTab.setPath();
+    outputsTab.setTabBounds();
 }

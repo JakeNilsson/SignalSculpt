@@ -95,6 +95,17 @@ juce_add_plugin("${PROJECT_NAME}"
     # You might want to use v${MAJOR_VERSION} here once you go to v2...
     PRODUCT_NAME "${PRODUCT_NAME}")
 
+juce_add_binary_data(Assets
+        SOURCES
+        "assets/fonts/interVar.ttf"
+        "assets/fonts/kantumruyProVar.ttf"
+)
+
+target_link_libraries(SignalSculpt
+        PRIVATE
+        Assets
+)
+
 # This lets us use our code in both the JUCE targets and our Test target
 # Without running into ODR violations
 add_library(SharedCode INTERFACE)
@@ -116,7 +127,7 @@ file(GLOB_RECURSE SourceFiles CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/sou
 target_sources(SharedCode INTERFACE ${SourceFiles})
 
 # Adds a BinaryData target for embedding assets into the binary
-pamplejuce_add_assets()
+# pamplejuce_add_assets()
 
 # MacOS only: Cleans up folder and target organization on Xcode.
 pamplejuce_xcode_prettify()
@@ -149,7 +160,6 @@ target_compile_definitions(SharedCode
 target_link_libraries(SharedCode
     INTERFACE
     Assets
-    melatonin_inspector
     juce_audio_utils
     juce_audio_processors
     juce_dsp

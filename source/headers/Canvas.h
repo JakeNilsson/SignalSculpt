@@ -1,5 +1,6 @@
 #pragma once
 #include "Colors.h"
+#include "SiScLookAndFeel.h"
 
 class Canvas : public juce::Component {
 public:
