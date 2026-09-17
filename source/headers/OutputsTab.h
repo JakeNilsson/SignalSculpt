@@ -31,6 +31,11 @@ public:
         g.restoreState();
     };
 
+    bool hitTest (int x, int y) override
+    {
+        return outputsTabPath.contains ((float) x, (float) y);
+    }
+
     void setTabBounds() {
         const auto bounds = getLocalBounds().toFloat();
         auto width = bounds.getWidth();

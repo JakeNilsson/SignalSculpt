@@ -45,9 +45,10 @@ void PluginEditor::resized()
     //canvasContainer.setBounds(canvasBounds);
     //canvasContainer.setCanvasBounds(canvasBounds);
     canvasContainer.setBounds (canvasBounds);
+    canvasContainer.setScrollOnDragMode (juce::Viewport::ScrollOnDragMode::all);
     canvas.setBounds (0, 0,
-                      canvasBounds.getWidth() * 2,
-                      canvasBounds.getHeight() * 2);
+                      3840,
+                      2240);
 
     const auto headerBounds = setInversePos(bounds, 0, 0, 0, 860);
     header.setBounds(headerBounds);

@@ -41,6 +41,11 @@ public:
                     false);
     };
 
+    bool hitTest (int x, int y) override
+    {
+        return headerPath.contains ((float) x, (float) y);
+    }
+
     void setTabBounds() {
         headerPath.clear();
         headerDividerPath.clear();

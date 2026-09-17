@@ -26,6 +26,11 @@ public:
                     false);
     };
 
+    bool hitTest (int x, int y) override
+    {
+        return footerPath.contains ((float) x, (float) y);
+    }
+
     void setTabBounds() {
         footerPath.clear();
         footerDividerPath.clear();

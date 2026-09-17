@@ -2,7 +2,7 @@
 #include "Canvas.h"
 #include "SiScLookAndFeel.h"
 
-class CanvasContainer : public juce::Component {
+class CanvasContainer : public juce::Viewport {
 public:
     explicit CanvasContainer(Canvas &canvasRef) : canvas(canvasRef) {};
 
