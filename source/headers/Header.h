@@ -19,18 +19,19 @@ public:
         g.setColour(colors.getColor(ThemeColors::neutral));
         g.strokePath(headerDividerPath, juce::PathStrokeType(3));
 
+        g.setFont(bulletPointFont);
+
+        g.drawText(juce::String::charToString (0x2022),
+                    headerTab,
+                    juce::Justification::centred,
+                    false);
+
         g.setFont(headerFont);
 
         g.setColour(colors.getColor(ThemeColors::input));
         g.drawText(" Signal",
                     headerTab,
                     juce::Justification::left,
-                    false);
-
-        g.setColour(colors.getColor(ThemeColors::neutral));
-        g.drawText(juce::String::charToString (0x2022),
-                    headerTab,
-                    juce::Justification::centred,
                     false);
 
         g.setColour(colors.getColor(ThemeColors::output));
@@ -82,7 +83,9 @@ public:
         auto semiboldTypeface = baseTypeface->cloneWithVariableSettings(semiboldSetting);
 
         auto fontOptions = juce::FontOptions(semiboldTypeface).withPointHeight(64.0f);
+        auto bulletFontOptions = juce::FontOptions(semiboldTypeface).withPointHeight(48.0f);
         headerFont = juce::Font(fontOptions);
+        bulletPointFont = juce::Font(bulletFontOptions);
     }
 
 private:
@@ -93,6 +96,7 @@ private:
     juce::Rectangle<float> headerTab;
 
     juce::Font headerFont;
+    juce::Font bulletPointFont;
 
     Colors &colors;
 };

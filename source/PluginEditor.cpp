@@ -5,7 +5,9 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 {
     juce::ignoreUnused (processorRef);
 
-    addAndMakeVisible(canvas);
+    addAndMakeVisible(canvasContainer);
+    canvasContainer.setViewedComponent(&canvas, false);
+
     addAndMakeVisible(inputsTab);
     addAndMakeVisible(outputsTab);
     addAndMakeVisible(header);
@@ -40,7 +42,12 @@ void PluginEditor::resized()
     const auto bounds = getLocalBounds();
 
     const auto canvasBounds = bounds;
-    canvas.setBounds(canvasBounds);
+    //canvasContainer.setBounds(canvasBounds);
+    //canvasContainer.setCanvasBounds(canvasBounds);
+    canvasContainer.setBounds (canvasBounds);
+    canvas.setBounds (0, 0,
+                      canvasBounds.getWidth() * 2,
+                      canvasBounds.getHeight() * 2);
 
     const auto headerBounds = setInversePos(bounds, 0, 0, 0, 860);
     header.setBounds(headerBounds);
