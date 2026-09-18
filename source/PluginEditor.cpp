@@ -1,4 +1,4 @@
-#include "headers/PluginEditor.h"
+#include "PluginEditor.h"
 
 PluginEditor::PluginEditor (PluginProcessor& p)
     : AudioProcessorEditor (&p), processorRef (p)
@@ -45,7 +45,7 @@ void PluginEditor::resized()
     //canvasContainer.setBounds(canvasBounds);
     //canvasContainer.setCanvasBounds(canvasBounds);
     canvasContainer.setBounds (canvasBounds);
-    canvasContainer.setScrollOnDragMode (juce::Viewport::ScrollOnDragMode::all);
+    //canvasContainer.setScrollOnDragMode (juce::Viewport::ScrollOnDragMode::all);
     canvas.setBounds (0, 0,
                       3840,
                       2240);

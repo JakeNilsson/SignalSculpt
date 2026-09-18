@@ -1,5 +1,5 @@
 #pragma once
-#include <../../source/headers/PluginProcessor.h>
+#include <../../source/PluginProcessor.h>
 
 /* This is a helper function to run tests within the context of a plugin editor.
  *

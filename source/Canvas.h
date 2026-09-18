@@ -1,11 +1,30 @@
 #pragma once
 #include <cmath>
-
 #include "Colors.h"
+#include "modules/moduleHandler.h"
 
 class Canvas : public juce::Component {
 public:
-    explicit Canvas (Colors& colorsRef) : colors (colorsRef) {}
+    explicit Canvas (Colors& colorsRef) : colors(colorsRef),
+                                          moduleHandler(colors) {
+        moduleList.addItemList({"Wave"}, 1);
+
+        moduleList.onChange = [this] {
+            auto selectedId = moduleList.getSelectedId();
+
+            switch(selectedId) {
+                case 1 : {
+                    moduleHandler.addModuleComponent(ModuleType::Wave, lastMouseBlock.expanded(10.f, 10.f));
+                    DBG("WAVE SELECTED");
+                    break;
+                } default : {
+                    DBG("UNSELECTED");
+                }
+            }
+
+            moduleList.setSelectedId(0);
+        };
+    }
 
     void mouseMove (const juce::MouseEvent& e) override
     {
@@ -35,6 +54,28 @@ public:
         lastMouseBlock = {};
         plusVert = {};
         plusHoriz = {};
+    }
+
+    void mouseDown(const juce::MouseEvent &event) override {
+        mouseIsDown = true;
+        repaint (lastMouseBlock.getSmallestIntegerContainer());
+    }
+
+    void mouseUp(const juce::MouseEvent &event) override {
+        if (mouseDragged) {
+            mouseDragged = false;
+        } else {
+            moduleList.setBounds(event.getMouseDownX(), event.getMouseDownY(), 50, 30);
+            moduleList.showPopup();
+        }
+
+        repaint (lastMouseBlock.getSmallestIntegerContainer());
+
+        mouseIsDown = false;
+    }
+
+    void mouseDrag(const juce::MouseEvent& event) override {
+        mouseDragged = true;
     }
 
     void paint (juce::Graphics& g) override {
@@ -73,10 +114,10 @@ public:
             g.drawDashedLine (gridLines, dashLengths, 2, 2.f, 0);
         }
 
-        g.setColour(colors.getColor (ThemeColors::tabBG).withAlpha(0.25f));
+        g.setColour(mouseIsDown ? colors.getColor(ThemeColors::neutral).withAlpha(0.3f) : colors.getColor(ThemeColors::tabBG).withAlpha(0.25f));
         g.fillRoundedRectangle(lastMouseBlock, cornerRounding);
 
-        g.setColour(colors.getColor (ThemeColors::tabBG));
+        g.setColour(mouseIsDown ? colors.getColor(ThemeColors::canvasBG) : colors.getColor(ThemeColors::tabBG));
         g.drawLine (plusVert, 4);
         g.drawLine (plusHoriz, 4);
     }
@@ -87,10 +128,17 @@ private:
     float cornerRounding = 5.f;
     static constexpr float dashLengths[] = {10.f, 10.f};
 
+    bool mouseIsDown = false;
+    bool mouseDragged = false;
+
     Colors& colors;
 
     float plusOffset = 40.f;
     juce::Rectangle<float> lastMouseBlock;
     juce::Line<float> plusVert;
     juce::Line<float> plusHoriz;
+
+    juce::ComboBox moduleList;
+
+    ModuleHandler moduleHandler;
 };

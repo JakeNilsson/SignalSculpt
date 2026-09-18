@@ -16,7 +16,7 @@ int main (int argc, char* argv[])
     return result;
 }
 
-#include "../source/headers/PluginEditor.h"
+#include "../source/PluginEditor.h"
 #include "catch2/benchmark/catch_benchmark_all.hpp"
 #include "catch2/catch_test_macros.hpp"
 

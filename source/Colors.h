@@ -1,4 +1,6 @@
 #pragma once
+#include <array>
+#include <juce_gui_basics/juce_gui_basics.h>
 
 enum class ThemeColors : size_t{
     tabBG,
