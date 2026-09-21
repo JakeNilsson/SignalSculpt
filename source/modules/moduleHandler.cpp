@@ -4,16 +4,10 @@
     modules.add(module);
 }*/
 
-void ModuleHandler::addModuleComponent(ModuleType moduleType, juce::Rectangle<float> clickBlock) {
+void ModuleHandler::addModuleComponent(ModuleType moduleType) const {
     switch (moduleType) {
         case ModuleType::Wave : {
-            auto waveComponent = new WaveModuleComponent(colors);
-
-            clickBlock.expand(clickBlock.getWidth() * waveComponent->getBlockSizeX() - 1,
-                              clickBlock.getHeight() * waveComponent->getBlockSizeY() - 1);
-
-            waveComponent->setBounds(clickBlock.toNearestInt());
-            waveComponent->repaint();
+            const auto waveComponent = new WaveModuleComponent(colors);
 
             moduleComponents.add(waveComponent);
             break;

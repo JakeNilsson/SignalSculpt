@@ -5,23 +5,27 @@
 
 class Canvas : public juce::Component {
 public:
-    explicit Canvas (Colors& colorsRef) : colors(colorsRef),
-                                          moduleHandler(colors) {
+    explicit Canvas (Colors& colorsRef, juce::Viewport& canvasContainerRef) : colors(colorsRef),
+                                                  moduleHandler(colors, moduleComponents),
+                                                  canvasContainer(canvasContainerRef) {
         moduleList.addItemList({"Wave"}, 1);
 
         moduleList.onChange = [this] {
+            moduleListWasShowing = false;
             auto selectedId = moduleList.getSelectedId();
 
             switch(selectedId) {
                 case 1 : {
-                    moduleHandler.addModuleComponent(ModuleType::Wave, lastMouseBlock.expanded(10.f, 10.f));
-                    DBG("WAVE SELECTED");
+                    moduleHandler.addModuleComponent(ModuleType::Wave);
+                    const auto newChild = moduleComponents.getLast();
+                    addAndMakeVisible(newChild);
+                    newChild->setBounds(lastMouseBlockOnExit.toNearestInt());
+                    newChild->repaint();
                     break;
                 } default : {
                     DBG("UNSELECTED");
                 }
             }
-
             moduleList.setSelectedId(0);
         };
     }
@@ -51,6 +55,7 @@ public:
     void mouseExit (const juce::MouseEvent&) override
     {
         repaint (lastMouseBlock.getSmallestIntegerContainer());
+        lastMouseBlockOnExit = lastMouseBlock;
         lastMouseBlock = {};
         plusVert = {};
         plusHoriz = {};
@@ -65,8 +70,16 @@ public:
         if (mouseDragged) {
             mouseDragged = false;
         } else {
-            moduleList.setBounds(event.getMouseDownX(), event.getMouseDownY(), 50, 30);
-            moduleList.showPopup();
+            if (moduleListWasShowing) {
+                moduleList.hidePopup();
+                moduleListWasShowing = false;
+                mouseMove(event);
+            } else {
+                const auto containerMEBounds = canvasContainer.getMouseXYRelative();
+                moduleList.setBounds(containerMEBounds.getX(), containerMEBounds.getY(), 50, 30);
+                moduleList.showPopup();
+                moduleListWasShowing = true;
+            }
         }
 
         repaint (lastMouseBlock.getSmallestIntegerContainer());
@@ -135,10 +148,15 @@ private:
 
     float plusOffset = 40.f;
     juce::Rectangle<float> lastMouseBlock;
+    juce::Rectangle<float> lastMouseBlockOnExit;
     juce::Line<float> plusVert;
     juce::Line<float> plusHoriz;
 
     juce::ComboBox moduleList;
+    bool moduleListWasShowing = false;
 
+    juce::OwnedArray<ModuleComponent> moduleComponents;
     ModuleHandler moduleHandler;
+
+    juce::Viewport& canvasContainer;
 };

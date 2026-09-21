@@ -34,7 +34,7 @@ private:
     Footer footer{colors};
     InputsTab inputsTab{colors};
     OutputsTab outputsTab{colors};
-    Canvas canvas{colors};
+    Canvas canvas{colors, canvasContainer};
     //CanvasContainer canvasContainer{canvas};
     juce::Viewport canvasContainer;
 

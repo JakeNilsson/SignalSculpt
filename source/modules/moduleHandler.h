@@ -8,14 +8,16 @@ enum class ModuleType {
 
 class ModuleHandler {
 public:
-    ModuleHandler (Colors& colorsRef) : colors (colorsRef) {}
+    ModuleHandler (Colors& colorsRef, juce::OwnedArray<ModuleComponent>& moduleComponentsRef) :
+        colors (colorsRef),
+        moduleComponents (moduleComponentsRef) {}
 
     /*void addModule (Module *module);*/
-    void addModuleComponent (ModuleType moduleType, juce::Rectangle<float> clickBlock);
+    void addModuleComponent (ModuleType moduleType) const;
 
 private:
     Colors &colors;
 
     /*juce::OwnedArray<Module> modules;*/
-    juce::OwnedArray<ModuleComponent> moduleComponents;
+    juce::OwnedArray<ModuleComponent> &moduleComponents;
 };

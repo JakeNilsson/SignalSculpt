@@ -9,7 +9,8 @@ juce::String WaveModule::getName() const {
 }*/
 
 void WaveModuleComponent::paint(juce::Graphics &g) {
+    DBG("DRAW ATTEMPTED");
     const auto bounds = getLocalBounds();
-    g.setColour(colors.getColor(ThemeColors::tabBG));
+    g.setColour(colors.getColor(ThemeColors::input));
     g.fillRect(bounds);
 }
