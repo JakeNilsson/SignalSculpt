@@ -19,7 +19,13 @@ public:
                     moduleHandler.addModuleComponent(ModuleType::Wave);
                     const auto newChild = moduleComponents.getLast();
                     addAndMakeVisible(newChild);
+
+                    lastMouseBlockOnExit.expand(10.f, 10.f);
+                    lastMouseBlockOnExit.setWidth(lastMouseBlockOnExit.getWidth() * newChild->getBlockSizeX());
+                    lastMouseBlockOnExit.setHeight(lastMouseBlockOnExit.getHeight() * newChild->getBlockSizeY());
+
                     newChild->setBounds(lastMouseBlockOnExit.toNearestInt());
+                    newChild->setPaths();
                     newChild->repaint();
                     break;
                 } default : {

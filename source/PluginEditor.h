@@ -1,11 +1,11 @@
 #pragma once
 
+#include "Canvas.h"
 #include "PluginProcessor.h"
 #include "Header.h"
 #include "Footer.h"
 #include "InputsTab.h"
 #include "OutputsTab.h"
-#include "CanvasContainer.h"
 
 //==============================================================================
 class PluginEditor : public juce::AudioProcessorEditor
@@ -35,7 +35,6 @@ private:
     InputsTab inputsTab{colors};
     OutputsTab outputsTab{colors};
     Canvas canvas{colors, canvasContainer};
-    //CanvasContainer canvasContainer{canvas};
     juce::Viewport canvasContainer;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)

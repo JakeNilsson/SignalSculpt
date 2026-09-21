@@ -17,7 +17,7 @@ public:
         return colors[static_cast<size_t>(color)];
     }
 
-    void changeUIColors(ThemeColors color, const juce::Colour& newColor) {
+    void changeUIColors(ThemeColors color, const juce::Colour newColor) {
         colors[static_cast<size_t>(color)] = newColor;
     }
 
@@ -28,6 +28,6 @@ private:
         juce::Colour{0x002B2B2B},
         juce::Colour{0xFF4EB0FF},
         juce::Colour{0xFFFF964B},
-        juce::Colour{0xFFD9D9D9},
+        juce::Colour{0xFFD9D9D9}
     };
 };
