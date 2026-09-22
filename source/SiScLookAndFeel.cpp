@@ -21,31 +21,17 @@ void SiScLookAndFeel::drawComboBox(juce::Graphics &g, int width, int height, boo
 }
 
 void SiScLookAndFeel::drawRotarySlider(juce::Graphics &g, int x, int y, int width, int height, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, juce::Slider &slider) {
-    auto outline = slider.findColour (juce::Slider::rotarySliderOutlineColourId);
     auto fill    = slider.findColour (juce::Slider::rotarySliderFillColourId);
 
-    auto bounds = juce::Rectangle<int> (x, y, width, height).toFloat().reduced (10);
+    auto bounds = juce::Rectangle<int> (x, y, width, height).toFloat();
 
     auto radius = juce::jmin (bounds.getWidth(), bounds.getHeight()) / 2.0f;
     auto toAngle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
-    auto lineW = juce::jmin (8.0f, radius * 0.5f);
+    auto lineW = 3;
     auto arcRadius = radius - lineW * 0.5f;
 
-    juce::Path backgroundArc;
-    backgroundArc.addCentredArc (bounds.getCentreX(),
-                                 bounds.getCentreY(),
-                                 arcRadius,
-                                 arcRadius,
-                                 0.0f,
-                                 rotaryStartAngle,
-                                 rotaryEndAngle,
-                                 true);
-
-    g.setColour (outline);
-    g.strokePath (backgroundArc, juce::PathStrokeType (lineW, juce::PathStrokeType::curved, juce::PathStrokeType::rounded));
-
-    if (slider.isEnabled())
-    {
+    //if (slider.isEnabled())
+    //{
         juce::Path valueArc;
         valueArc.addCentredArc (bounds.getCentreX(),
                                 bounds.getCentreY(),
@@ -57,15 +43,37 @@ void SiScLookAndFeel::drawRotarySlider(juce::Graphics &g, int x, int y, int widt
                                 true);
 
         g.setColour (fill);
-        g.strokePath (valueArc, juce::PathStrokeType (lineW, juce::PathStrokeType::curved, juce::PathStrokeType::rounded));
-    }
+        g.strokePath (valueArc, juce::PathStrokeType (lineW, juce::PathStrokeType::curved, juce::PathStrokeType::square));
+    //}
 
-    auto thumbWidth = lineW * 2.0f;
-    juce::Point<float> thumbPoint (bounds.getCentreX() + arcRadius * std::cos (toAngle - juce::MathConstants<float>::halfPi),
-                             bounds.getCentreY() + arcRadius * std::sin (toAngle - juce::MathConstants<float>::halfPi));
+    auto notchBGOvershoot = 4.0f; // tweak this to taste — how far past the arc it pokes
+    auto notchOvershoot = 1.5f; // tweak this to taste — how far past the arc it pokes
+    auto notchBGRadius = arcRadius + notchBGOvershoot;
+    auto notchRadius = arcRadius + notchOvershoot;
 
-    g.setColour (slider.findColour (juce::Slider::thumbColourId));
-    g.fillEllipse (juce::Rectangle<float> (thumbWidth, thumbWidth).withCentre (thumbPoint));
+    juce::Point<float> notchBGEnd (bounds.getCentreX() + notchBGRadius * std::cos (toAngle - juce::MathConstants<float>::halfPi),
+                                  bounds.getCentreY() + notchBGRadius * std::sin (toAngle - juce::MathConstants<float>::halfPi));
+
+    juce::Path notchBG;
+    notchBG.startNewSubPath (bounds.getCentreX(), bounds.getCentreY());
+    notchBG.lineTo (notchBGEnd);
+
+    juce::Point<float> notchEnd (bounds.getCentreX() + notchRadius * std::cos (toAngle - juce::MathConstants<float>::halfPi),
+                                  bounds.getCentreY() + notchRadius * std::sin (toAngle - juce::MathConstants<float>::halfPi));
+
+    juce::Path notch;
+    notch.startNewSubPath (bounds.getCentreX(), bounds.getCentreY());
+    notch.lineTo (notchEnd);
+
+    g.setColour (colors.getColor(ThemeColors::tabBG));
+    g.strokePath(notchBG, juce::PathStrokeType(static_cast<float>(12)));
+
+    g.setColour (fill);
+    g.strokePath(notch, juce::PathStrokeType(static_cast<float>(2)));
+
+    auto jackBounds = bounds.reduced(8);
+    g.setColour (colors.getColor(ThemeColors::canvasBG));
+    g.fillEllipse(jackBounds);
 }
 
 juce::Font SiScLookAndFeel::getComboBoxFont(juce::ComboBox &) {

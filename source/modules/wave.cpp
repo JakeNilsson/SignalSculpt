@@ -49,6 +49,8 @@ void WaveModuleComponent::paint(juce::Graphics &g) {
     shapeType.setColour(juce::ComboBox::textColourId, comboBoxTextColor);
     shapeSpec.setColour(juce::ComboBox::textColourId, comboBoxTextColor);
 
+    phase.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
+
     g.setGradientFill(oscGradient);
     {
         juce::Graphics::ScopedSaveState clip (g);
