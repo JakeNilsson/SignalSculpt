@@ -42,6 +42,7 @@ public:
     }
 
     void setPaths();
+    virtual void onPathsReady() {};
 
     void drawStateButton(juce::Graphics &g, juce::Point<float> mousePos) const;
 

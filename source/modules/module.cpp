@@ -48,6 +48,8 @@ void ModuleComponent::setPaths() {
 
     auto fontOptions = juce::FontOptions(regularTypeface).withPointHeight(32.0f);
     moduleFont = juce::Font(fontOptions);
+
+    onPathsReady();
 }
 
 void ModuleComponent::drawStateButton(juce::Graphics &g, const juce::Point<float> mousePos) const {
@@ -95,7 +97,7 @@ void ModuleComponent::mouseMove(const juce::MouseEvent &event) {
     }
 }
 
-void ModuleComponent::mouseExit(const juce::MouseEvent &event) {
+void ModuleComponent::mouseExit(const juce::MouseEvent&) {
     if (mouseOver) {
         mouseOver = false;
         repaint();

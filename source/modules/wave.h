@@ -15,9 +15,13 @@ private:
 class WaveModuleComponent : public ModuleComponent {
 public:
     explicit WaveModuleComponent(Colors &colorsRef) : ModuleComponent(colorsRef, 2.f, 2.f, "Wave") {
+
     };
 
     void paint(juce::Graphics &g) override;
+
+    void onPathsReady() override;
+    void setHeaderSinPath();
 
 private:
     juce::Path headerSinPath;
