@@ -9,6 +9,7 @@ enum class ThemeColors : size_t{
     input,
     output,
     neutral,
+    visuals,
 };
 
 class Colors {
@@ -22,12 +23,13 @@ public:
     }
 
 private:
-    std::array<juce::Colour,6> colors = { // default dark theme colors
+    std::array<juce::Colour,7> colors = { // default dark theme colors
         juce::Colour{0xFF434242},
         juce::Colour{0xFF2B2B2B},
         juce::Colour{0x002B2B2B},
         juce::Colour{0xFF4EB0FF},
         juce::Colour{0xFFFF964B},
-        juce::Colour{0xFFD9D9D9}
+        juce::Colour{0xFFD9D9D9},
+        juce::Colour{0xFF00FF6A}
     };
 };

@@ -29,6 +29,7 @@ private:
     PluginProcessor& processorRef;
 
     Colors colors;
+    SiScLookAndFeel siscLookAndFeel{colors};
 
     Header header{colors};
     Footer footer{colors};

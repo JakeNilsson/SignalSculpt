@@ -5,6 +5,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 {
     juce::ignoreUnused (processorRef);
 
+    setLookAndFeel(&siscLookAndFeel);
+
     addAndMakeVisible(canvasContainer);
     canvasContainer.setViewedComponent(&canvas, false);
 
@@ -20,6 +22,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
 PluginEditor::~PluginEditor()
 {
+    setLookAndFeel(nullptr);
 }
 
 juce::Rectangle<int> PluginEditor::setInversePos(juce::Rectangle<int> parentDimensions,

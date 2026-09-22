@@ -9,7 +9,7 @@ void ModuleComponent::setPaths() {
     const auto doubleDividerWidth = dividerWidth * 2;
     const auto halfBorderWidth = borderWidth / 2;
     const auto doubleBorderWidth = borderWidth * 2;
-    headerHeight = (innerBounds.getHeight() / 6) - halfDividerWidth;
+    headerHeight = (innerBounds.getHeight() / 7) - halfDividerWidth;
 
     headerPath.startNewSubPath(innerBounds.getTopRight());
     headerPath.lineTo(innerBounds.getRight(), innerBounds.getY() + headerHeight);
@@ -48,6 +48,8 @@ void ModuleComponent::setPaths() {
 
     auto fontOptions = juce::FontOptions(regularTypeface).withPointHeight(32.0f);
     moduleFont = juce::Font(fontOptions);
+
+    visualColor = colors.getColor(ThemeColors::visuals);
 
     onPathsReady();
 }
@@ -118,9 +120,13 @@ void ModuleComponent::mouseUp(const juce::MouseEvent&) {
         if (state) {
             state = false;
             statusColor = colors.getColor(ThemeColors::canvasBG);
+            comboBoxTextColor = colors.getColor(ThemeColors::tabBG);
+            visualColor = colors.getColor(ThemeColors::tabBG);
         } else {
             state = true;
             statusColor = colors.getColor(ThemeColors::neutral);
+            comboBoxTextColor = colors.getColor(ThemeColors::neutral);
+            visualColor = colors.getColor(ThemeColors::visuals);
         }
 
         repaint();

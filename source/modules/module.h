@@ -71,6 +71,8 @@ protected:
     bool state = true; // true for on, false for off
 
     juce::Colour statusColor;
+    juce::Colour visualColor;
+    juce::Colour comboBoxTextColor;
 
     juce::Font moduleFont;
 

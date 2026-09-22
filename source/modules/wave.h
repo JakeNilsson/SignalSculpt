@@ -21,12 +21,21 @@ public:
     void paint(juce::Graphics &g) override;
 
     void onPathsReady() override;
+
     void setHeaderSinPath();
+    void setOscPath();
+
+    void setVisualGradient();
 
 private:
     juce::Path headerSinPath;
 
-    juce::Label shapeLabel {"shape", "Shape"};
+    juce::Path oscWavePath;
+    juce::Path oscWavePathClosed;
+    juce::Rectangle<float> oscGradientRect;
+    juce::ColourGradient oscGradient;
+
+    juce::Label shapeLabel {"shape", "Shape:"};
     juce::ComboBox shapeType;
     juce::ComboBox shapeSpec;
 
@@ -44,4 +53,13 @@ private:
 
     juce::Label voicesLabel {"voices", "Voices"};
     juce::Slider voices;
+
+    juce::Rectangle<float> oscBounds;
+    juce::Rectangle<float> centerBounds;
+
+    juce::Rectangle<float> IOBounds;
+    juce::Rectangle<float> IOTextBounds;
+    juce::Path IOPath;
+
+    bool prevState = true;
 };
