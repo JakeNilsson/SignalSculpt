@@ -1,6 +1,6 @@
 #pragma once
-#include "Colors.h"
-#include "SiScLookAndFeel.h"
+#include "theme/Colors.h"
+#include "theme/SiScLookAndFeel.h"
 
 class InputsTab : public juce::Component{
 public:

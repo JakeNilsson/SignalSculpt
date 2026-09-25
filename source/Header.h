@@ -1,7 +1,7 @@
 #pragma once
 #include <cmath>
-#include "Colors.h"
-#include "SiScLookAndFeel.h"
+#include "theme/Colors.h"
+#include "theme/SiScLookAndFeel.h"
 
 class Header : public juce::Component {
 public:

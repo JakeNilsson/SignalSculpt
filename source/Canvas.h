@@ -1,6 +1,6 @@
 #pragma once
 #include <cmath>
-#include "Colors.h"
+#include "theme/Colors.h"
 #include "modules/moduleHandler.h"
 
 class Canvas : public juce::Component {
@@ -29,7 +29,7 @@ public:
                     newChild->repaint();
                     break;
                 } default : {
-                    DBG("UNSELECTED");
+                    // unimplemented, may not be necessary?
                 }
             }
             moduleList.setSelectedId(0);

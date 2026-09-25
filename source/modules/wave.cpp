@@ -50,6 +50,10 @@ void WaveModuleComponent::paint(juce::Graphics &g) {
     shapeSpec.setColour(juce::ComboBox::textColourId, comboBoxTextColor);
 
     phase.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
+    freq.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
+    mix.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
+    det.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
+    voices.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
 
     g.setGradientFill(oscGradient);
     {
@@ -75,6 +79,12 @@ void WaveModuleComponent::paint(juce::Graphics &g) {
     g.setColour(colors.getColor(ThemeColors::tabBG));
     g.fillRect(IOTextBounds);
 
+    g.setColour(colors.getColor(ThemeColors::tabBG));
+    g.fillEllipse(jackBorder);
+
+    g.setColour(colors.getColor(ThemeColors::canvasBG));
+    g.fillEllipse(jackBounds);
+
     g.setColour(statusColor);
     //g.setFont(moduleFont.withPointHeight(16.f));
     g.drawText(io.getText(), IOBounds, juce::Justification::centredTop);
@@ -89,7 +99,8 @@ void WaveModuleComponent::onPathsReady() {
     auto halfCenterHeight = 12.5f;
     auto halfHeight = body.getHeight() / 2;
     auto offset = 5.f;
-    auto inset = 15.f;
+    auto inset = 10.f;
+    auto IOinset = 7.5;
 
     oscBounds.setBounds(body.getX(), body.getY(), body.getWidth(), body.getHeight());
     centerBounds.setBounds(body.getX(), body.getY(), body.getWidth(), body.getHeight());
@@ -100,7 +111,6 @@ void WaveModuleComponent::onPathsReady() {
     oscBounds.removeFromLeft(inset);
     oscBounds.removeFromRight(inset);
     oscBounds.removeFromBottom(inset / 2);
-
 
     centerBounds.removeFromTop(halfHeight - halfCenterHeight - offset);
     centerBounds.removeFromBottom(halfHeight - halfCenterHeight + offset);
@@ -149,15 +159,58 @@ void WaveModuleComponent::onPathsReady() {
     IOTextBounds.removeFromRight(85);
     IOTextBounds.removeFromLeft(85);
 
-    const auto bigRotarySize = 45;
-    const auto smallRotarySize = 22.5;
+    constexpr auto jackSize = 45.f;
+    constexpr auto jackBorderSz = 8.f;
+    constexpr auto bigRotarySize = 55.f;
+    constexpr auto smallRotarySize = 42.5f;
+
+    jackBounds.setBounds(body.getCentreX() - (jackSize / 2),
+                         body.getBottom() - jackSize - jackBorderSz,
+                         jackSize, jackSize);
+
+    jackBorder = jackBounds.expanded(jackBorderSz, jackBorderSz);
 
     addAndMakeVisible(phase);
-    phase.setSliderStyle(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag);
-    phase.setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
+    phase.setRotaryParameters(0, juce::MathConstants<float>::twoPi, false);
     phase.setBounds(
-        IOBoundsReduced.getX() + inset,
-        IOBoundsReduced.getBottom() - bigRotarySize - inset,
+        IOBoundsReduced.getX() + IOinset,
+        IOBoundsReduced.getBottom() - bigRotarySize - IOinset,
+        bigRotarySize,
+        bigRotarySize
+    );
+
+    const auto leftMidX = IOBoundsReduced.getX() + (IOBoundsReduced.getWidth() / 4);
+    addAndMakeVisible(freq);
+    freq.setSkewFactor(2.f);
+    freq.setBounds(
+        leftMidX - (inset * 0.9),
+        IOBoundsReduced.getY() + (IOinset * 1.5),
+        bigRotarySize,
+        bigRotarySize
+    );
+
+    const auto MidX = IOBoundsReduced.getX() + (IOBoundsReduced.getWidth() / 2);
+    addAndMakeVisible(mix);
+    mix.setBounds(
+        MidX - (smallRotarySize / 2),
+        IOBoundsReduced.getY() + (IOinset),
+        smallRotarySize,
+        smallRotarySize
+    );
+
+    const auto rightMidX = IOBoundsReduced.getX() + ((3 * IOBoundsReduced.getWidth()) / 4);
+    addAndMakeVisible(det);
+    det.setBounds(
+        rightMidX - inset - (bigRotarySize / 1.45),
+        IOBoundsReduced.getY() + (IOinset * 1.5),
+        bigRotarySize,
+        bigRotarySize
+    );
+
+    addAndMakeVisible(voices);
+    voices.setBounds(
+        IOBoundsReduced.getRight() - bigRotarySize - IOinset,
+        IOBoundsReduced.getBottom() - bigRotarySize - IOinset,
         bigRotarySize,
         bigRotarySize
     );

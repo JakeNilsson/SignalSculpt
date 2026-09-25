@@ -8,8 +8,9 @@ public:
     explicit SiScLookAndFeel (Colors &colorsRef) : colors(colorsRef) { };
 
     void drawComboBox(juce::Graphics &, int width, int height, bool isButtonDown, int buttonX, int buttonY, int buttonW, int buttonH, juce::ComboBox &) override;
+
     void drawRotarySlider (juce::Graphics& g, int x, int y, int width, int height, float sliderPos,
-                                           const float rotaryStartAngle, const float rotaryEndAngle, juce::Slider& slider) override;
+                                           float rotaryStartAngle, float rotaryEndAngle, juce::Slider& slider) override;
 
     juce::Font getComboBoxFont (juce::ComboBox& box) override;
 

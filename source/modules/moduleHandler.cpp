@@ -12,8 +12,8 @@ void ModuleHandler::addModuleComponent(ModuleType moduleType) const {
             moduleComponents.add(waveComponent);
             break;
         }
-        default : {
-            DBG("UNSELECTED");
+        default : { // unimplemented, is it necessary?
+
         }
     }
 }

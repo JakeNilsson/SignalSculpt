@@ -1,6 +1,6 @@
 #pragma once
 #include "wave.h"
-#include "../Colors.h"
+#include "../theme/Colors.h"
 
 enum class ModuleType {
     Wave,
