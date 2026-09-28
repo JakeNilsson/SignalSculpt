@@ -1,5 +1,6 @@
 #pragma once
 #include "module.h"
+#include "../theme/Jack.h"
 #include "../theme/Colors.h"
 #include "../theme/SiScSlider.h"
 
@@ -17,11 +18,13 @@ class WaveModuleComponent : public ModuleComponent {
 public:
     explicit WaveModuleComponent(Colors &colorsRef) :
         ModuleComponent(colorsRef, 2.f, 2.f, "Wave"),
+        outJack(colorsRef, "waveOut", signal),
 
         phase(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
             0,
             juce::MathConstants<double>::twoPi,
             0,
+            colorsRef,
             0,
             {0, juce::MathConstants<double>::halfPi, juce::MathConstants<double>::pi, ((3 * juce::MathConstants<double>::pi) / 2)},
             IndicatorType::circle),
@@ -30,6 +33,7 @@ public:
             0,
             20000,
             261.63, // middle C
+            colorsRef,
             0,
             {},
             IndicatorType::none),
@@ -38,6 +42,7 @@ public:
             0,
             100,
             100,
+            colorsRef,
             0,
             {},
             IndicatorType::none),
@@ -46,6 +51,7 @@ public:
             0,
             100,
             20,
+            colorsRef,
             0,
             {},
             IndicatorType::none),
@@ -54,6 +60,7 @@ public:
             1,
             16,
             1,
+            colorsRef,
             1,
             {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
             IndicatorType::line)
@@ -80,22 +87,27 @@ private:
     juce::ComboBox shapeType;
     juce::ComboBox shapeSpec;
 
-    juce::Rectangle<float> jackBounds;
+    OutJack outJack;
     juce::Rectangle<float> jackBorder;
 
     juce::Label phaseLabel {"phase", "Phase"};
+    juce::Rectangle<float> phaseLabelBounds;
     SiScSlider phase;
 
     juce::Label freqLabel {"frequency", "Freq"};
+    juce::Rectangle<float> freqLabelBounds;
     SiScSlider freq; // frequency
 
     juce::Label mixLabel {"mix", "Mix"};
+    juce::Rectangle<float> mixLabelBounds;
     SiScSlider mix;
 
     juce::Label detLabel {"detune", "Det"};
+    juce::Rectangle<float> detLabelBounds;
     SiScSlider det;  // detune
 
     juce::Label voicesLabel {"voices", "Voices"};
+    juce::Rectangle<float> voicesLabelBounds;
     SiScSlider voices;
 
     juce::Rectangle<float> oscBounds;
@@ -106,4 +118,6 @@ private:
     juce::Path IOPath;
 
     bool prevState = true;
+
+    float signal = 0;
 };

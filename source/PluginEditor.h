@@ -38,5 +38,7 @@ private:
     Canvas canvas{colors, canvasContainer};
     juce::Viewport canvasContainer;
 
+    juce::OwnedArray<juce::Path> connections;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

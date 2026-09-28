@@ -165,4 +165,6 @@ private:
     ModuleHandler moduleHandler;
 
     juce::Viewport& canvasContainer;
+
+    juce::OwnedArray<juce::Path> connections;
 };

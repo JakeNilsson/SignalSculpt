@@ -4,7 +4,9 @@
 
 class OutputsTab : public juce::Component{
 public:
-    explicit OutputsTab(Colors &colorsRef) : colors(colorsRef){}
+    explicit OutputsTab(Colors &colorsRef) :
+    colors(colorsRef),
+    audOut(colorsRef, "AUD"){}
 
     void paint(juce::Graphics& g) override {
         g.setColour(colors.getColor(ThemeColors::output));
@@ -29,6 +31,10 @@ public:
                     false);
 
         g.restoreState();
+
+        g.setColour(colors.getColor(ThemeColors::output));
+        g.setFont(outputsFont.withHeight(26.f));
+        g.drawText(audOut.getName(), audOutLabelBounds.toNearestInt(), juce::Justification::centred);
     };
 
     bool hitTest (int x, int y) override
@@ -57,6 +63,13 @@ public:
 
         outputsBG = bounds;
         outputsBG.removeFromLeft((3.f * width) / 7.f);
+
+        audOutBounds.setBounds(outputsBG.getX(), 100, outputsBG.getWidth(), outputsBG.getWidth());
+        audOutBounds.reduce(8, 8);
+        addAndMakeVisible(audOut);
+        audOut.setBounds(audOutBounds.toNearestInt());
+
+        audOutLabelBounds.setBounds(outputsBG.getX(), 80, outputsBG.getWidth(), 20);
 
         outputsTab.setBounds(0, height - tabHeight, width, tabHeight);
         outputsTab.removeFromRight((4.f * width) / 7.f);
@@ -94,4 +107,8 @@ private:
     juce::Font outputsFont;
 
     Colors &colors;
+
+    InJack audOut;
+    juce::Rectangle<float> audOutBounds;
+    juce::Rectangle<float> audOutLabelBounds;
 };

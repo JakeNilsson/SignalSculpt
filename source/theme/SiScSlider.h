@@ -1,6 +1,8 @@
 #pragma once
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <optional>
+#include "Jack.h"
+#include "Colors.h"
 
 enum class IndicatorType : size_t {
     none,
@@ -14,6 +16,7 @@ public:
         float startValue,
         float endValue,
         float defaultValue,
+        Colors &colorsRef,
         float step = 0,
         std::initializer_list<double> snapPoints = {},
         IndicatorType indicatorType = IndicatorType::none);
@@ -24,6 +27,7 @@ public:
     [[nodiscard]] std::optional<double> getLatchedValue() const;
     [[nodiscard]] IndicatorType getIndicatorType() const;
 
+    InJack inJack;
 private:
     std::vector<double> snapValues;
     IndicatorType indicatorType;

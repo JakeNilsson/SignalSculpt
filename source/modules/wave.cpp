@@ -82,12 +82,14 @@ void WaveModuleComponent::paint(juce::Graphics &g) {
     g.setColour(colors.getColor(ThemeColors::tabBG));
     g.fillEllipse(jackBorder);
 
-    g.setColour(colors.getColor(ThemeColors::canvasBG));
-    g.fillEllipse(jackBounds);
-
     g.setColour(statusColor);
-    //g.setFont(moduleFont.withPointHeight(16.f));
     g.drawText(io.getText(), IOBounds, juce::Justification::centredTop);
+
+    g.drawText(phaseLabel.getText(), phaseLabelBounds, juce::Justification::centred);
+    g.drawText(freqLabel.getText(), freqLabelBounds, juce::Justification::centred);
+    g.drawText(mixLabel.getText(), mixLabelBounds, juce::Justification::centred);
+    g.drawText(detLabel.getText(), detLabelBounds, juce::Justification::centred);
+    g.drawText(voicesLabel.getText(), voicesLabelBounds, juce::Justification::centred);
 }
 
 void WaveModuleComponent::onPathsReady() {
@@ -161,63 +163,64 @@ void WaveModuleComponent::onPathsReady() {
 
     constexpr auto jackSize = 45.f;
     constexpr auto jackBorderSz = 8.f;
-    constexpr auto bigRotarySize = 55.f;
-    constexpr auto smallRotarySize = 42.5f;
+    constexpr auto bigRotarySize = 50.f;
+    constexpr auto smallRotarySize = 40.5f;
 
-    const auto leftLineX = IOBoundsReduced.getX() + inset + (bigRotarySize / 2);
-    const auto centerLineX = IOBoundsReduced.getCentreX();
-    const auto rightLineX = IOBoundsReduced.getRight() - inset - (bigRotarySize / 2);
+    const auto leftKnobX = IOBoundsReduced.getX() + inset + (bigRotarySize / 2);
+    const auto centerKnobX = IOBoundsReduced.getCentreX();
+    const auto rightKnobX = IOBoundsReduced.getRight() - inset - (bigRotarySize / 2);
 
-    const auto leftCenterLineX = ((centerLineX - leftLineX) / 2) + leftLineX + (inset / 3);
-    const auto rightCenterLineX = ((rightLineX - centerLineX) / 2) + centerLineX - (inset / 3);
+    const auto leftCenterKnobX = ((centerKnobX - leftKnobX) / 2) + leftKnobX + (inset / 3);
+    const auto rightCenterKnobX = ((rightKnobX - centerKnobX) / 2) + centerKnobX - (inset / 3);
 
-    jackBounds.setBounds(body.getCentreX() - (jackSize / 2),
+    const auto lowerKnobY = IOBoundsReduced.getBottom() - bigRotarySize - IOinset;
+    const auto middleKnobY = IOBoundsReduced.getY() + (IOinset * 1.4);
+    const auto upperKnobY = IOBoundsReduced.getY() + (IOinset * 0.5);
+
+    addAndMakeVisible(outJack);
+    outJack.setBounds(body.getCentreX() - (jackSize / 2),
                          body.getBottom() - jackSize - jackBorderSz,
                          jackSize, jackSize);
 
-    jackBorder = jackBounds.expanded(jackBorderSz, jackBorderSz);
+    jackBorder = outJack.getBounds().toFloat().expanded(jackBorderSz, jackBorderSz);
 
     addAndMakeVisible(phase);
+    addAndMakeVisible(phaseLabel);
     phase.setRotaryParameters(0, juce::MathConstants<float>::twoPi, false);
-    phase.setBounds(
-        leftLineX - (bigRotarySize / 2),
-        IOBoundsReduced.getBottom() - bigRotarySize - IOinset,
-        bigRotarySize,
-        bigRotarySize
-    );
+    phase.setBounds(leftKnobX - (bigRotarySize / 2), lowerKnobY, bigRotarySize, bigRotarySize);
+    phaseLabelBounds.setBounds(leftKnobX - (bigRotarySize / 2),
+                         lowerKnobY - inset - 1,
+                         bigRotarySize,
+                         0);
 
     addAndMakeVisible(freq);
     freq.setSkewFactor(2.f);
-    freq.setBounds(
-        leftCenterLineX - (bigRotarySize / 2),
-        IOBoundsReduced.getY() + (IOinset * 1.5),
-        bigRotarySize,
-        bigRotarySize
-    );
+    freq.setBounds(leftCenterKnobX - (bigRotarySize / 2), middleKnobY, bigRotarySize, bigRotarySize);
+    freqLabelBounds.setBounds(leftCenterKnobX - (bigRotarySize / 2),
+                         middleKnobY + bigRotarySize - 7,
+                         bigRotarySize,
+                         15);
 
     addAndMakeVisible(mix);
-    mix.setBounds(
-        centerLineX - (smallRotarySize / 2),
-        IOBoundsReduced.getY() + (IOinset),
-        smallRotarySize,
-        smallRotarySize
-    );
+    mix.setBounds(centerKnobX - (smallRotarySize / 2), upperKnobY, smallRotarySize, smallRotarySize);
+    mixLabelBounds.setBounds(centerKnobX - (smallRotarySize / 2),
+                         upperKnobY + smallRotarySize - 9,
+                         smallRotarySize,
+                         16);
 
     addAndMakeVisible(det);
-    det.setBounds(
-        rightCenterLineX - (bigRotarySize / 2),
-        IOBoundsReduced.getY() + (IOinset * 1.5),
-        bigRotarySize,
-        bigRotarySize
-    );
+    det.setBounds(rightCenterKnobX - (bigRotarySize / 2), middleKnobY, bigRotarySize, bigRotarySize);
+    detLabelBounds.setBounds(rightCenterKnobX - (bigRotarySize / 2),
+                         middleKnobY + bigRotarySize - 7,
+                         bigRotarySize,
+                         15);
 
     addAndMakeVisible(voices);
-    voices.setBounds(
-        rightLineX - (bigRotarySize / 2),
-        IOBoundsReduced.getBottom() - bigRotarySize - IOinset,
-        bigRotarySize,
-        bigRotarySize
-    );
+    voices.setBounds(rightKnobX - (bigRotarySize / 2), lowerKnobY, bigRotarySize, bigRotarySize);
+    voicesLabelBounds.setBounds(rightKnobX - (bigRotarySize / 2),
+                         lowerKnobY - inset - 1,
+                         bigRotarySize,
+                         0);
 
     setVisualGradient();
 

@@ -1,12 +1,13 @@
 #include "SiScSlider.h"
 
-SiScSlider::SiScSlider(juce::Slider::SliderStyle sliderStyle, float startValue, float endValue, float defaultValue, float step, std::initializer_list<double> snapPoints, IndicatorType indicatorType) : snapValues(snapPoints), indicatorType(indicatorType) {
+SiScSlider::SiScSlider(juce::Slider::SliderStyle sliderStyle, float startValue, float endValue, float defaultValue, Colors &colorsRef, float step, std::initializer_list<double> snapPoints, IndicatorType indicatorType) : inJack(colorsRef, "sliderIn"), // ayo pause ????
+    snapValues(snapPoints), indicatorType(indicatorType) {
     setSliderStyle(sliderStyle);
     setRange(startValue, endValue, step);
     setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
     setValue(defaultValue);
 
-    for (const auto& point : snapPoints) {
+    for (const auto &point: snapPoints) {
         if (defaultValue == point) {
             latchedValue = point;
         }

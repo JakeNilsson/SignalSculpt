@@ -90,11 +90,13 @@ void SiScLookAndFeel::drawRotarySlider(juce::Graphics &g, int x, int y, int widt
     g.fillEllipse(tabCircleBounds);
 
     auto jackBounds = bounds.reduced(5);
-    g.setColour (colors.getColor(ThemeColors::canvasBG));
-    g.fillEllipse(jackBounds);
 
     if (auto* siScSlider = dynamic_cast<SiScSlider*> (&slider))
     {
+        siScSlider->addAndMakeVisible(siScSlider->inJack);
+        siScSlider->inJack.setBounds(jackBounds.toNearestInt());
+        siScSlider->inJack.setInterceptsMouseClicks(false, false);
+
         const auto snapValues= siScSlider->getSnapValues();
         const auto indicatorType = siScSlider->getIndicatorType();
         const auto latchedValue = siScSlider->getLatchedValue();
