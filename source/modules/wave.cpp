@@ -168,8 +168,8 @@ void WaveModuleComponent::onPathsReady() {
     const auto centerLineX = IOBoundsReduced.getCentreX();
     const auto rightLineX = IOBoundsReduced.getRight() - inset - (bigRotarySize / 2);
 
-    const auto leftCenterLineX = ((centerLineX - leftLineX) / 2) + leftLineX;
-    const auto rightCenterLineX = ((rightLineX - centerLineX) / 2) + centerLineX;
+    const auto leftCenterLineX = ((centerLineX - leftLineX) / 2) + leftLineX + (inset / 3);
+    const auto rightCenterLineX = ((rightLineX - centerLineX) / 2) + centerLineX - (inset / 3);
 
     jackBounds.setBounds(body.getCentreX() - (jackSize / 2),
                          body.getBottom() - jackSize - jackBorderSz,
