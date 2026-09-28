@@ -164,6 +164,13 @@ void WaveModuleComponent::onPathsReady() {
     constexpr auto bigRotarySize = 55.f;
     constexpr auto smallRotarySize = 42.5f;
 
+    const auto leftLineX = IOBoundsReduced.getX() + inset + (bigRotarySize / 2);
+    const auto centerLineX = IOBoundsReduced.getCentreX();
+    const auto rightLineX = IOBoundsReduced.getRight() - inset - (bigRotarySize / 2);
+
+    const auto leftCenterLineX = ((centerLineX - leftLineX) / 2) + leftLineX;
+    const auto rightCenterLineX = ((rightLineX - centerLineX) / 2) + centerLineX;
+
     jackBounds.setBounds(body.getCentreX() - (jackSize / 2),
                          body.getBottom() - jackSize - jackBorderSz,
                          jackSize, jackSize);
@@ -173,35 +180,32 @@ void WaveModuleComponent::onPathsReady() {
     addAndMakeVisible(phase);
     phase.setRotaryParameters(0, juce::MathConstants<float>::twoPi, false);
     phase.setBounds(
-        IOBoundsReduced.getX() + IOinset,
+        leftLineX - (bigRotarySize / 2),
         IOBoundsReduced.getBottom() - bigRotarySize - IOinset,
         bigRotarySize,
         bigRotarySize
     );
 
-    const auto leftMidX = IOBoundsReduced.getX() + (IOBoundsReduced.getWidth() / 4);
     addAndMakeVisible(freq);
     freq.setSkewFactor(2.f);
     freq.setBounds(
-        leftMidX - (inset * 0.9),
+        leftCenterLineX - (bigRotarySize / 2),
         IOBoundsReduced.getY() + (IOinset * 1.5),
         bigRotarySize,
         bigRotarySize
     );
 
-    const auto MidX = IOBoundsReduced.getX() + (IOBoundsReduced.getWidth() / 2);
     addAndMakeVisible(mix);
     mix.setBounds(
-        MidX - (smallRotarySize / 2),
+        centerLineX - (smallRotarySize / 2),
         IOBoundsReduced.getY() + (IOinset),
         smallRotarySize,
         smallRotarySize
     );
 
-    const auto rightMidX = IOBoundsReduced.getX() + ((3 * IOBoundsReduced.getWidth()) / 4);
     addAndMakeVisible(det);
     det.setBounds(
-        rightMidX - inset - (bigRotarySize / 1.45),
+        rightCenterLineX - (bigRotarySize / 2),
         IOBoundsReduced.getY() + (IOinset * 1.5),
         bigRotarySize,
         bigRotarySize
@@ -209,7 +213,7 @@ void WaveModuleComponent::onPathsReady() {
 
     addAndMakeVisible(voices);
     voices.setBounds(
-        IOBoundsReduced.getRight() - bigRotarySize - IOinset,
+        rightLineX - (bigRotarySize / 2),
         IOBoundsReduced.getBottom() - bigRotarySize - IOinset,
         bigRotarySize,
         bigRotarySize
