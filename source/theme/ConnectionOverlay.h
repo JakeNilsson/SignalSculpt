@@ -31,12 +31,20 @@ public:
     void cancelConnection();
     void endConnection(InJack& inJack, bool isInCanvas);
 
+    juce::Array<InJack*>& getInJacks() {
+        return inJacks;
+    }
+
+    void addInJacks(const juce::Array<InJack*>& newInJacks) {
+        inJacks.addArray(newInJacks);
+    }
+
 private:
     bool isDragging = false;
     float pointSize = 8;
     Connection liveConnection;
-    juce::OwnedArray<Connection> connections;
-    juce::OwnedArray<InJack*> inJacks;
+    std::vector<Connection> connections;
+    juce::Array<InJack*> inJacks;
     Colors& colors;
     juce::Viewport& canvasContainer;
 };

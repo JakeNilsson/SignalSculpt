@@ -54,6 +54,7 @@ public:
     void mouseDown(const juce::MouseEvent &event) override;
     void mouseUp(const juce::MouseEvent &event) override;
 
+    virtual juce::Array<InJack*> getInJacks() = 0;
     OutJack& getOutJack();
 
 protected:

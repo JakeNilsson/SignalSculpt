@@ -272,3 +272,15 @@ void WaveModuleComponent::setVisualGradient() {
 
     oscGradient.addColour(0.5f, juce::Colour(colors.getColor(ThemeColors::canvasBG)));
 }
+
+juce::Array<InJack*> WaveModuleComponent::getInJacks() {
+    juce::Array<InJack*> inJacks;
+
+    inJacks.add(&phase.getInJack());
+    inJacks.add(&freq.getInJack());
+    inJacks.add(&mix.getInJack());
+    inJacks.add(&det.getInJack());
+    inJacks.add(&voices.getInJack());
+
+    return inJacks;
+}

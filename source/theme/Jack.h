@@ -24,12 +24,15 @@ class InJack : public Jack {
 public:
     InJack(Colors &colorsRef, const juce::String &name) : Jack(colorsRef, name) {}
 
+    void paint(juce::Graphics &g) override;
+
     void setConnecting (const bool shouldHighlight) {
         if (isConnecting != shouldHighlight) { isConnecting = shouldHighlight; repaint(); }
     }
-    void setHovered (const bool shouldHover) {
+    void setHovering (const bool shouldHover) {
         if (isHovering != shouldHover) { isHovering = shouldHover; repaint(); }
     }
+    [[nodiscard]] bool getHovering () const { return isHovering; }
 
 private:
     juce::OwnedArray<OutJack *> connections;

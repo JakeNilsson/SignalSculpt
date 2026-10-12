@@ -35,7 +35,8 @@ public:
                     newChild->setPaths();
                     newChild->repaint();
 
-                    newChild->getOutJack().onDragStart = [this] (OutJack& outJack, const juce::MouseEvent&) {
+                    newChild->getOutJack().onDragStart = [this, newChild] (OutJack& outJack, const juce::MouseEvent&) {
+                        overlay.addInJacks(newChild->getInJacks());
                         overlay.beginConnection (outJack, true);
                     };
 

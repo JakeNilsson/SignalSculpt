@@ -4,9 +4,10 @@
 
 class OutputsTab : public juce::Component{
 public:
-    explicit OutputsTab(Colors &colorsRef) :
+    explicit OutputsTab(Colors &colorsRef, ConnectionOverlay& overlayRef) :
     colors(colorsRef),
-    audOut(colorsRef, "AUD"){}
+    audOut(colorsRef, "AUD"),
+    overlay(overlayRef) {}
 
     void paint(juce::Graphics& g) override {
         g.setColour(colors.getColor(ThemeColors::output));
@@ -95,6 +96,8 @@ public:
 
         auto fontOptions = juce::FontOptions(semiboldTypeface).withPointHeight(48.0f);
         outputsFont = juce::Font(fontOptions);
+
+        overlay.addInJacks(&audOut); // MOVE THIS. this is actually a terrible place to put it long-term, but it works for now
     }
 
 private:
@@ -111,4 +114,6 @@ private:
     InJack audOut;
     juce::Rectangle<float> audOutBounds;
     juce::Rectangle<float> audOutLabelBounds;
+
+    ConnectionOverlay &overlay;
 };

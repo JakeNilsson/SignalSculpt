@@ -74,6 +74,8 @@ public:
 
     void setVisualGradient();
 
+    juce::Array<InJack*> getInJacks() override;
+
 private:
     juce::Path headerSinPath;
 

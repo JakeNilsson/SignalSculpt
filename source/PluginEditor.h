@@ -35,7 +35,7 @@ private:
     Header header{colors};
     Footer footer{colors};
     InputsTab inputsTab{colors};
-    OutputsTab outputsTab{colors};
+    OutputsTab outputsTab{colors, connectionOverlay};
     Canvas canvas{colors, canvasContainer, *this, connectionOverlay};
     juce::Viewport canvasContainer;
 

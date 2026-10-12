@@ -26,6 +26,7 @@ public:
     [[nodiscard]] std::vector<double> getSnapValues() const;
     [[nodiscard]] std::optional<double> getLatchedValue() const;
     [[nodiscard]] IndicatorType getIndicatorType() const;
+    [[nodiscard]] InJack& getInJack();
 
     InJack inJack;
 private:

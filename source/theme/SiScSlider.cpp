@@ -79,3 +79,7 @@ std::optional<double> SiScSlider::getLatchedValue() const {
 IndicatorType SiScSlider::getIndicatorType() const {
     return indicatorType;
 }
+
+InJack& SiScSlider::getInJack() {
+    return inJack;
+}
