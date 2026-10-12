@@ -1,5 +1,6 @@
 #pragma once
 #include "../theme/Colors.h"
+#include "../theme/Jack.h"
 
 /*class Module {
 public:
@@ -17,8 +18,9 @@ public:
                              const juce::String& name)
                           :  colors(colorsRef),
                              name(name, name),
+                             outJack(colorsRef, "moduleOut", signal),
                              blockSizeX(blockSizeX),
-                             blockSizeY(blockSizeY) {
+                             blockSizeY(blockSizeY){
         statusColor = colors.getColor(ThemeColors::neutral);
     }
 
@@ -52,6 +54,8 @@ public:
     void mouseDown(const juce::MouseEvent &event) override;
     void mouseUp(const juce::MouseEvent &event) override;
 
+    OutJack& getOutJack();
+
 protected:
     Colors &colors;
 
@@ -75,6 +79,9 @@ protected:
     juce::Colour comboBoxTextColor;
 
     juce::Font moduleFont;
+
+    OutJack outJack;
+    float signal = 0;
 
 private:
     const float blockSizeX;

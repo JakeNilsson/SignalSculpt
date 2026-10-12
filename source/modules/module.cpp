@@ -132,3 +132,7 @@ void ModuleComponent::mouseUp(const juce::MouseEvent&) {
         repaint();
     }
 }
+
+OutJack& ModuleComponent::getOutJack() {
+    return outJack;
+}

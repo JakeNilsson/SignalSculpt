@@ -18,7 +18,6 @@ class WaveModuleComponent : public ModuleComponent {
 public:
     explicit WaveModuleComponent(Colors &colorsRef) :
         ModuleComponent(colorsRef, 2.f, 2.f, "Wave"),
-        outJack(colorsRef, "waveOut", signal),
 
         phase(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
             0,
@@ -87,7 +86,6 @@ private:
     juce::ComboBox shapeType;
     juce::ComboBox shapeSpec;
 
-    OutJack outJack;
     juce::Rectangle<float> jackBorder;
 
     juce::Label phaseLabel {"phase", "Phase"};
@@ -118,6 +116,4 @@ private:
     juce::Path IOPath;
 
     bool prevState = true;
-
-    float signal = 0;
 };

@@ -2,12 +2,19 @@
 #include <cmath>
 #include "theme/Colors.h"
 #include "modules/moduleHandler.h"
+#include "theme/ConnectionOverlay.h"
+#include "PluginProcessor.h"
 
 class Canvas : public juce::Component {
 public:
-    explicit Canvas (Colors& colorsRef, juce::Viewport& canvasContainerRef) : colors(colorsRef),
-                                                  moduleHandler(colors, moduleComponents),
-                                                  canvasContainer(canvasContainerRef) {
+    explicit Canvas (Colors& colorsRef,
+        juce::Viewport& canvasContainerRef,
+        juce::AudioProcessorEditor& editorRef,
+        ConnectionOverlay& overlayRef) : colors(colorsRef),
+                                         moduleHandler(colors, moduleComponents),
+                                         canvasContainer(canvasContainerRef),
+                                         editor(editorRef),
+                                         overlay(overlayRef) {
         moduleList.addItemList({"Wave"}, 1);
 
         moduleList.onChange = [this] {
@@ -27,6 +34,19 @@ public:
                     newChild->setBounds(lastMouseBlockOnExit.toNearestInt());
                     newChild->setPaths();
                     newChild->repaint();
+
+                    newChild->getOutJack().onDragStart = [this] (OutJack& outJack, const juce::MouseEvent&) {
+                        overlay.beginConnection (outJack, true);
+                    };
+
+                    newChild->getOutJack().onDrag = [this] (OutJack& outJack, const juce::Point<float> mousePos) {
+                        overlay.updateConnection (mousePos);
+                    };
+
+                    newChild->getOutJack().onDragEnd = [this] (OutJack& outJack, const juce::MouseEvent&) {
+                        overlay.cancelConnection ();
+                    };
+
                     break;
                 } default : {
                     // unimplemented, may not be necessary?
@@ -165,6 +185,8 @@ private:
     ModuleHandler moduleHandler;
 
     juce::Viewport& canvasContainer;
+    juce::AudioProcessorEditor& editor;
+    ConnectionOverlay& overlay;
 
     juce::OwnedArray<juce::Path> connections;
 };

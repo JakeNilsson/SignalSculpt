@@ -15,6 +15,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     addAndMakeVisible(header);
     addAndMakeVisible(footer);
 
+    addAndMakeVisible(connectionOverlay);
+
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (1920, 1080);
@@ -44,11 +46,12 @@ void PluginEditor::resized()
 {
     const auto bounds = getLocalBounds();
 
-    const auto canvasBounds = bounds;
-    //canvasContainer.setBounds(canvasBounds);
-    //canvasContainer.setCanvasBounds(canvasBounds);
-    canvasContainer.setBounds (canvasBounds);
+    connectionOverlay.setBounds (bounds);
+    connectionOverlay.setInterceptsMouseClicks(false, false);
+
+    canvasContainer.setBounds (bounds);
     //canvasContainer.setScrollOnDragMode (juce::Viewport::ScrollOnDragMode::all);
+
     canvas.setBounds (0, 0,
                       3840,
                       2240);

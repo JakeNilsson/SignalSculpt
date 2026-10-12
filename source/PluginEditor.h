@@ -6,6 +6,7 @@
 #include "Footer.h"
 #include "InputsTab.h"
 #include "OutputsTab.h"
+#include "theme/ConnectionOverlay.h"
 
 //==============================================================================
 class PluginEditor : public juce::AudioProcessorEditor
@@ -35,8 +36,10 @@ private:
     Footer footer{colors};
     InputsTab inputsTab{colors};
     OutputsTab outputsTab{colors};
-    Canvas canvas{colors, canvasContainer};
+    Canvas canvas{colors, canvasContainer, *this, connectionOverlay};
     juce::Viewport canvasContainer;
+
+    ConnectionOverlay connectionOverlay{colors, canvasContainer};
 
     juce::OwnedArray<juce::Path> connections;
 
