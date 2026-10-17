@@ -2,14 +2,6 @@
 #include "../theme/Colors.h"
 #include "../theme/Jack.h"
 
-/*class Module {
-public:
-    virtual ~Module() = default;
-
-    virtual void process (juce::AudioBuffer<float>& buffer) = 0;
-    [[nodiscard]] virtual juce::String getName() const = 0;
-};*/
-
 class ModuleComponent : public juce::Component {
 public:
     explicit ModuleComponent(Colors &colorsRef,

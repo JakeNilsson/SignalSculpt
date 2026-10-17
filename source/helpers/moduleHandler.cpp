@@ -1,4 +1,4 @@
-#include "moduleHandler.h"
+#include "../helpers/moduleHandler.h"
 
 /*void ModuleHandler::addModule(Module *module) {
     modules.add(module);

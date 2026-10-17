@@ -1,7 +1,7 @@
 #pragma once
 #include <cmath>
 #include "theme/Colors.h"
-#include "modules/moduleHandler.h"
+#include "helpers/moduleHandler.h"
 #include "theme/ConnectionOverlay.h"
 #include "PluginProcessor.h"
 

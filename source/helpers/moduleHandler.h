@@ -1,5 +1,5 @@
 #pragma once
-#include "wave.h"
+#include "../modules/wave.h"
 #include "../theme/Colors.h"
 
 enum class ModuleType {
