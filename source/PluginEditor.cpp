@@ -20,6 +20,8 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (1920, 1080);
+
+    canvas.onCreateDspModule = [this] (ModuleType type) {return processorRef.addModule(type);};
 }
 
 PluginEditor::~PluginEditor()

@@ -19,13 +19,16 @@ public:
 
         moduleList.onChange = [this] {
             moduleListWasShowing = false;
-            auto selectedId = moduleList.getSelectedId();
 
-            switch(selectedId) {
+            switch(auto selectedId = moduleList.getSelectedId()) {
                 case 1 : {
                     moduleHandler.addModuleComponent(ModuleType::Wave);
                     const auto newChild = moduleComponents.getLast();
                     addAndMakeVisible(newChild);
+
+                    if (onCreateDspModule) {
+                        newChild->setModuleID(onCreateDspModule(ModuleType::Wave));
+                    }
 
                     lastMouseBlockOnExit.expand(10.f, 10.f);
                     lastMouseBlockOnExit.setWidth(lastMouseBlockOnExit.getWidth() * newChild->getBlockSizeX());
@@ -161,6 +164,9 @@ public:
         g.drawLine (plusVert, 4);
         g.drawLine (plusHoriz, 4);
     }
+
+    std::function<int (ModuleType)> onCreateDspModule;   // returns the new module's ID
+    std::function<void (int)>       onRemoveDspModule;
 
 private:
     float gridSizePx = 160.f;

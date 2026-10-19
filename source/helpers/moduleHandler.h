@@ -1,10 +1,7 @@
 #pragma once
 #include "../modules/wave.h"
 #include "../theme/Colors.h"
-
-enum class ModuleType {
-    Wave,
-};
+#include "moduleIDs.h"
 
 class ModuleHandler {
 public:

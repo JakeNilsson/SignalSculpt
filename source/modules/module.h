@@ -49,6 +49,14 @@ public:
     virtual juce::Array<InJack*> getInJacks() = 0;
     OutJack& getOutJack();
 
+    void setModuleID(const int newModuleID) {
+        moduleID = newModuleID;
+    }
+
+    [[nodiscard]] int getModuleID() const {
+        return moduleID;
+    }
+
 protected:
     Colors &colors;
 
@@ -77,6 +85,8 @@ protected:
     float signal = 0;
 
 private:
+    int moduleID;
+
     const float blockSizeX;
     const float blockSizeY;
 

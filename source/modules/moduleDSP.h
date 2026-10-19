@@ -11,6 +11,7 @@ public:
     virtual ~ModuleDSP() = default;
 
     ModuleDSP (const ModuleDSP&) = delete;
+
     ModuleDSP& operator= (const ModuleDSP&) = delete;
 
     void prepare(const double newSampleRate) {
@@ -36,6 +37,14 @@ public:
     }
 
     virtual void tick() noexcept = 0;
+
+    [[nodiscard]] int getModuleID() const {
+        return moduleID;
+    }
+
+    void setModuleID(const int newModuleID) noexcept {
+        moduleID = newModuleID;
+    }
 
 protected:
     ModuleDSP(const int numInputs, const int numOutputs) :
@@ -69,4 +78,5 @@ private:
     std::vector<Frame> outputs;
 
     double sampleRate = 44100.0;
+    int moduleID = 0;
 };

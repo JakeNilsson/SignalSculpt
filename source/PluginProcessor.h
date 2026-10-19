@@ -1,7 +1,8 @@
 #pragma once
 
 #include <juce_audio_processors/juce_audio_processors.h>
-#include "./modules/module.h"
+#include "helpers/SignalGraph.h"
+#include "helpers/moduleIDs.h"
 
 #if (MSVC)
 #include "ipps.h"
@@ -39,8 +40,10 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    int addModule(ModuleType moduleType);
+
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)
 
-    juce::OwnedArray<ModuleDSP> ConnectedDSPModules;
+    SignalGraph signalGraph;
 };

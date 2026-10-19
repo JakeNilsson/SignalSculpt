@@ -4,16 +4,6 @@
 #include "../theme/Colors.h"
 #include "../theme/SiScSlider.h"
 
-/*class WaveModule : public Module {
-public:
-    void process (juce::AudioBuffer<float>& buffer) override;
-
-    [[nodiscard]] juce::String getName() const override;
-
-private:
-    juce::String name{"Wave"};
-};*/
-
 class WaveModuleComponent : public ModuleComponent {
 public:
     explicit WaveModuleComponent(Colors &colorsRef) :
