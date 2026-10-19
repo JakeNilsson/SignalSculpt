@@ -57,6 +57,8 @@ public:
         return moduleID;
     }
 
+    virtual void setJackIDs(int ID) = 0;
+
 protected:
     Colors &colors;
 

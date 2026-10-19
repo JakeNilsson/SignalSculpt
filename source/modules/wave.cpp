@@ -284,3 +284,13 @@ juce::Array<InJack*> WaveModuleComponent::getInJacks() {
 
     return inJacks;
 }
+
+void WaveModuleComponent::setJackIDs(const int ID) {
+    phase.getInJack().setID(ID);
+    freq.getInJack().setID(ID);
+    mix.getInJack().setID(ID);
+    det.getInJack().setID(ID);
+    voices.getInJack().setID(ID);
+    
+    outJack.setID(ID);
+}

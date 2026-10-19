@@ -52,8 +52,15 @@ public:
             colorsRef,
             1,
             {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
-            IndicatorType::line)
-    {};
+            IndicatorType::line) {
+        phase.getInJack().setPort(0);
+        freq.getInJack().setPort(1);
+        mix.getInJack().setPort(2);
+        det.getInJack().setPort(3);
+        voices.getInJack().setPort(4);
+
+        outJack.setPort(0);
+    };
 
     void paint(juce::Graphics &g) override;
 
@@ -65,6 +72,8 @@ public:
     void setVisualGradient();
 
     juce::Array<InJack*> getInJacks() override;
+
+    void setJackIDs(int ID) override;
 
 private:
     juce::Path headerSinPath;

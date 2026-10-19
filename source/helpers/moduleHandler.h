@@ -10,11 +10,13 @@ public:
         moduleComponents (moduleComponentsRef) {}
 
     /*void addModule (Module *module);*/
-    void addModuleComponent (ModuleType moduleType) const;
+    void addModuleComponent (ModuleType moduleType);
 
 private:
     Colors &colors;
 
     /*juce::OwnedArray<Module> modules;*/
     juce::OwnedArray<ModuleComponent> &moduleComponents;
+
+    int counter = 0;
 };

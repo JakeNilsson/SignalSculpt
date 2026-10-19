@@ -15,9 +15,18 @@ public:
 
     juce::String getName();
 
+    void setID(int newID) {ID = newID;}
+    [[nodiscard]] int  getID() const {return ID;}
+
+    void setPort(int newPort) {port = newPort;}
+    [[nodiscard]] int  getPort() const {return port;}
+
 protected:
     Colors &colors;
     juce::String jackName;
+
+    int ID = -1;
+    int port = -1;
 };
 
 class InJack : public Jack {

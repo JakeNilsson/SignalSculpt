@@ -7,7 +7,10 @@ public:
     explicit OutputsTab(Colors &colorsRef, ConnectionOverlay& overlayRef) :
     colors(colorsRef),
     audOut(colorsRef, "AUD"),
-    overlay(overlayRef) {}
+    overlay(overlayRef) {
+        audOut.setID(AUD);
+        audOut.setPort(AUD);   // I'll set up tab ports here as I make more, like midi, automation, etc.
+    }
 
     void paint(juce::Graphics& g) override {
         g.setColour(colors.getColor(ThemeColors::output));

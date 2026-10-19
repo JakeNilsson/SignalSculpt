@@ -4,10 +4,14 @@
     modules.add(module);
 }*/
 
-void ModuleHandler::addModuleComponent(ModuleType moduleType) const {
+void ModuleHandler::addModuleComponent(ModuleType moduleType) {
+    counter++;
+
     switch (moduleType) {
         case ModuleType::Wave : {
             const auto waveComponent = new WaveModuleComponent(colors);
+
+            waveComponent->setJackIDs(counter);
 
             moduleComponents.add(waveComponent);
             break;

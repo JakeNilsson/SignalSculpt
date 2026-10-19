@@ -39,7 +39,7 @@ private:
     Canvas canvas{colors, canvasContainer, *this, connectionOverlay};
     juce::Viewport canvasContainer;
 
-    ConnectionOverlay connectionOverlay{colors, canvasContainer};
+    ConnectionOverlay connectionOverlay{colors, canvasContainer, *this};
 
     juce::OwnedArray<juce::Path> connections;
 

@@ -41,6 +41,8 @@ void ConnectionOverlay::beginConnection(OutJack &outJack, bool isInCanvas) {
     if (isInCanvas) {
         const auto jackCenterInGlobal = outJack.localPointToGlobal(outJack.getLocalBounds().getCentre().toFloat());
         liveConnection.startPt = getLocalPoint (nullptr, jackCenterInGlobal);
+        liveConnection.startJackID = outJack.getID();
+        liveConnection.startJackPort = outJack.getPort();
     } else {
         //liveConnection.startPt = outJack.localCentreToGlobal();
     }
@@ -106,6 +108,10 @@ void ConnectionOverlay::cancelConnection() {
                 liveConnection.connectionPath.lineTo(liveConnection.endPt);
 
                 connections.push_back(liveConnection);
+
+                if (connectDSP) {
+                    connectDSP(liveConnection.startJackID, liveConnection.startJackPort, inJack->getID(), inJack->getPort());
+                }
             }
         }
 

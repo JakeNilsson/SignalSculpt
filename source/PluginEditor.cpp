@@ -22,6 +22,10 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     setSize (1920, 1080);
 
     canvas.onCreateDspModule = [this] (ModuleType type) {return processorRef.addModule(type);};
+
+    connectionOverlay.connectDSP = [this] (int srcID, int srcPort, int dstID, int dstPort) {
+        processorRef.connect(srcID, srcPort, dstID, dstPort);
+    };
 }
 
 PluginEditor::~PluginEditor()
