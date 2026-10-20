@@ -59,6 +59,8 @@ public:
 
     virtual void setJackIDs(int ID) = 0;
 
+    std::function<void (int moduleId, int paramId, float value)> onParameterChanged;
+
 protected:
     Colors &colors;
 
@@ -87,7 +89,7 @@ protected:
     float signal = 0;
 
 private:
-    int moduleID;
+    int moduleID = -1;
 
     const float blockSizeX;
     const float blockSizeY;

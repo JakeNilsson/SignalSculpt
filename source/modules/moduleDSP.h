@@ -19,6 +19,8 @@ public:
         onPrepare();
     }
 
+    virtual void setParameter (int /*paramId*/, float /*value*/) noexcept {}
+
     [[nodiscard]] int getNumInputs() const noexcept {return static_cast<int>(inputs.size());}
     [[nodiscard]] int getNumOutputs() const noexcept {return static_cast<int>(outputs.size());}
 

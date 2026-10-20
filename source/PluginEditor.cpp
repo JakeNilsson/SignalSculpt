@@ -23,6 +23,10 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     canvas.onCreateDspModule = [this] (ModuleType type) {return processorRef.addModule(type);};
 
+    canvas.onSetDspParameter = [this] (int moduleID, int paramID, float value) {
+        processorRef.setParameter(moduleID, paramID, value);
+    };
+
     connectionOverlay.connectDSP = [this] (int srcID, int srcPort, int dstID, int dstPort) {
         processorRef.connect(srcID, srcPort, dstID, dstPort);
     };

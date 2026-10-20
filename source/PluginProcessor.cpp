@@ -11,8 +11,7 @@ PluginProcessor::PluginProcessor()
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
                        )
-{
-}
+{}
 
 PluginProcessor::~PluginProcessor()
 {

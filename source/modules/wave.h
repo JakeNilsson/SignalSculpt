@@ -30,7 +30,7 @@ public:
         mix(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
             0,
             100,
-            100,
+            80,
             colorsRef,
             0,
             {},

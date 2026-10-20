@@ -25,6 +25,8 @@ public:
         return sampleRate;
     }
 
+    void setParameter (int moduleId, int paramId, float value);
+
     void process(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages) const;
 
     int addModule(ModuleType moduleType);

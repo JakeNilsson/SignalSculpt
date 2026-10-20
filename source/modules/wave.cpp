@@ -1,4 +1,5 @@
 #include "wave.h"
+#include "waveDSP.h"
 #include <ranges>
 
 /*void WaveModule::process(juce::AudioBuffer<float> &buffer) {
@@ -194,7 +195,7 @@ void WaveModuleComponent::onPathsReady() {
                          0);
 
     addAndMakeVisible(freq);
-    freq.setSkewFactor(2.f);
+    freq.setSkewFactor(0.25f);
     freq.setBounds(leftCenterKnobX - (bigRotarySize / 2), middleKnobY, bigRotarySize, bigRotarySize);
     freqLabelBounds.setBounds(leftCenterKnobX - (bigRotarySize / 2),
                          middleKnobY + bigRotarySize - 7,
@@ -202,6 +203,7 @@ void WaveModuleComponent::onPathsReady() {
                          15);
 
     addAndMakeVisible(mix);
+    mix.setSkewFactor(0.4f);
     mix.setBounds(centerKnobX - (smallRotarySize / 2), upperKnobY, smallRotarySize, smallRotarySize);
     mixLabelBounds.setBounds(centerKnobX - (smallRotarySize / 2),
                          upperKnobY + smallRotarySize - 9,
@@ -225,6 +227,24 @@ void WaveModuleComponent::onPathsReady() {
     setVisualGradient();
 
     setOscPath();
+
+    phase.onValueChange = [this] {
+        if (onParameterChanged) {
+            onParameterChanged(getModuleID(), WaveDSP::phaseIn, static_cast<float>(phase.getValue()));
+        }
+    };
+
+    freq.onValueChange = [this] {
+        if (onParameterChanged) {
+            onParameterChanged(getModuleID(), WaveDSP::freqIn, static_cast<float>(freq.getValue()));
+        }
+    };
+
+    mix.onValueChange = [this] {
+        if (onParameterChanged) {
+            onParameterChanged(getModuleID(), WaveDSP::mixIn, static_cast<float>(mix.getValue()));
+        }
+    };
 }
 
 void WaveModuleComponent::setHeaderSinPath() {
@@ -291,6 +311,6 @@ void WaveModuleComponent::setJackIDs(const int ID) {
     mix.getInJack().setID(ID);
     det.getInJack().setID(ID);
     voices.getInJack().setID(ID);
-    
+
     outJack.setID(ID);
 }

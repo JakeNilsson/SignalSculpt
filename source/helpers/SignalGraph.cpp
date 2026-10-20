@@ -47,6 +47,16 @@ void SignalGraph::connect(const int src_id, const int src_port, const int dst_id
     }
 }
 
+void SignalGraph::setParameter(int moduleId, int paramId, float value) {
+    for (const auto node : nodes) {
+        if (node->id == moduleId) {
+            node->module->setParameter(paramId, value);
+            return;
+        }
+    }
+    jassertfalse;  // no module with the given ID
+}
+
 void SignalGraph::process(juce::AudioBuffer<float> &buffer, juce::MidiBuffer &midiMessages) const {
     juce::ignoreUnused(midiMessages);
     buffer.clear();

@@ -43,6 +43,7 @@ public:
     int addModule(ModuleType moduleType);
 
     void connect(int srcID, int srcPort, int dstID, int dstPort) {signalGraph.connect(srcID, srcPort, dstID, dstPort);} ;
+    void setParameter (int moduleId, int paramId, float value) { signalGraph.setParameter (moduleId, paramId, value); }
 
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginProcessor)

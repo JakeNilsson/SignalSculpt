@@ -38,6 +38,10 @@ public:
                     newChild->setPaths();
                     newChild->repaint();
 
+                    newChild->onParameterChanged = [this] (int moduleID, int paramID, float value) {
+                        if (onSetDspParameter) onSetDspParameter(moduleID, paramID, value);
+                    };
+
                     newChild->getOutJack().onDragStart = [this, newChild] (OutJack& outJack, const juce::MouseEvent&) {
                         overlay.addInJacks(newChild->getInJacks());
                         overlay.beginConnection (outJack, true);
@@ -167,6 +171,8 @@ public:
 
     std::function<int (ModuleType)> onCreateDspModule;   // returns the new module's ID
     std::function<void (int)>       onRemoveDspModule;
+
+    std::function<void (int, int, float)> onSetDspParameter;
 
 private:
     float gridSizePx = 160.f;

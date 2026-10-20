@@ -1,6 +1,8 @@
 #pragma once
-#include "moduleDSP.h"
+
 #include <cmath>
+#include <atomic>
+#include "moduleDSP.h"
 
 class WaveDSP : public ModuleDSP {
 public:
@@ -12,14 +14,40 @@ public:
         setModuleID(ID);
     }
 
-    void tick() noexcept override {
-        phase += freq / static_cast<float> (getSampleRate());
-        phase -= std::floor (phase);
+    void setParameter(int paramID, float value) noexcept override {
+        switch (paramID) {
+            case phaseIn: {
+                phase.store (value, std::memory_order_relaxed);
+                break;
+            }
+            case freqIn: {
+                freq.store(value, std::memory_order_relaxed);
+                break;
+            }
+            case mixIn: {
+                mix.store(value, std::memory_order_relaxed);
+                break;
+            }
+            default: {
+                jassertfalse;
+                break;
+            }
+        }
+    }
 
-        out (waveOut, std::sin (phase * juce::MathConstants<float>::twoPi));
+    void tick() noexcept override {
+        constexpr auto twoPi = juce::MathConstants<float>::twoPi;
+
+        phase += twoPi * freq / static_cast<float> (getSampleRate());
+
+        if (phase >= twoPi)
+            phase -= twoPi;
+
+        out (waveOut, (mix / 100) * std::sin (phase));
     }
 
 private:
-    float phase = 0.f;
-    const float freq = 261.63f;
+    std::atomic<float> phase { 0.f };
+    std::atomic<float> freq { 261.63f };
+    std::atomic<float> mix { 80.f };
 };
