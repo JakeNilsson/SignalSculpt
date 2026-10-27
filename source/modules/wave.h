@@ -3,11 +3,15 @@
 #include "../theme/Jack.h"
 #include "../theme/Colors.h"
 #include "../theme/SiScSlider.h"
+#include "../theme/SiScComboBox.h"
 
 class WaveModuleComponent : public ModuleComponent {
 public:
     explicit WaveModuleComponent(Colors &colorsRef) :
         ModuleComponent(colorsRef, 2.f, 2.f, "Wave"),
+
+        shapeType(colorsRef),
+        shapeSpec(colorsRef),
 
         phase(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
             0,
@@ -53,11 +57,13 @@ public:
             1,
             {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
             IndicatorType::line) {
-        phase.getInJack().setPort(0);
-        freq.getInJack().setPort(1);
-        mix.getInJack().setPort(2);
-        det.getInJack().setPort(3);
-        voices.getInJack().setPort(4);
+        shapeType.getInJack().setPort(0);
+        shapeSpec.getInJack().setPort(1);
+        phase.getInJack().setPort(2);
+        freq.getInJack().setPort(3);
+        mix.getInJack().setPort(4);
+        det.getInJack().setPort(5);
+        voices.getInJack().setPort(6);
 
         outJack.setPort(0);
     };
@@ -84,8 +90,8 @@ private:
     juce::ColourGradient oscGradient;
 
     juce::Label shapeLabel {"shape", "Shape:"};
-    juce::ComboBox shapeType;
-    juce::ComboBox shapeSpec;
+    SiScComboBox shapeType;
+    SiScComboBox shapeSpec;
 
     juce::Rectangle<float> jackBorder;
 

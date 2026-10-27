@@ -2,12 +2,13 @@
 
 #include <cmath>
 #include <atomic>
+#include <algorithm>
 #include "moduleDSP.h"
 #include <juce_audio_basics/juce_audio_basics.h>
 
 class WaveDSP : public ModuleDSP {
 public:
-    enum Input  { shapeType, phaseIn, freqIn, mixIn, detIn, voicesIn, numInputPorts };
+    enum Input  { shapeTypeIn, shapeSpecIn, phaseIn, freqIn, mixIn, detIn, voicesIn, numInputPorts };
     enum Output { waveOut, numOutputPorts };
 
     enum WaveType { blank, sine, triangle, saw, square };
@@ -25,9 +26,13 @@ public:
 
     void setParameter(const int paramID, const float value) noexcept override {
         switch (paramID) {
-            case shapeType: {
+            case shapeTypeIn: {
                 waveChoice.store(static_cast<WaveType>(value), std::memory_order_relaxed);
                 shapeChanged = true;
+                break;
+            }
+            case shapeSpecIn: {
+                // unimplemented!!!!!!!
                 break;
             }
             case phaseIn: {
@@ -71,28 +76,46 @@ public:
         float sumL = 0.0f;
         float sumR = 0.0f;
 
-        for (int i = 0; i < voices; ++i) {
-            const float t = (voices == 1)
+        const auto inShapeType = inMono(shapeTypeIn);
+        // const auto inShapeSpec = inMono(shapeSpecIn);
+        const auto inPhase = inMono(phaseIn);
+        const auto inFreq = inMono(freqIn);
+        const auto inMix = inMono(mixIn);
+        const auto inDet = inMono(detIn);
+        const auto inVoices = inMono(voicesIn);
+
+        const auto trueShapeType = std::min(static_cast<int>(std::max(1, static_cast<int>(waveChoice + static_cast<int>(inShapeType * 4)))), 4);
+        // const auto trueShapeSpec = std::min(static_cast<int>(std::max(1, static_cast<int>(waveSpec + inShapeSpec))), 1);
+        const auto truePhase = std::min(std::max(0.f, phase + (inPhase * juce::MathConstants<float>::twoPi)), juce::MathConstants<float>::twoPi);
+        const auto trueFreq = std::min(std::max(0.f, baseFreq + (inFreq * 20000.f)), 20000.f);
+        const auto trueMix = std::min(std::max(0.f, mix + (inMix * 100.f)), 100.f);
+        const auto trueDet = std::min(std::max(0.f, baseDet + (inDet * 100.f)), 100.f);
+        const auto trueVoices = std::min(static_cast<int>(std::max(1, voices + static_cast<int>(inVoices * 16))), 16);
+
+        for (int i = 0; i < trueVoices; ++i) {
+            const float t = (trueVoices == 1)
                 ? 0.5f
-                : static_cast<float>(i) / static_cast<float>(voices - 1);
+                : static_cast<float>(i) / static_cast<float>(trueVoices - 1);
 
             const float position = 2.0f * t - 1.0f;
-            const float cents = position * baseDet;
+            const float cents = position * trueDet;
 
             const float frequency =
-                baseFreq * std::pow(2.0f, cents / 1200.0f);
+                trueFreq * std::pow(2.0f, cents / 1200.0f);
 
             voicePhases[i] += twoPi * frequency / sampRate;
 
-            // Wrap phase back into one cycle.
             if (voicePhases[i] >= twoPi)
                 voicePhases[i] = std::fmod(voicePhases[i], twoPi);
 
-            sumL += (wave(voicePhases[i], waveChoice) * t);
-            sumR += (wave(voicePhases[i], waveChoice) * (1 - t));
+            sumL += (wave(voicePhases[i], static_cast<WaveType>(trueShapeType)) * t);
+            sumR += (wave(voicePhases[i], static_cast<WaveType>(trueShapeType)) * (1 - t));
         }
 
-        const Frame oscillatorOutput = {.left = (mix / 100) * (sumL / voices), .right = (mix / 100) * (sumR / voices)};
+        const Frame oscillatorOutput = {
+            .left = (trueMix / 100) * (sumL / trueVoices),
+            .right = (trueMix / 100) * (sumR / trueVoices)
+        };
 
         out(waveOut, oscillatorOutput);
     }

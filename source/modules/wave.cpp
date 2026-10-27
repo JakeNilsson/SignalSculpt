@@ -230,7 +230,7 @@ void WaveModuleComponent::onPathsReady() {
 
     shapeType.onChange = [this] {
         if (onParameterChanged) {
-            onParameterChanged(getModuleID(), WaveDSP::shapeType, static_cast<float>(shapeType.getSelectedId()));
+            onParameterChanged(getModuleID(), WaveDSP::shapeTypeIn, static_cast<float>(shapeType.getSelectedId()));
         }
     };
 
