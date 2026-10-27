@@ -19,6 +19,8 @@ public:
         onPrepare();
     }
 
+    virtual void onPrepare() {} // to be appended by derived classes
+
     virtual void setParameter (int /*paramId*/, float /*value*/) noexcept {}
 
     [[nodiscard]] int getNumInputs() const noexcept {return static_cast<int>(inputs.size());}
@@ -73,7 +75,6 @@ protected:
     }
 
     [[nodiscard]] double getSampleRate() const noexcept { return sampleRate; }
-    virtual void onPrepare() {} // to be appended by derived classes
 
 private:
     std::vector<const Frame*> inputs;

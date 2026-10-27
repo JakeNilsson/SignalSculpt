@@ -136,7 +136,7 @@ void WaveModuleComponent::onPathsReady() {
                         halfWidth,
                         centerBounds.getHeight());
 
-    shapeType.addItemList({"Sine"}, 1);
+    shapeType.addItemList({"Sine", "Triangle", "Saw", "Square"}, 1);
     shapeType.setSelectedId(1);
 
     shapeSpec.setBounds(centerBounds.getX() + leftOffset + halfWidth + 7,
@@ -228,6 +228,12 @@ void WaveModuleComponent::onPathsReady() {
 
     setOscPath();
 
+    shapeType.onChange = [this] {
+        if (onParameterChanged) {
+            onParameterChanged(getModuleID(), WaveDSP::shapeType, static_cast<float>(shapeType.getSelectedId()));
+        }
+    };
+
     phase.onValueChange = [this] {
         if (onParameterChanged) {
             onParameterChanged(getModuleID(), WaveDSP::phaseIn, static_cast<float>(phase.getValue()));
@@ -243,6 +249,18 @@ void WaveModuleComponent::onPathsReady() {
     mix.onValueChange = [this] {
         if (onParameterChanged) {
             onParameterChanged(getModuleID(), WaveDSP::mixIn, static_cast<float>(mix.getValue()));
+        }
+    };
+
+    det.onValueChange = [this] {
+        if (onParameterChanged) {
+            onParameterChanged(getModuleID(), WaveDSP::detIn, static_cast<float>(det.getValue()));
+        }
+    };
+
+    voices.onValueChange = [this] {
+        if (onParameterChanged) {
+            onParameterChanged(getModuleID(), WaveDSP::voicesIn, static_cast<float>(voices.getValue()));
         }
     };
 }
