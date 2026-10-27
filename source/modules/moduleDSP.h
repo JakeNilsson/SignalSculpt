@@ -24,6 +24,7 @@ public:
     virtual void setParameter (int /*paramId*/, float /*value*/) noexcept {}
 
     [[nodiscard]] int getNumInputs() const noexcept {return static_cast<int>(inputs.size());}
+    [[nodiscard]] int getNumInputsInputs(const size_t id) const noexcept {return static_cast<int>(inputs[id].size());}
     [[nodiscard]] int getNumOutputs() const noexcept {return static_cast<int>(outputs.size());}
 
     [[nodiscard]] const Frame* getOutput (const int port) const noexcept {
@@ -36,7 +37,7 @@ public:
         if (port < 0 || port >= getNumInputs())
             return false;                                   // no such port
 
-        inputs[static_cast<std::size_t> (port)] = source;   // nullptr is a valid "disconnect"
+        inputs[static_cast<std::size_t> (port)].push_back(source);   // nullptr is a valid "disconnect"
         return true;
     }
 
@@ -52,14 +53,20 @@ public:
 
 protected:
     ModuleDSP(const int numInputs, const int numOutputs) :
-        inputs(static_cast<std::size_t>(std::max(0, numInputs)), nullptr),
+        inputs(static_cast<std::size_t>(std::max(0, numInputs)),
+            std::vector<const Frame*>(0, nullptr)),
         outputs(static_cast<std::size_t>(std::max(0, numOutputs)))
     {}
 
     [[nodiscard]] Frame inStereo (const int port) const noexcept {
         assert (port >= 0 && port < getNumInputs());
-        const Frame* src = inputs[static_cast<std::size_t>(port)];
-        return src != nullptr ? *src : Frame{};
+        Frame sum = {.left = 0, .right = 0};
+        for (const auto input : inputs[static_cast<size_t>(port)]) {
+            sum.left += input->left;
+            sum.right += input->right;
+        }
+        const auto src = inputs[static_cast<std::size_t>(port)];
+        return src.empty() ? Frame{} : sum;
     }
 
     [[nodiscard]] float inMono (const int port) const noexcept { return inStereo (port).left; }
@@ -77,7 +84,7 @@ protected:
     [[nodiscard]] double getSampleRate() const noexcept { return sampleRate; }
 
 private:
-    std::vector<const Frame*> inputs;
+    std::vector<std::vector<const Frame*>> inputs;
     std::vector<Frame> outputs;
 
     double sampleRate = 44100.0;
