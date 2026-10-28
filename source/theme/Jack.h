@@ -52,7 +52,7 @@ private:
 
 class OutJack : public Jack {
 public:
-    OutJack(Colors &colorsRef, const juce::String &name, float &signal) : Jack(colorsRef, name), signal(signal) {}
+    OutJack(Colors &colorsRef, const juce::String &name) : Jack(colorsRef, name) {}
 
     std::function<void (OutJack&, const juce::MouseEvent&)> onDragStart;
     std::function<void (OutJack&, const juce::Point<float> mousePos)> onDrag;
@@ -63,7 +63,6 @@ public:
     void mouseUp (const juce::MouseEvent& e) override;
 
 private:
-    float &signal;
 };
 
 #endif

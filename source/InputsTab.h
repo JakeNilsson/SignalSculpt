@@ -4,7 +4,14 @@
 
 class InputsTab : public juce::Component{
 public:
-    explicit InputsTab(Colors &colorsRef) : colors(colorsRef){}
+    explicit InputsTab(Colors &colorsRef, ConnectionOverlay& overlayRef) :
+        colors(colorsRef),
+        overlay(overlayRef),
+        audIn(colorsRef, "AUD") {
+
+        audIn.setID(std::to_underlying(StaticIDs::AudIn));
+        audIn.setPort(0);
+    }
 
     void paint(juce::Graphics& g) override {
         g.setColour(colors.getColor(ThemeColors::input));
@@ -29,6 +36,10 @@ public:
                     false);
 
         g.restoreState();
+
+        g.setColour(colors.getColor(ThemeColors::input));
+        g.setFont(inputsFont.withHeight(26.f));
+        g.drawText(audIn.getName(), audInLabelBounds.toNearestInt(), juce::Justification::centred);
     };
 
     bool hitTest (int x, int y) override
@@ -57,6 +68,13 @@ public:
         inputsBG = bounds;
         inputsBG.removeFromRight((3.f * width) / 7.f);
 
+        audInBounds.setBounds(inputsBG.getX(), inputsBG.getY() + 30, inputsBG.getWidth(), inputsBG.getWidth());
+        audInBounds.reduce(8, 8);
+        addAndMakeVisible(audIn);
+        audIn.setBounds(audInBounds.toNearestInt());
+
+        audInLabelBounds.setBounds(inputsBG.getX(), inputsBG.getY() + 10, inputsBG.getWidth(), 20);
+
         inputsTab.setBounds(0, 0, width, tabHeight);
         inputsTab.removeFromLeft((4.f * width) / 7.f);
 
@@ -81,6 +99,18 @@ public:
 
         auto fontOptions = juce::FontOptions(semiboldTypeface).withPointHeight(48.0f);
         inputsFont = juce::Font(fontOptions);
+
+        audIn.onDragStart = [this] (OutJack& outJack, const juce::MouseEvent&) {
+            overlay.beginConnection (outJack, true);
+        };
+
+        audIn.onDrag = [this] (OutJack& outJack, const juce::Point<float> mousePos) {
+            overlay.updateConnection (mousePos);
+        };
+
+        audIn.onDragEnd = [this] (OutJack& outJack, const juce::MouseEvent&) {
+            overlay.cancelConnection ();
+        };
     }
 
 private:
@@ -93,4 +123,10 @@ private:
     juce::Font inputsFont;
 
     Colors &colors;
+
+    ConnectionOverlay &overlay;
+
+    OutJack audIn;
+    juce::Rectangle<float> audInBounds;
+    juce::Rectangle<float> audInLabelBounds;
 };

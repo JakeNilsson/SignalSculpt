@@ -51,6 +51,8 @@ public:
         moduleID = newModuleID;
     }
 
+    void directIn(const Frame frame) noexcept { out(0, frame); }
+
 protected:
     ModuleDSP(const int numInputs, const int numOutputs) :
         inputs(static_cast<std::size_t>(std::max(0, numInputs)),

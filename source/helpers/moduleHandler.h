@@ -18,5 +18,5 @@ private:
     /*juce::OwnedArray<Module> modules;*/
     juce::OwnedArray<ModuleComponent> &moduleComponents;
 
-    int counter = 0;
+    int counter = std::to_underlying(StaticIDs::StaticCount);
 };

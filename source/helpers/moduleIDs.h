@@ -4,4 +4,9 @@ enum class ModuleType {
     Wave,
 };
 
-inline constexpr int AUD = 0;
+enum class StaticIDs : int {
+    AudIn,
+    AudOut,
+    MidiIn,
+    StaticCount,
+};

@@ -10,7 +10,7 @@ public:
                              const juce::String& name)
                           :  colors(colorsRef),
                              name(name, name),
-                             outJack(colorsRef, "moduleOut", signal),
+                             outJack(colorsRef, "moduleOut"),
                              blockSizeX(blockSizeX),
                              blockSizeY(blockSizeY){
         statusColor = colors.getColor(ThemeColors::neutral);
@@ -86,7 +86,6 @@ protected:
     juce::Font moduleFont;
 
     OutJack outJack;
-    float signal = 0;
 
 private:
     int moduleID = -1;

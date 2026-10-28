@@ -5,7 +5,6 @@
 #include <juce_audio_basics/juce_audio_basics.h>
 #include "moduleIDs.h"
 #include "../modules/moduleDSP.h"
-#include "../modules/audioOutDSP.h"
 
 struct Node { int id; std::unique_ptr<ModuleDSP> module; };
 struct dspConnection { int srcId; int srcPort; int dstId; int dstPort; };
@@ -39,10 +38,11 @@ private:
     }
 
     double sampleRate = 44100.0;
-    int counter = 0;
+    int counter = std::to_underlying(StaticIDs::StaticCount);
 
     juce::OwnedArray<Node> nodes;
     juce::OwnedArray<dspConnection> connections;
 
     ModuleDSP* audioOut = nullptr;
+    ModuleDSP* audioIn = nullptr;
 };

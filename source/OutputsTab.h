@@ -8,8 +8,8 @@ public:
     colors(colorsRef),
     audOut(colorsRef, "AUD"),
     overlay(overlayRef) {
-        audOut.setID(AUD);
-        audOut.setPort(AUD);   // I'll set up tab ports here as I make more, like midi, automation, etc.
+        audOut.setID(std::to_underlying(StaticIDs::AudOut));
+        audOut.setPort(0);   // I'll set up tab ports here as I make more, like midi, automation, etc.
     }
 
     void paint(juce::Graphics& g) override {
