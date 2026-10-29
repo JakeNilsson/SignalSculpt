@@ -3,15 +3,15 @@
 #include "../modules/staticIO.h"
 
 SignalGraph::SignalGraph() {
-    constexpr auto audOutID = std::to_underlying(StaticIDs::AudOut);
-    auto audOutSink = std::make_unique<StaticIO>(audOutID);
-    audioOut = audOutSink.get();                                        // grab the raw pointer first
-    nodes.add (new Node { .id = audOutID, .module = std::move (audOutSink) });
+    addStaticNode(audioIn, std::to_underlying(StaticIDs::AudIn), true);
+    addStaticNode(audioOut, std::to_underlying(StaticIDs::AudOut), false);
+    addStaticNode(midiNoteIn, std::to_underlying(StaticIDs::MidiIn), true);
+}
 
-    constexpr auto audInID = std::to_underlying(StaticIDs::AudIn);
-    auto audInSink = std::make_unique<StaticIO>(audInID);
-    audioIn = audInSink.get();                                        // grab the raw pointer first
-    nodes.add (new Node { .id = audInID, .module = std::move (audInSink) });
+void SignalGraph::addStaticNode(ModuleDSP*& sink, int nodeID, bool isInput) {;
+    auto staticSink = std::make_unique<StaticIO>(nodeID, isInput);
+    sink = staticSink.get();                                        // grab the raw pointer first
+    nodes.add (new Node { .id = nodeID, .module = std::move (staticSink) });
 }
 
 int SignalGraph::addModule(const ModuleType moduleType) {
@@ -66,8 +66,6 @@ void SignalGraph::setParameter(int moduleId, int paramId, float value) {
 
 void SignalGraph::process(juce::AudioBuffer<float> &buffer, juce::MidiBuffer &midiMessages) const {
 
-    juce::ignoreUnused(midiMessages);
-
     const auto numChannels = buffer.getNumChannels();
     const auto numSamples = buffer.getNumSamples();
 
@@ -79,11 +77,20 @@ void SignalGraph::process(juce::AudioBuffer<float> &buffer, juce::MidiBuffer &mi
     float* leftW = buffer.getWritePointer(0);
     float* rightW = numChannels > 1 ? buffer.getWritePointer(1) : nullptr;
 
+    auto it = midiMessages.begin();
+
     for (int i = 0; i < numSamples; ++i) {
+        while (it != midiMessages.end() && (*it).samplePosition <= i) {
+            if (const auto msg = (*it).getMessage(); msg.isNoteOn()) {
+                midiNoteIn->directInMono (static_cast<float> (juce::MidiMessage::getMidiNoteInHertz (msg.getNoteNumber())) / 20000);
+            }
+            ++it;
+        }
+
         const float left  = leftR[i];
         const float right = rightR != nullptr ? rightR[i] : left;
 
-        audioIn->directIn ({ .left = left, .right = right });
+        audioIn->directInStereo ({ .left = left, .right = right });
 
         for (auto node : nodes) {
             node->module->tick();

@@ -72,6 +72,7 @@ public:
 
         const auto baseFreq = smoothFreq.getNextValue();
         const auto baseDet = smoothDet.getNextValue();
+        const auto baseMix = smoothMix.getNextValue();
 
         float sumL = 0.0f;
         float sumR = 0.0f;
@@ -88,7 +89,7 @@ public:
         // const auto trueShapeSpec = std::min(static_cast<int>(std::max(1, static_cast<int>(waveSpec + inShapeSpec))), 1);
         const auto truePhase = std::min(std::max(0.f, phase + (inPhase * juce::MathConstants<float>::twoPi)), juce::MathConstants<float>::twoPi);
         const auto trueFreq = std::min(std::max(0.f, baseFreq + (inFreq * 20000.f)), 20000.f);
-        const auto trueMix = std::min(std::max(0.f, mix + (inMix * 100.f)), 100.f);
+        const auto trueMix = std::min(std::max(0.f, baseMix + (inMix * 100.f)), 100.f);
         const auto trueDet = std::min(std::max(0.f, baseDet + (inDet * 100.f)), 100.f);
         const auto trueVoices = std::min(static_cast<int>(std::max(1, voices + static_cast<int>(inVoices * 16))), 16);
 

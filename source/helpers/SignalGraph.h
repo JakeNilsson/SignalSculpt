@@ -13,6 +13,8 @@ class SignalGraph {
 public:
     SignalGraph();
 
+    void addStaticNode(ModuleDSP*& sink, int nodeID, bool isInput);
+
     void prepare(const double newSampleRate) {
         sampleRate = newSampleRate;
         for (const auto node : nodes) {
@@ -43,6 +45,8 @@ private:
     juce::OwnedArray<Node> nodes;
     juce::OwnedArray<dspConnection> connections;
 
-    ModuleDSP* audioOut = nullptr;
     ModuleDSP* audioIn = nullptr;
+    ModuleDSP* midiNoteIn = nullptr;
+
+    ModuleDSP* audioOut = nullptr;
 };

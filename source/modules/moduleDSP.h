@@ -51,7 +51,9 @@ public:
         moduleID = newModuleID;
     }
 
-    void directIn(const Frame frame) noexcept { out(0, frame); }
+    void directInStereo(const Frame frame) noexcept { out(0, frame); }
+
+    void directInMono(const float signal) noexcept { out(0, signal); }
 
 protected:
     ModuleDSP(const int numInputs, const int numOutputs) :

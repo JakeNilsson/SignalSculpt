@@ -7,10 +7,14 @@ public:
     explicit InputsTab(Colors &colorsRef, ConnectionOverlay& overlayRef) :
         colors(colorsRef),
         overlay(overlayRef),
-        audIn(colorsRef, "AUD") {
+        audIn(colorsRef, "AUD"),
+        midiIn(colorsRef, "MIDI"){
 
         audIn.setID(std::to_underlying(StaticIDs::AudIn));
         audIn.setPort(0);
+
+        midiIn.setID(std::to_underlying(StaticIDs::MidiIn));
+        midiIn.setPort(0);
     }
 
     void paint(juce::Graphics& g) override {
@@ -40,11 +44,12 @@ public:
         g.setColour(colors.getColor(ThemeColors::input));
         g.setFont(inputsFont.withHeight(26.f));
         g.drawText(audIn.getName(), audInLabelBounds.toNearestInt(), juce::Justification::centred);
+        g.drawText(midiIn.getName(), midiInLabelBounds.toNearestInt(), juce::Justification::centred);
     };
 
-    bool hitTest (int x, int y) override
+    bool hitTest (const int x, const int y) override
     {
-        return inputsTabPath.contains ((float) x, (float) y);
+        return inputsTabPath.contains (static_cast<float>(x), static_cast<float>(y));
     }
 
     void setTabBounds() {
@@ -75,6 +80,13 @@ public:
 
         audInLabelBounds.setBounds(inputsBG.getX(), inputsBG.getY() + 10, inputsBG.getWidth(), 20);
 
+        midiInBounds.setBounds(inputsBG.getX(), audInBounds.getBottom() + 30, inputsBG.getWidth(), inputsBG.getWidth());
+        midiInBounds.reduce(8, 8);
+        addAndMakeVisible(midiIn);
+        midiIn.setBounds(midiInBounds.toNearestInt());
+
+        midiInLabelBounds.setBounds(inputsBG.getX(), audInBounds.getBottom() + 10, inputsBG.getWidth(), 20);
+
         inputsTab.setBounds(0, 0, width, tabHeight);
         inputsTab.removeFromLeft((4.f * width) / 7.f);
 
@@ -104,11 +116,23 @@ public:
             overlay.beginConnection (outJack, true);
         };
 
-        audIn.onDrag = [this] (OutJack& outJack, const juce::Point<float> mousePos) {
+        audIn.onDrag = [this] (OutJack&, const juce::Point<float> mousePos) {
             overlay.updateConnection (mousePos);
         };
 
-        audIn.onDragEnd = [this] (OutJack& outJack, const juce::MouseEvent&) {
+        audIn.onDragEnd = [this] (OutJack&, const juce::MouseEvent&) {
+            overlay.cancelConnection ();
+        };
+
+        midiIn.onDragStart = [this] (OutJack& outJack, const juce::MouseEvent&) {
+            overlay.beginConnection (outJack, true);
+        };
+
+        midiIn.onDrag = [this] (OutJack&, const juce::Point<float> mousePos) {
+            overlay.updateConnection (mousePos);
+        };
+
+        midiIn.onDragEnd = [this] (OutJack&, const juce::MouseEvent&) {
             overlay.cancelConnection ();
         };
     }
@@ -129,4 +153,8 @@ private:
     OutJack audIn;
     juce::Rectangle<float> audInBounds;
     juce::Rectangle<float> audInLabelBounds;
+
+    OutJack midiIn;
+    juce::Rectangle<float> midiInBounds;
+    juce::Rectangle<float> midiInLabelBounds;
 };
