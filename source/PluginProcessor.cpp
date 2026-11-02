@@ -14,8 +14,7 @@ PluginProcessor::PluginProcessor()
 {}
 
 PluginProcessor::~PluginProcessor()
-{
-}
+= default;
 
 //==============================================================================
 const juce::String PluginProcessor::getName() const

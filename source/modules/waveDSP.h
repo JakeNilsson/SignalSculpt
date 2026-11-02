@@ -67,6 +67,11 @@ public:
     }
 
     void tick() noexcept override {
+        const int channelsOut = std::min (getOutputChannels(), getMaxChannels());
+
+        PortFrames output;
+        output.numChannels = channelsOut;
+
         constexpr auto twoPi = juce::MathConstants<float>::twoPi;
         const auto sampRate = getSampleRate();
 
@@ -74,51 +79,56 @@ public:
         const auto baseDet = smoothDet.getNextValue();
         const auto baseMix = smoothMix.getNextValue();
 
-        float sumL = 0.0f;
-        float sumR = 0.0f;
+        for (int i = 0; i < channelsOut; ++i) {
+            float sumL = 0.0f;
+            float sumR = 0.0f;
 
-        const auto inShapeType = inMono(shapeTypeIn);
-        // const auto inShapeSpec = inMono(shapeSpecIn);
-        const auto inPhase = inMono(phaseIn);
-        const auto inFreq = inMono(freqIn);
-        const auto inMix = inMono(mixIn);
-        const auto inDet = inMono(detIn);
-        const auto inVoices = inMono(voicesIn);
+            const auto inShapeType = inMono(shapeTypeIn, i);
+            // const auto inShapeSpec = inMono(shapeSpecIn, i);
+            const auto inPhase = inMono(phaseIn, i);
+            const auto inFreq = inMono(freqIn, i);
+            const auto inMix = inMono(mixIn, i);
+            const auto inDet = inMono(detIn, i);
+            const auto inVoices = inMono(voicesIn, i);
 
-        const auto trueShapeType = std::min(static_cast<int>(std::max(1, static_cast<int>(waveChoice + static_cast<int>(inShapeType * 4)))), 4);
-        // const auto trueShapeSpec = std::min(static_cast<int>(std::max(1, static_cast<int>(waveSpec + inShapeSpec))), 1);
-        const auto truePhase = std::min(std::max(0.f, phase + (inPhase * juce::MathConstants<float>::twoPi)), juce::MathConstants<float>::twoPi);
-        const auto trueFreq = std::min(std::max(0.f, baseFreq + (inFreq * 20000.f)), 20000.f);
-        const auto trueMix = std::min(std::max(0.f, baseMix + (inMix * 100.f)), 100.f);
-        const auto trueDet = std::min(std::max(0.f, baseDet + (inDet * 100.f)), 100.f);
-        const auto trueVoices = std::min(static_cast<int>(std::max(1, voices + static_cast<int>(inVoices * 16))), 16);
+            const auto trueShapeType = std::min(static_cast<int>(std::max(1, static_cast<int>(waveChoice + static_cast<int>(inShapeType * 4)))), 4);
+            // const auto trueShapeSpec = std::min(static_cast<int>(std::max(1, static_cast<int>(waveSpec + inShapeSpec))), 1);
+            // for truePhase, don't clamp - make sure wrap around is allowed, since that's how the knob is built
+            const auto trueFreq = std::min(std::max(0.f, baseFreq + (inFreq * 20000.f)), 20000.f);
+            // const auto trueFreq = baseFreq * std::exp2 (inFreq);
+            const auto trueMix = std::min(std::max(0.f, baseMix + (inMix * 100.f)), 100.f);
+            const auto trueDet = std::min(std::max(0.f, baseDet + (inDet * 100.f)), 100.f);
+            const auto trueVoices = std::min(static_cast<int>(std::max(1, voices + static_cast<int>(inVoices * 16))), 16);
 
-        for (int i = 0; i < trueVoices; ++i) {
-            const float t = (trueVoices == 1)
-                ? 0.5f
-                : static_cast<float>(i) / static_cast<float>(trueVoices - 1);
+            for (int j = 0; j < trueVoices; ++j) {
+                const float t = (trueVoices == 1)
+                    ? 0.5f
+                    : static_cast<float>(j) / static_cast<float>(trueVoices - 1);
 
-            const float position = 2.0f * t - 1.0f;
-            const float cents = position * trueDet;
+                const float position = 2.0f * t - 1.0f;
+                const float cents = position * trueDet;
 
-            const float frequency =
-                trueFreq * std::pow(2.0f, cents / 1200.0f);
+                const float frequency =
+                    trueFreq * std::pow(2.0f, cents / 1200.0f);
 
-            voicePhases[i] += twoPi * frequency / sampRate;
+                float& p = voicePhases[i][j];
+                p += twoPi * frequency / sampRate;
+                if (p >= twoPi) p -= twoPi;
 
-            if (voicePhases[i] >= twoPi)
-                voicePhases[i] = std::fmod(voicePhases[i], twoPi);
+                const float s = wave (p, static_cast<WaveType> (trueShapeType));
+                sumL += s * t;
+                sumR += s * (1 - t);
+            }
 
-            sumL += (wave(voicePhases[i], static_cast<WaveType>(trueShapeType)) * t);
-            sumR += (wave(voicePhases[i], static_cast<WaveType>(trueShapeType)) * (1 - t));
+            const Frame channelOutput = {
+                .left = (trueMix / 100) * (sumL / trueVoices),
+                .right = (trueMix / 100) * (sumR / trueVoices)
+            };
+
+            output.channels[i] = channelOutput;
         }
 
-        const Frame oscillatorOutput = {
-            .left = (trueMix / 100) * (sumL / trueVoices),
-            .right = (trueMix / 100) * (sumR / trueVoices)
-        };
-
-        out(waveOut, oscillatorOutput);
+        out(waveOut, output);
     }
 
     static float wave(const float wavePhase, const WaveType type) noexcept {
@@ -153,7 +163,8 @@ private:
 
     std::atomic<float> phase { 0.f };
     juce::LinearSmoothedValue<float> smoothPhase { 0.f };
-    std::array<float, 16> voicePhases;
+    // std::array<float, 16> voicePhases;
+    std::array<std::array<float, 16>, PortFrames::maxChannels> voicePhases {};
 
     std::atomic<float> freq { 261.63f };
     juce::LinearSmoothedValue<float> smoothFreq { 261.63f };

@@ -7,6 +7,11 @@ enum class ModuleType {
 enum class StaticIDs : int {
     AudIn,
     AudOut,
-    MidiIn,
+    NoteIn,
+    NoteOut,
+    GateIn,
+    GateOut,
+    VelIn,
+    VelOut,
     StaticCount,
 };

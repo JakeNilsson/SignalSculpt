@@ -5,6 +5,7 @@
 #include <juce_audio_basics/juce_audio_basics.h>
 #include "moduleIDs.h"
 #include "../modules/moduleDSP.h"
+#include "../modules/staticIO.h"
 
 struct Node { int id; std::unique_ptr<ModuleDSP> module; };
 struct dspConnection { int srcId; int srcPort; int dstId; int dstPort; };
@@ -13,7 +14,7 @@ class SignalGraph {
 public:
     SignalGraph();
 
-    void addStaticNode(ModuleDSP*& sink, int nodeID, bool isInput);
+    void addStaticNode(StaticIO*& sink, int nodeID, bool isInput, bool isMidi);
 
     void prepare(const double newSampleRate) {
         sampleRate = newSampleRate;
@@ -28,7 +29,7 @@ public:
 
     void setParameter (int moduleId, int paramId, float value);
 
-    void process(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages) const;
+    void process(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages);
 
     int addModule(ModuleType moduleType);
 
@@ -41,12 +42,16 @@ private:
 
     double sampleRate = 44100.0;
     int counter = std::to_underlying(StaticIDs::StaticCount);
+    int midiCh = 0;
 
     juce::OwnedArray<Node> nodes;
     juce::OwnedArray<dspConnection> connections;
 
-    ModuleDSP* audioIn = nullptr;
-    ModuleDSP* midiNoteIn = nullptr;
+    StaticIO* audioIn = nullptr;
+    StaticIO* noteIn = nullptr;
+    StaticIO* gateIn = nullptr;
 
-    ModuleDSP* audioOut = nullptr;
+    StaticIO* audioOut = nullptr;
+
+    std::array<int, PortFrames::maxChannels> noteToVoices;
 };
