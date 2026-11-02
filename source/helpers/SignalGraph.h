@@ -54,4 +54,5 @@ private:
     StaticIO* audioOut = nullptr;
 
     std::array<int, PortFrames::maxChannels> noteToVoices;
+    bool skipMidiAssign = false;
 };

@@ -88,10 +88,20 @@ void SignalGraph::process(juce::AudioBuffer<float> &buffer, juce::MidiBuffer &mi
 
         while (it != midiMessages.end() && (*it).samplePosition <= i) {
             if (const auto msg = (*it).getMessage(); msg.isNoteOn()) {
-                noteIn->directInMono (midiCh, static_cast<float> (juce::MidiMessage::getMidiNoteInHertz (msg.getNoteNumber())) / 20000);
-                noteToVoices[midiCh] = msg.getNoteNumber();
-                gateIn->directInMono (midiCh, 1);
-                midiCh = (midiCh + 1) % PortFrames::maxChannels;
+                for (int j = 0; j < PortFrames::maxChannels; ++j) {
+                    if (noteToVoices[j] == msg.getNoteNumber() && static_cast<int>(gateIn->getOutputFrame(0, j)->left) == 0) {
+                        gateIn->directInMono(j, 1);
+                        skipMidiAssign = true;
+                        break;
+                    }
+                }
+                if (!skipMidiAssign) {
+                    noteIn->directInMono (midiCh, static_cast<float> (juce::MidiMessage::getMidiNoteInHertz (msg.getNoteNumber())) / 20000);
+                    noteToVoices[midiCh] = msg.getNoteNumber();
+                    gateIn->directInMono (midiCh, 1);
+                    midiCh = (midiCh + 1) % PortFrames::maxChannels;
+                }
+                skipMidiAssign = false;
 
             } else if (const auto msg = (*it).getMessage(); msg.isNoteOff()) {
                 for (int j = 0; j < PortFrames::maxChannels; ++j) {
