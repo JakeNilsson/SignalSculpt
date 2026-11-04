@@ -22,7 +22,7 @@ public:
     void setHeaderDesignPath() override;
     void setEnvPath();
 
-    void setVisualGradient() override;
+    void setVisualGradient() override; //test
 
     juce::Array<InJack*> getInJacks() override;
 
