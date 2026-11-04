@@ -15,7 +15,7 @@ public:
                                          canvasContainer(canvasContainerRef),
                                          editor(editorRef),
                                          overlay(overlayRef) {
-        moduleList.addItemList({"Wave"}, 1);
+        moduleList.addItemList({"Wave", "Envelope"}, 1);
 
         moduleList.onChange = [this] {
             moduleListWasShowing = false;
@@ -41,6 +41,41 @@ public:
                     newChild->onParameterChanged = [this] (int moduleID, int paramID, float value) {
                         if (onSetDspParameter) onSetDspParameter(moduleID, paramID, value);
                     };
+
+                    newChild->getOutJack().onDragStart = [this, newChild] (OutJack& outJack, const juce::MouseEvent&) {
+                        overlay.addInJacks(newChild->getInJacks());
+                        overlay.beginConnection (outJack, true);
+                    };
+
+                    newChild->getOutJack().onDrag = [this] (OutJack& outJack, const juce::Point<float> mousePos) {
+                        overlay.updateConnection (mousePos);
+                    };
+
+                    newChild->getOutJack().onDragEnd = [this] (OutJack& outJack, const juce::MouseEvent&) {
+                        overlay.cancelConnection ();
+                    };
+
+                    break;
+                } case 2 : {
+                    moduleHandler.addModuleComponent(ModuleType::Envelope);
+                    const auto newChild = moduleComponents.getLast();
+                    addAndMakeVisible(newChild);
+
+                    /* if (onCreateDspModule) {
+                        newChild->setModuleID(onCreateDspModule(ModuleType::Envelope));
+                    } */ // DSP for env not made yet, when done place it here
+
+                    lastMouseBlockOnExit.expand(10.f, 10.f);
+                    lastMouseBlockOnExit.setWidth(lastMouseBlockOnExit.getWidth() * newChild->getBlockSizeX());
+                    lastMouseBlockOnExit.setHeight(lastMouseBlockOnExit.getHeight() * newChild->getBlockSizeY());
+
+                    newChild->setBounds(lastMouseBlockOnExit.toNearestInt());
+                    newChild->setPaths();
+                    newChild->repaint();
+
+                    /* newChild->onParameterChanged = [this] (int moduleID, int paramID, float value) {
+                        if (onSetDspParameter) onSetDspParameter(moduleID, paramID, value);
+                    }; */ // no dsp yet
 
                     newChild->getOutJack().onDragStart = [this, newChild] (OutJack& outJack, const juce::MouseEvent&) {
                         overlay.addInJacks(newChild->getInJacks());

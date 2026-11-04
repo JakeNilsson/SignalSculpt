@@ -18,7 +18,12 @@ public:
 
     ~ModuleComponent() override = default;
 
-    void paint(juce::Graphics& g) override = 0;
+    void paint(juce::Graphics& g) override;
+    void drawHeader(juce::Graphics &g) const;
+    void drawBodyBG(juce::Graphics &g);
+    virtual void drawBody(juce::Graphics&) {}
+
+    virtual void setVisualGradient() {};
 
     [[nodiscard]] float getBlockSizeX() const {
         return blockSizeX;
@@ -36,7 +41,8 @@ public:
     }
 
     void setPaths();
-    virtual void onPathsReady() {};
+    virtual void setHeaderDesignPath() {}
+    virtual void onPathsReady() {}
 
     void drawStateButton(juce::Graphics &g, juce::Point<float> mousePos) const;
 
@@ -68,6 +74,7 @@ protected:
     juce::Label io{"I/O section", "Inputs & Output"};
 
     juce::Path headerPath;
+    juce::Path headerDesignPath;
     juce::Path stateButtonPath;
     juce::Path stateButtonBorderPath;
 
@@ -86,6 +93,12 @@ protected:
     juce::Font moduleFont;
 
     OutJack outJack;
+
+    bool prevState = true;
+
+    const float BGInset = 10.f; // space between the body and items within it
+    const float IOInset = 7.5f; // space between a section border and items within it
+    const float cornerRounding = 5.f; // rounding of borders and sections (if any)
 
 private:
     int moduleID = -1;

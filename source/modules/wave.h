@@ -1,5 +1,6 @@
 #pragma once
 #include "module.h"
+#include "waveDSP.h"
 #include "../theme/Jack.h"
 #include "../theme/Colors.h"
 #include "../theme/SiScSlider.h"
@@ -57,33 +58,36 @@ public:
             1,
             {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16},
             IndicatorType::line) {
-        shapeType.getInJack().setPort(0);
-        shapeSpec.getInJack().setPort(1);
-        phase.getInJack().setPort(2);
-        freq.getInJack().setPort(3);
-        mix.getInJack().setPort(4);
-        det.getInJack().setPort(5);
-        voices.getInJack().setPort(6);
+        shapeType.getInJack().setPort(WaveDSP::shapeTypeIn);
+        shapeSpec.getInJack().setPort(WaveDSP::shapeSpecIn);
+        phase.getInJack().setPort(WaveDSP::phaseIn);
+        freq.getInJack().setPort(WaveDSP::freqIn);
+        mix.getInJack().setPort(WaveDSP::mixIn);
+        det.getInJack().setPort(WaveDSP::detIn);
+        voices.getInJack().setPort(WaveDSP::voicesIn);
 
         outJack.setPort(0);
     };
 
-    void paint(juce::Graphics &g) override;
+    void drawBody(juce::Graphics &g) override;
+    void drawOscVisual(juce::Graphics &g) const;
+    void drawIOSection(juce::Graphics &g);
 
     void onPathsReady() override;
 
-    void setHeaderSinPath();
+    void setHeaderDesignPath() override;
     void setOscPath();
 
-    void setVisualGradient();
+    void setVisualGradient() override;
+
+    void connectListener (juce::Slider& slider, int control) const;
+    void connectListener (juce::ComboBox& comboBox, int control) const;
 
     juce::Array<InJack*> getInJacks() override;
 
     void setJackIDs(int ID) override;
 
 private:
-    juce::Path headerSinPath;
-
     juce::Path oscWavePath;
     juce::Path oscWavePathClosed;
     juce::Rectangle<float> oscGradientRect;
@@ -121,6 +125,4 @@ private:
     juce::Rectangle<float> IOBounds;
     juce::Rectangle<float> IOTextBounds;
     juce::Path IOPath;
-
-    bool prevState = true;
 };

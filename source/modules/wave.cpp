@@ -1,5 +1,4 @@
 #include "wave.h"
-#include "waveDSP.h"
 #include <ranges>
 
 /*void WaveModule::process(juce::AudioBuffer<float> &buffer) {
@@ -10,51 +9,14 @@ juce::String WaveModule::getName() const {
     return name;
 }*/
 
-void WaveModuleComponent::paint(juce::Graphics &g) {
-    const auto mousePos = getMouseXYRelative();
-    drawStateButton(g, mousePos.toFloat());
+void WaveModuleComponent::drawBody(juce::Graphics &g) {
+    drawOscVisual(g);
+    drawIOSection(g);
+}
 
-    g.setColour(colors.getColor(ThemeColors::tabBG));
-    g.fillPath(headerPath);
-
-    g.setColour (statusColor);
-    {
-        juce::Graphics::ScopedSaveState clip (g);
-        g.reduceClipRegion (headerPath);
-        g.strokePath (headerSinPath, juce::PathStrokeType (2.f));
-    }
-
-    g.setColour(colors.getColor(ThemeColors::tabBG));
-    g.fillRect(headerBounds);
-
-    g.setColour(statusColor);
-    g.setFont(moduleFont);
-    g.drawText(name.getText(), headerBounds, juce::Justification::centred);
-
-    g.setColour(colors.getColor(ThemeColors::tabBG));
-    g.fillRect(body);
-
+void WaveModuleComponent::drawOscVisual(juce::Graphics &g) const {
     g.setColour(colors.getColor(ThemeColors::canvasBG));
-    g.fillRoundedRectangle(oscBounds, 5);
-
-    if (prevState != state) {
-        setVisualGradient();
-
-        state ?
-        comboBoxTextColor = colors.getColor(ThemeColors::neutral) :
-        comboBoxTextColor = colors.getColor(ThemeColors::tabBG);
-
-        prevState = state;
-    }
-
-    shapeType.setColour(juce::ComboBox::textColourId, comboBoxTextColor);
-    shapeSpec.setColour(juce::ComboBox::textColourId, comboBoxTextColor);
-
-    phase.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
-    freq.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
-    mix.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
-    det.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
-    voices.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
+    g.fillRoundedRectangle(oscBounds, cornerRounding);
 
     g.setGradientFill(oscGradient);
     {
@@ -69,6 +31,17 @@ void WaveModuleComponent::paint(juce::Graphics &g) {
         g.reduceClipRegion (oscBounds.toNearestInt());
         g.strokePath(oscWavePath, juce::PathStrokeType (2.f));
     }
+}
+
+void WaveModuleComponent::drawIOSection(juce::Graphics &g) {
+    shapeType.setColour(juce::ComboBox::textColourId, comboBoxTextColor);
+    shapeSpec.setColour(juce::ComboBox::textColourId, comboBoxTextColor);
+
+    phase.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
+    freq.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
+    mix.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
+    det.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
+    voices.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
 
     g.setColour(statusColor);
     g.setFont(moduleFont.withPointHeight(16.f));
@@ -94,8 +67,6 @@ void WaveModuleComponent::paint(juce::Graphics &g) {
 }
 
 void WaveModuleComponent::onPathsReady() {
-    setHeaderSinPath();
-
     headerBounds.removeFromRight(105);
     headerBounds.removeFromLeft(105);
 
@@ -128,8 +99,6 @@ void WaveModuleComponent::onPathsReady() {
     addAndMakeVisible(shapeSpec);
     auto leftOffset = 55;
     auto halfWidth = (centerBounds.getWidth() - leftOffset) / 2;
-
-    comboBoxTextColor = colors.getColor(ThemeColors::neutral);
 
     shapeType.setBounds(centerBounds.getX() + leftOffset,
                         centerBounds.getY(),
@@ -224,54 +193,39 @@ void WaveModuleComponent::onPathsReady() {
                          bigRotarySize,
                          0);
 
+    connectListener(shapeType, WaveDSP::shapeTypeIn); // combo box connections
+
+    connectListener(phase, WaveDSP::phaseIn);         // slider connections
+    connectListener(freq, WaveDSP::freqIn);
+    connectListener(mix, WaveDSP::mixIn);
+    connectListener(det, WaveDSP::detIn);
+    connectListener(voices, WaveDSP::voicesIn);
+
     setVisualGradient();
-
     setOscPath();
+}
 
-    shapeType.onChange = [this] {
-        if (onParameterChanged) {
-            onParameterChanged(getModuleID(), WaveDSP::shapeTypeIn, static_cast<float>(shapeType.getSelectedId()));
-        }
-    };
-
-    phase.onValueChange = [this] {
-        if (onParameterChanged) {
-            onParameterChanged(getModuleID(), WaveDSP::phaseIn, static_cast<float>(phase.getValue()));
-        }
-    };
-
-    freq.onValueChange = [this] {
-        if (onParameterChanged) {
-            onParameterChanged(getModuleID(), WaveDSP::freqIn, static_cast<float>(freq.getValue()));
-        }
-    };
-
-    mix.onValueChange = [this] {
-        if (onParameterChanged) {
-            onParameterChanged(getModuleID(), WaveDSP::mixIn, static_cast<float>(mix.getValue()));
-        }
-    };
-
-    det.onValueChange = [this] {
-        if (onParameterChanged) {
-            onParameterChanged(getModuleID(), WaveDSP::detIn, static_cast<float>(det.getValue()));
-        }
-    };
-
-    voices.onValueChange = [this] {
-        if (onParameterChanged) {
-            onParameterChanged(getModuleID(), WaveDSP::voicesIn, static_cast<float>(voices.getValue()));
-        }
+void WaveModuleComponent::connectListener (juce::Slider& slider, int control) const {
+    slider.onValueChange = [this, &slider, control] {
+        if (onParameterChanged)
+            onParameterChanged (getModuleID(), control, static_cast<float> (slider.getValue()));
     };
 }
 
-void WaveModuleComponent::setHeaderSinPath() {
+void WaveModuleComponent::connectListener (juce::ComboBox& comboBox, int control) const {
+    comboBox.onChange = [this, &comboBox, control] {
+        if (onParameterChanged)
+            onParameterChanged (getModuleID(), control, static_cast<float> (comboBox.getSelectedId()));
+    };
+}
+
+void WaveModuleComponent::setHeaderDesignPath() {
     const auto startPt = headerBounds.getX() + (headerBounds.getHeight() / 2) + 2;
     const auto amplitude = 3;
 
-    headerSinPath.startNewSubPath(body.getX(), startPt);
+    headerDesignPath.startNewSubPath(body.getX(), startPt);
     for (auto x = static_cast<int>(body.getX()); x < static_cast<int>(body.getWidth()) + body.getX(); x++) {
-        headerSinPath.lineTo(static_cast<float>(x), amplitude * std::sin(0.25 * x) + startPt);
+        headerDesignPath.lineTo(static_cast<float>(x), amplitude * std::sin(0.25 * x) + startPt);
     }
 }
 

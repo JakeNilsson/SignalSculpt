@@ -6,9 +6,7 @@
 
 class Header : public juce::Component {
 public:
-    explicit Header(Colors &colorsRef) : midiInputList(colorsRef), colors(colorsRef) {
-        midiInputList.setName("MIDI Inputs:");
-    }
+    explicit Header(Colors &colorsRef) : colors(colorsRef) {}
 
     void paint(juce::Graphics& g) override {
         g.setGradientFill(juce::ColourGradient::vertical(juce::Colour{0x40000000},
@@ -42,13 +40,6 @@ public:
                     headerTab,
                     juce::Justification::right,
                     false);
-
-        g.setColour(colors.getColor(ThemeColors::neutral));
-        g.setFont(settingsFont);
-        g.drawText(midiInputList.getName(),
-                   midiInputTextBounds,
-                   juce::Justification::centredTop,
-                   false);
     };
 
     bool hitTest (int x, int y) override
@@ -109,25 +100,6 @@ public:
         headerFont = juce::Font(headerFontOptions);
         bulletPointFont = juce::Font(bulletFontOptions);
         settingsFont = juce::Font(settingsFontOptions);
-
-        midiInputBounds.setBounds(tabWidth + tabHandleDiff, 0, midiInputWidth, handleHeight);
-
-        midiInputsListBounds = midiInputBounds;
-        midiInputsListBounds.removeFromTop(35);
-        midiInputsListBounds.removeFromBottom(10);
-        midiInputList.setBounds(midiInputsListBounds.toNearestInt());
-        addAndMakeVisible(midiInputList);
-
-        int id = 1;
-        midiInputList.clear();
-        for (const auto& device : juce::MidiInput::getAvailableDevices()) {
-            midiInputList.addItem(device.name, id);
-            id++;
-        }
-
-        midiInputTextBounds = midiInputBounds;
-        midiInputTextBounds.removeFromTop(10);
-        midiInputTextBounds.removeFromBottom(35);
     }
 
 private:
@@ -137,16 +109,9 @@ private:
     juce::Rectangle<float> headerShadow;
     juce::Rectangle<float> headerTab;
 
-    juce::Rectangle<float> midiInputBounds;
-    juce::Rectangle<float> midiInputsListBounds;
-    juce::Rectangle<float> midiInputTextBounds;
-
     juce::Font headerFont;
     juce::Font bulletPointFont;
     juce::Font settingsFont;
-
-    SiScComboBox midiInputList;
-    juce::AudioDeviceManager deviceManager;
 
     Colors &colors;
 };

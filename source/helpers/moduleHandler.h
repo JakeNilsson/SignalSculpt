@@ -1,6 +1,6 @@
 #pragma once
-#include "../modules/wave.h"
 #include "../theme/Colors.h"
+#include "../modules/module.h"
 #include "moduleIDs.h"
 
 class ModuleHandler {

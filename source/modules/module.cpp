@@ -1,6 +1,49 @@
 #include "module.h"
 #include "BinaryData.h"
 
+void ModuleComponent::paint(juce::Graphics &g) {
+    drawHeader(g);
+    drawBodyBG(g);
+    drawBody(g);
+}
+
+void ModuleComponent::drawHeader(juce::Graphics &g) const {
+    const auto mousePos = getMouseXYRelative();
+    drawStateButton(g, mousePos.toFloat());
+
+    g.setColour(colors.getColor(ThemeColors::tabBG));
+    g.fillPath(headerPath);
+
+    g.setColour (statusColor);
+    {
+        juce::Graphics::ScopedSaveState clip (g);
+        g.reduceClipRegion (headerPath);
+        g.strokePath (headerDesignPath, juce::PathStrokeType (2.f));
+    }
+
+    g.setColour(colors.getColor(ThemeColors::tabBG));
+    g.fillRect(headerBounds);
+
+    g.setColour(statusColor);
+    g.setFont(moduleFont);
+    g.drawText(name.getText(), headerBounds, juce::Justification::centred);
+}
+
+void ModuleComponent::drawBodyBG(juce::Graphics &g) {
+    g.setColour(colors.getColor(ThemeColors::tabBG));
+    g.fillRect(body);
+
+    if (prevState != state) {
+        setVisualGradient();
+
+        state ?
+        comboBoxTextColor = colors.getColor(ThemeColors::neutral) :
+        comboBoxTextColor = colors.getColor(ThemeColors::tabBG);
+
+        prevState = state;
+    }
+}
+
 void ModuleComponent::setPaths() {
     const auto bounds = getLocalBounds().toFloat();
     innerBounds = bounds.reduced(10.f, 10.f);
@@ -50,6 +93,9 @@ void ModuleComponent::setPaths() {
     moduleFont = juce::Font(fontOptions);
 
     visualColor = colors.getColor(ThemeColors::visuals);
+    comboBoxTextColor = colors.getColor(ThemeColors::neutral);
+
+    setHeaderDesignPath();
 
     onPathsReady();
 }

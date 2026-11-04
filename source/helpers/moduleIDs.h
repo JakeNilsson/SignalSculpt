@@ -2,6 +2,7 @@
 
 enum class ModuleType {
     Wave,
+    Envelope,
 };
 
 enum class StaticIDs : int {
