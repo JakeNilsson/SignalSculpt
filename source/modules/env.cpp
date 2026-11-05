@@ -48,6 +48,7 @@ void EnvModuleComponent::drawIOSection(juce::Graphics &g) {
     g.setColour(statusColor);
     g.setFont(moduleFont.withPointHeight(16.f));
 
+    g.drawText(inJackLabel.getText(), inJackLabelBounds, juce::Justification::centred); // GATE Input Text
     g.drawText(delayLabel.getText(), delayLabelBounds, juce::Justification::centred); // Delay Text
     g.drawText(attackLabel.getText(), attackLabelBounds, juce::Justification::centred); // Attack Text
     g.drawText(holdLabel.getText(), holdLabelBounds, juce::Justification::centred); // Hold Text
@@ -91,6 +92,7 @@ void EnvModuleComponent::onPathsReady() {
     IOTextBounds.removeFromLeft(85);
 
     constexpr auto jackSize = 45.f;
+    constexpr auto smallJackSize = 20.f;
     constexpr auto jackBorderSize = 8.f;
 
     addAndMakeVisible(outJack);
@@ -111,15 +113,27 @@ void EnvModuleComponent::setControlBounds(std::vector<juce::Rectangle<float>> co
     const float middleX = controlBounds[0].getCentreX();
     const float rightMiddleX = controlBounds[0].getX() + ((3 * controlBounds[0].getWidth()) / 4);
     const float bigControlCenterOffsetX = ((leftMiddleX - leftX) / 2) - (bigRotarySize / 2);
+    constexpr float nudge = 15.f;
+    constexpr float smallJackSize = 20.f;
     // const float smallControlCenterOffsetX = ((leftMiddleX - leftX) / 2) - (smallRotarySize / 2);
 
     const float topY = controlBounds[0].getY();
     const float middleY = controlBounds[0].getCentreY();
 
+    addAndMakeVisible(triggerInJack);
+    triggerInJack.setBounds(controlBounds[0].getCentreX() - (smallJackSize / 2),
+                     topY + ((middleY - topY) / 2) - (smallJackSize / 2) - 5,
+                    smallJackSize,
+                    smallJackSize);
+    inJackLabelBounds.setBounds(controlBounds[0].getCentreX() - 25,
+                         topY + ((middleY - topY) / 2) - (smallJackSize / 2) + smallJackSize,
+                         50,
+                         15);
+
     setControlAndLabelVisAndBounds(delay, delayLabelBounds, leftX + bigControlCenterOffsetX, middleY);
     setControlAndLabelVisAndBounds(attack, attackLabelBounds, leftX + bigControlCenterOffsetX, topY);
-    setControlAndLabelVisAndBounds(hold, holdLabelBounds, leftMiddleX + bigControlCenterOffsetX, topY);
-    setControlAndLabelVisAndBounds(decay, decayLabelBounds, middleX + bigControlCenterOffsetX, topY);
+    setControlAndLabelVisAndBounds(hold, holdLabelBounds, leftMiddleX - nudge + bigControlCenterOffsetX, topY);
+    setControlAndLabelVisAndBounds(decay, decayLabelBounds, middleX + nudge + bigControlCenterOffsetX, topY);
     setControlAndLabelVisAndBounds(sustain, sustainLabelBounds, rightMiddleX + bigControlCenterOffsetX, topY);
     setControlAndLabelVisAndBounds(release, releaseLabelBounds, rightMiddleX + bigControlCenterOffsetX, middleY);
 }
@@ -168,9 +182,27 @@ void EnvModuleComponent::setVisualGradient() {
 }
 
 juce::Array<InJack *> EnvModuleComponent::getInJacks() {
-    return juce::Array<InJack*> {};
+    juce::Array<InJack*> inJacks;
+
+    inJacks.add(&triggerInJack);
+    inJacks.add(&delay.getInJack());
+    inJacks.add(&attack.getInJack());
+    inJacks.add(&hold.getInJack());
+    inJacks.add(&decay.getInJack());
+    inJacks.add(&sustain.getInJack());
+    inJacks.add(&release.getInJack());
+
+    return inJacks;
 }
 
 void EnvModuleComponent::setJackIDs(const int ID) {
+    triggerInJack.setID(ID);
+    delay.getInJack().setID(ID);
+    attack.getInJack().setID(ID);
+    hold.getInJack().setID(ID);
+    decay.getInJack().setID(ID);
+    sustain.getInJack().setID(ID);
+    release.getInJack().setID(ID);
+
     outJack.setID(ID);
 }

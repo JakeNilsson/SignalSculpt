@@ -62,7 +62,9 @@ public:
             colorsRef,
             0,
             {},
-            IndicatorType::none)
+            IndicatorType::none),
+
+        triggerInJack(colorsRef, "Gate In")
     {
         outJack.setPort(0);
     }
@@ -120,5 +122,9 @@ private:
     juce::Rectangle<float> releaseLabelBounds;
     SiScSlider release;
 
-    juce::Rectangle<float> jackBorder;
+    juce::Label inJackLabel {"gate in", "Gate"};
+    juce::Rectangle<float> inJackLabelBounds;
+    InJack triggerInJack;
+
+    juce::Rectangle<float> jackBorder; // for output jack, not the in-jack above
 };
