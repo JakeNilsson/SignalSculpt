@@ -44,6 +44,8 @@ public:
     virtual void setHeaderDesignPath() {}
     virtual void onPathsReady() {}
 
+    virtual void setControlBounds(std::vector<juce::Rectangle<float>>) {}
+
     void drawStateButton(juce::Graphics &g, juce::Point<float> mousePos) const;
 
     void mouseEnter(const juce::MouseEvent &event) override;
@@ -97,8 +99,17 @@ protected:
     bool prevState = true;
 
     const float BGInset = 10.f; // space between the body and items within it
-    const float IOInset = 7.5f; // space between a section border and items within it
+
+    const float IOInsetX = 10.f; // space between a section border and items within it
+    const float IOInsetY = 7.5f; // space between a section border and items within it
+
     const float cornerRounding = 5.f; // rounding of borders and sections (if any)
+
+    const float bigRotarySize = 50.f; // for drawing rotary sliders
+    const float smallRotarySize = 40.5f;
+
+    const float jackSize = 45.f; // for drawing output jacks
+    const float jackBorderSize = 8.f;
 
 private:
     int moduleID = -1;

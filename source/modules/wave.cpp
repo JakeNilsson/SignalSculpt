@@ -73,18 +73,16 @@ void WaveModuleComponent::onPathsReady() {
     auto halfCenterHeight = 12.5f;
     auto halfHeight = body.getHeight() / 2;
     auto offset = 5.f;
-    auto inset = 10.f;
-    auto IOinset = 7.5;
 
     oscBounds.setBounds(body.getX(), body.getY(), body.getWidth(), body.getHeight());
     centerBounds.setBounds(body.getX(), body.getY(), body.getWidth(), body.getHeight());
     IOBounds.setBounds(body.getX(), body.getY(), body.getWidth(), body.getHeight());
 
     oscBounds.removeFromBottom(halfHeight + halfCenterHeight + offset);
-    oscBounds.removeFromTop(inset);
-    oscBounds.removeFromLeft(inset);
-    oscBounds.removeFromRight(inset);
-    oscBounds.removeFromBottom(inset / 2);
+    oscBounds.removeFromTop(BGInset);
+    oscBounds.removeFromLeft(BGInset);
+    oscBounds.removeFromRight(BGInset);
+    oscBounds.removeFromBottom(BGInset / 2);
 
     centerBounds.removeFromTop(halfHeight - halfCenterHeight - offset);
     centerBounds.removeFromBottom(halfHeight - halfCenterHeight + offset);
@@ -93,7 +91,7 @@ void WaveModuleComponent::onPathsReady() {
 
     oscGradientRect.setBounds(oscBounds.getX(), oscBounds.getY(), oscBounds.getWidth(), oscBounds.getHeight());
 
-    centerBounds.reduce(inset, 2);
+    centerBounds.reduce(BGInset, 2);
 
     addAndMakeVisible(shapeType);
     addAndMakeVisible(shapeSpec);
@@ -116,9 +114,9 @@ void WaveModuleComponent::onPathsReady() {
     shapeSpec.addItemList({"Analog"}, 1);
     shapeSpec.setSelectedId(1);
 
-    juce::Rectangle<float> IOBoundsReduced = IOBounds.reduced(inset, 0);
-    IOBoundsReduced.removeFromBottom(inset);
-    IOBoundsReduced.removeFromTop(10);
+    juce::Rectangle<float> IOBoundsReduced = IOBounds.reduced(BGInset, 0);
+    IOBoundsReduced.removeFromBottom(BGInset);
+    IOBoundsReduced.removeFromTop(BGInset);
 
     IOPath.startNewSubPath(IOBoundsReduced.getTopLeft());
     IOPath.lineTo(IOBoundsReduced.getBottomLeft());
@@ -131,35 +129,44 @@ void WaveModuleComponent::onPathsReady() {
     IOTextBounds.removeFromRight(85);
     IOTextBounds.removeFromLeft(85);
 
-    constexpr auto jackSize = 45.f;
-    constexpr auto jackBorderSz = 8.f;
-    constexpr auto bigRotarySize = 50.f;
-    constexpr auto smallRotarySize = 40.5f;
+    connectListener(shapeType, WaveDSP::shapeTypeIn); // combo box connections
 
-    const auto leftKnobX = IOBoundsReduced.getX() + inset + (bigRotarySize / 2);
-    const auto centerKnobX = IOBoundsReduced.getCentreX();
-    const auto rightKnobX = IOBoundsReduced.getRight() - inset - (bigRotarySize / 2);
+    connectListener(phase, WaveDSP::phaseIn);         // slider connections
+    connectListener(freq, WaveDSP::freqIn);
+    connectListener(mix, WaveDSP::mixIn);
+    connectListener(det, WaveDSP::detIn);
+    connectListener(voices, WaveDSP::voicesIn);
 
-    const auto leftCenterKnobX = ((centerKnobX - leftKnobX) / 2) + leftKnobX + (inset / 3);
-    const auto rightCenterKnobX = ((rightKnobX - centerKnobX) / 2) + centerKnobX - (inset / 3);
+    setControlBounds({IOBoundsReduced});
+    setVisualGradient();
+    setOscPath();
+}
 
-    const auto lowerKnobY = IOBoundsReduced.getBottom() - bigRotarySize - IOinset;
-    const auto middleKnobY = IOBoundsReduced.getY() + (IOinset * 1.4);
-    const auto upperKnobY = IOBoundsReduced.getY() + (IOinset * 0.5);
+void WaveModuleComponent::setControlBounds(std::vector<juce::Rectangle<float>> controlBounds) {
+    const auto leftKnobX = controlBounds[0].getX() + IOInsetX + (bigRotarySize / 2);
+    const auto centerKnobX = controlBounds[0].getCentreX();
+    const auto rightKnobX = controlBounds[0].getRight() - IOInsetX - (bigRotarySize / 2);
+
+    const auto leftCenterKnobX = ((centerKnobX - leftKnobX) / 2) + leftKnobX + (IOInsetX / 3);
+    const auto rightCenterKnobX = ((rightKnobX - centerKnobX) / 2) + centerKnobX - (IOInsetX / 3);
+
+    const auto lowerKnobY = controlBounds[0].getBottom() - bigRotarySize - IOInsetY;
+    const auto middleKnobY = controlBounds[0].getY() + (IOInsetY * 1.4);
+    const auto upperKnobY = controlBounds[0].getY() + (IOInsetY * 0.5);
 
     addAndMakeVisible(outJack);
     outJack.setBounds(body.getCentreX() - (jackSize / 2),
-                         body.getBottom() - jackSize - jackBorderSz,
+                         body.getBottom() - jackSize - jackBorderSize,
                          jackSize, jackSize);
 
-    jackBorder = outJack.getBounds().toFloat().expanded(jackBorderSz, jackBorderSz);
+    jackBorder = outJack.getBounds().toFloat().expanded(jackBorderSize, jackBorderSize);
 
     addAndMakeVisible(phase);
     addAndMakeVisible(phaseLabel);
     phase.setRotaryParameters(0, juce::MathConstants<float>::twoPi, false);
     phase.setBounds(leftKnobX - (bigRotarySize / 2), lowerKnobY, bigRotarySize, bigRotarySize);
     phaseLabelBounds.setBounds(leftKnobX - (bigRotarySize / 2),
-                         lowerKnobY - inset - 1,
+                         lowerKnobY - IOInsetX - 1,
                          bigRotarySize,
                          0);
 
@@ -189,20 +196,9 @@ void WaveModuleComponent::onPathsReady() {
     addAndMakeVisible(voices);
     voices.setBounds(rightKnobX - (bigRotarySize / 2), lowerKnobY, bigRotarySize, bigRotarySize);
     voicesLabelBounds.setBounds(rightKnobX - (bigRotarySize / 2),
-                         lowerKnobY - inset - 1,
+                         lowerKnobY - IOInsetX - 1,
                          bigRotarySize,
                          0);
-
-    connectListener(shapeType, WaveDSP::shapeTypeIn); // combo box connections
-
-    connectListener(phase, WaveDSP::phaseIn);         // slider connections
-    connectListener(freq, WaveDSP::freqIn);
-    connectListener(mix, WaveDSP::mixIn);
-    connectListener(det, WaveDSP::detIn);
-    connectListener(voices, WaveDSP::voicesIn);
-
-    setVisualGradient();
-    setOscPath();
 }
 
 void WaveModuleComponent::connectListener (juce::Slider& slider, int control) const {

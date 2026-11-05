@@ -24,7 +24,14 @@ void EnvModuleComponent::drawEnvVisual(juce::Graphics &g) const {
     }
 }
 
-void EnvModuleComponent::drawIOSection(juce::Graphics &g) const {
+void EnvModuleComponent::drawIOSection(juce::Graphics &g) {
+    delay.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
+    attack.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
+    hold.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
+    decay.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
+    sustain.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
+    release.setColour(juce::Slider::rotarySliderFillColourId, statusColor);
+
     g.setColour(statusColor);
     g.strokePath(IOPath, juce::PathStrokeType(1.f)); // outline
 
@@ -37,6 +44,16 @@ void EnvModuleComponent::drawIOSection(juce::Graphics &g) const {
     g.setColour(statusColor);
     g.setFont(moduleFont.withPointHeight(16.f));
     g.drawText(io.getText(), IOBounds, juce::Justification::centredTop); // IO Text
+
+    g.setColour(statusColor);
+    g.setFont(moduleFont.withPointHeight(16.f));
+
+    g.drawText(delayLabel.getText(), delayLabelBounds, juce::Justification::centred); // Delay Text
+    g.drawText(attackLabel.getText(), attackLabelBounds, juce::Justification::centred); // Attack Text
+    g.drawText(holdLabel.getText(), holdLabelBounds, juce::Justification::centred); // Hold Text
+    g.drawText(decayLabel.getText(), decayLabelBounds, juce::Justification::centred); // Decay Text
+    g.drawText(sustainLabel.getText(), sustainLabelBounds, juce::Justification::centred); // Sustain Text
+    g.drawText(releaseLabel.getText(), releaseLabelBounds, juce::Justification::centred); // Release Text
 }
 
 void EnvModuleComponent::onPathsReady() {
@@ -74,18 +91,49 @@ void EnvModuleComponent::onPathsReady() {
     IOTextBounds.removeFromLeft(85);
 
     constexpr auto jackSize = 45.f;
-    constexpr auto jackBorderSz = 8.f;
+    constexpr auto jackBorderSize = 8.f;
 
     addAndMakeVisible(outJack);
     outJack.setBounds(body.getCentreX() - (jackSize / 2),
-                         body.getBottom() - jackSize - jackBorderSz,
+                         body.getBottom() - jackSize - jackBorderSize,
                          jackSize, jackSize);
 
-    jackBorder = outJack.getBounds().toFloat().expanded(jackBorderSz, jackBorderSz);
+    jackBorder = outJack.getBounds().toFloat().expanded(jackBorderSize, jackBorderSize);
 
+    setControlBounds({IOBoundsReduced.reduced(IOInsetX)});
     setVisualGradient();
-
     setEnvPath();
+}
+
+void EnvModuleComponent::setControlBounds(std::vector<juce::Rectangle<float>> controlBounds) {
+    const float leftX = controlBounds[0].getX();
+    const float leftMiddleX = controlBounds[0].getX() + (controlBounds[0].getWidth() / 4);
+    const float middleX = controlBounds[0].getCentreX();
+    const float rightMiddleX = controlBounds[0].getX() + ((3 * controlBounds[0].getWidth()) / 4);
+    const float bigControlCenterOffsetX = ((leftMiddleX - leftX) / 2) - (bigRotarySize / 2);
+    // const float smallControlCenterOffsetX = ((leftMiddleX - leftX) / 2) - (smallRotarySize / 2);
+
+    const float topY = controlBounds[0].getY();
+    const float middleY = controlBounds[0].getCentreY();
+
+    setControlAndLabelVisAndBounds(delay, delayLabelBounds, leftX + bigControlCenterOffsetX, middleY);
+    setControlAndLabelVisAndBounds(attack, attackLabelBounds, leftX + bigControlCenterOffsetX, topY);
+    setControlAndLabelVisAndBounds(hold, holdLabelBounds, leftMiddleX + bigControlCenterOffsetX, topY);
+    setControlAndLabelVisAndBounds(decay, decayLabelBounds, middleX + bigControlCenterOffsetX, topY);
+    setControlAndLabelVisAndBounds(sustain, sustainLabelBounds, rightMiddleX + bigControlCenterOffsetX, topY);
+    setControlAndLabelVisAndBounds(release, releaseLabelBounds, rightMiddleX + bigControlCenterOffsetX, middleY);
+}
+
+void EnvModuleComponent::setControlAndLabelVisAndBounds(SiScSlider &control, juce::Rectangle<float> &labelBounds, const float x, const float y) {
+    addAndMakeVisible(control);
+    control.setBounds(x,
+                    y - 5,
+                    bigRotarySize,
+                    bigRotarySize);
+    labelBounds.setBounds(x,
+                         y + bigRotarySize - 13,
+                         bigRotarySize,
+                         15);
 }
 
 void EnvModuleComponent::setEnvPath() {
