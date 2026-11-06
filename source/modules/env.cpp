@@ -173,13 +173,17 @@ void EnvModuleComponent::setControlAndLabelVisAndBounds(SiScSlider &control, juc
 }
 
 void EnvModuleComponent::setEnvPath() {
-    const float del = delay.getValue();
-    const float atk = attack.getValue();
-    const float hld = hold.getValue();
-    const float dec = decay.getValue();
-    const float sus = sustain.getValue();
-    const float rel = release.getValue();
-    const float visualLength = del + atk + hld + dec + rel;
+    const auto del = static_cast<float>(delay.getValue());
+    const auto atk = static_cast<float>(attack.getValue());
+    const auto hld = static_cast<float>(hold.getValue());
+    const auto dec = static_cast<float>(decay.getValue());
+    const auto sus = static_cast<float>(sustain.getValue());
+    const auto rel = static_cast<float>(release.getValue());
+    float visualLength = del + atk + hld + dec + rel;
+
+    if (visualLength < 1) {
+        visualLength = 1.f;
+    }
     const float actualLength = innerEnvBounds.getWidth();
 
     const juce::Point startPt = {innerEnvBounds.getX() + ((del / visualLength) * actualLength),
