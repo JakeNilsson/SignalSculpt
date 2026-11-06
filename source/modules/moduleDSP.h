@@ -103,7 +103,7 @@ protected:
 
         for (const auto input : inputs[static_cast<size_t>(port)]) {
             if (input->numChannels <= channel) {
-                channel = channel % input->numChannels; // round robin style
+                channel = channel % input->numChannels; // round robin style, maybe make it a user global setting?
             }
 
             sum.left += input->channels[static_cast<size_t>(channel)].left;
