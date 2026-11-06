@@ -61,7 +61,7 @@ void SignalGraph::connect(const int src_id, const int src_port, const int dst_id
                 jassertfalse;
             }
 
-            node->module->setOutputChannels(output->numChannels);
+            node->module->setOutputChannels(std::max(output->numChannels, node->module->getOutputChannels()));
         }
     }
 }

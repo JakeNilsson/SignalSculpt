@@ -96,12 +96,15 @@ protected:
 
     virtual void onPrepare() {} // to be appended by derived classes
 
-    [[nodiscard]] Frame inStereo (const int port, const int channel) const noexcept {
+    [[nodiscard]] Frame inStereo (const int port, int channel) const noexcept {
         assert (port >= 0 && port < getNumInputs() &&
                 channel >= 0 && channel < getMaxChannels());
         Frame sum = {.left = 0, .right = 0};
+
         for (const auto input : inputs[static_cast<size_t>(port)]) {
-            if (input->numChannels <= channel) continue;
+            if (input->numChannels <= channel) {
+                channel = channel % input->numChannels; // round robin style
+            }
 
             sum.left += input->channels[static_cast<size_t>(channel)].left;
             sum.right += input->channels[static_cast<size_t>(channel)].right;
