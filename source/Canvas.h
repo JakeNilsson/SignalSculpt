@@ -61,9 +61,9 @@ public:
                     const auto newChild = moduleComponents.getLast();
                     addAndMakeVisible(newChild);
 
-                    /* if (onCreateDspModule) {
+                    if (onCreateDspModule) {
                         newChild->setModuleID(onCreateDspModule(ModuleType::Envelope));
-                    } */ // DSP for env not made yet, when done place it here
+                    }
 
                     lastMouseBlockOnExit.expand(10.f, 10.f);
                     lastMouseBlockOnExit.setWidth(lastMouseBlockOnExit.getWidth() * newChild->getBlockSizeX());
@@ -73,9 +73,9 @@ public:
                     newChild->setPaths();
                     newChild->repaint();
 
-                    /* newChild->onParameterChanged = [this] (int moduleID, int paramID, float value) {
+                    newChild->onParameterChanged = [this] (int moduleID, int paramID, float value) {
                         if (onSetDspParameter) onSetDspParameter(moduleID, paramID, value);
-                    }; */ // no dsp yet
+                    };
 
                     newChild->getOutJack().onDragStart = [this, newChild] (OutJack& outJack, const juce::MouseEvent&) {
                         overlay.addInJacks(newChild->getInJacks());

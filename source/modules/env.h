@@ -4,6 +4,7 @@
 #include "../theme/Colors.h"
 #include "../theme/SiScSlider.h"
 #include "../theme/SiScComboBox.h"
+#include "envDSP.h"
 
 class EnvModuleComponent : public ModuleComponent {
 public:
@@ -66,7 +67,15 @@ public:
 
         triggerInJack(colorsRef, "Gate In")
     {
-        outJack.setPort(0);
+        delay.getInJack().setPort(EnvDSP::delayIn);
+        attack.getInJack().setPort(EnvDSP::attackIn);
+        hold.getInJack().setPort(EnvDSP::holdIn);
+        triggerInJack.setPort(EnvDSP::gateIn);
+        decay.getInJack().setPort(EnvDSP::decayIn);
+        sustain.getInJack().setPort(EnvDSP::sustainIn);
+        release.getInJack().setPort(EnvDSP::releaseIn);
+
+        outJack.setPort(EnvDSP::envOut);
     }
 
     void drawBody(juce::Graphics &g) override;
@@ -75,11 +84,13 @@ public:
 
     void onPathsReady() override;
 
+    void connectListener(SiScSlider& slider, int control);
+
     void setHeaderDesignPath() override;
     void setEnvPath();
     void setVisualGradient() override;
     void setControlBounds(std::vector<juce::Rectangle<float>>) override;
-    void setControlAndLabelVisAndBounds(SiScSlider& control, juce::Rectangle<float>& labelBounds, float x, float y);
+    void setControlAndLabelVisAndBounds(SiScSlider& control, juce::Rectangle<float>& labelBounds, float x, float y, float skewFactor = 1);
 
     juce::Array<InJack*> getInJacks() override;
 
@@ -90,9 +101,13 @@ private:
     juce::Path envPathClosed;
 
     juce::Rectangle<float> envBounds;
+    juce::Path envPathClip;
+    juce::Rectangle<float> innerEnvBounds;
 
     juce::Rectangle<float> envGradientRect;
     juce::ColourGradient envGradient;
+
+    double envVisualLength;
 
     juce::Rectangle<float> IOBounds;
     juce::Rectangle<float> IOTextBounds;

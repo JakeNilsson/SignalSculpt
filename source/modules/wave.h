@@ -66,7 +66,7 @@ public:
         det.getInJack().setPort(WaveDSP::detIn);
         voices.getInJack().setPort(WaveDSP::voicesIn);
 
-        outJack.setPort(0);
+        outJack.setPort(WaveDSP::waveOut);
     };
 
     void drawBody(juce::Graphics &g) override;

@@ -12,6 +12,7 @@ void EnvModuleComponent::drawEnvVisual(juce::Graphics &g) const {
     g.setGradientFill(envGradient);
     {
         juce::Graphics::ScopedSaveState clip (g);
+        g.reduceClipRegion (envPathClip);
         g.reduceClipRegion (envPathClosed);
         g.fillRoundedRectangle (envGradientRect, 5); // clips gradient to the closed env path
     }
@@ -19,7 +20,7 @@ void EnvModuleComponent::drawEnvVisual(juce::Graphics &g) const {
     g.setColour(visualColor);
     {
         juce::Graphics::ScopedSaveState clip (g);
-        g.reduceClipRegion (envBounds.toNearestInt());
+        g.reduceClipRegion (envPathClip);
         g.strokePath(envPath, juce::PathStrokeType (2.f)); // clips path itself to the env BG
     }
 }
@@ -72,7 +73,11 @@ void EnvModuleComponent::onPathsReady() {
     envBounds.removeFromRight(BGInset);
     envBounds.removeFromBottom((BGInset / 2) + (halfHeight + offset));
 
-    envGradientRect.setBounds(envBounds.getX(), envBounds.getY(), envBounds.getWidth(), envBounds.getHeight());
+    envPathClip.addRoundedRectangle(envBounds, cornerRounding);
+
+    innerEnvBounds = envBounds.reduced(0, 1);
+
+    envGradientRect.setBounds(innerEnvBounds.getX(), innerEnvBounds.getY(), innerEnvBounds.getWidth(), innerEnvBounds.getHeight());
 
     IOBounds.removeFromTop(halfHeight - offset);
 
@@ -102,9 +107,25 @@ void EnvModuleComponent::onPathsReady() {
 
     jackBorder = outJack.getBounds().toFloat().expanded(jackBorderSize, jackBorderSize);
 
+    connectListener(delay, EnvDSP::delayIn);
+    connectListener(attack, EnvDSP::attackIn);
+    connectListener(hold, EnvDSP::holdIn);
+    connectListener(decay, EnvDSP::decayIn);
+    connectListener(sustain, EnvDSP::sustainIn);
+    connectListener(release, EnvDSP::releaseIn);
+
     setControlBounds({IOBoundsReduced.reduced(IOInsetX)});
     setVisualGradient();
     setEnvPath();
+}
+
+void EnvModuleComponent::connectListener(SiScSlider &slider, int control) {
+    slider.onValueChange = [this, &slider, control] {
+        if (onParameterChanged)
+            onParameterChanged (getModuleID(), control, static_cast<float> (slider.getValue()));
+        setEnvPath();
+        repaint();
+    };
 }
 
 void EnvModuleComponent::setControlBounds(std::vector<juce::Rectangle<float>> controlBounds) {
@@ -130,18 +151,19 @@ void EnvModuleComponent::setControlBounds(std::vector<juce::Rectangle<float>> co
                          50,
                          15);
 
-    setControlAndLabelVisAndBounds(delay, delayLabelBounds, leftX + bigControlCenterOffsetX, middleY);
-    setControlAndLabelVisAndBounds(attack, attackLabelBounds, leftX + bigControlCenterOffsetX, topY);
-    setControlAndLabelVisAndBounds(hold, holdLabelBounds, leftMiddleX - nudge + bigControlCenterOffsetX, topY);
-    setControlAndLabelVisAndBounds(decay, decayLabelBounds, middleX + nudge + bigControlCenterOffsetX, topY);
+    setControlAndLabelVisAndBounds(delay, delayLabelBounds, leftX + bigControlCenterOffsetX, middleY, 0.35);
+    setControlAndLabelVisAndBounds(attack, attackLabelBounds, leftX + bigControlCenterOffsetX, topY, 0.35);
+    setControlAndLabelVisAndBounds(hold, holdLabelBounds, leftMiddleX - nudge + bigControlCenterOffsetX, topY, 0.35);
+    setControlAndLabelVisAndBounds(decay, decayLabelBounds, middleX + nudge + bigControlCenterOffsetX, topY, 0.35);
     setControlAndLabelVisAndBounds(sustain, sustainLabelBounds, rightMiddleX + bigControlCenterOffsetX, topY);
-    setControlAndLabelVisAndBounds(release, releaseLabelBounds, rightMiddleX + bigControlCenterOffsetX, middleY);
+    setControlAndLabelVisAndBounds(release, releaseLabelBounds, rightMiddleX + bigControlCenterOffsetX, middleY, 0.35);
 }
 
-void EnvModuleComponent::setControlAndLabelVisAndBounds(SiScSlider &control, juce::Rectangle<float> &labelBounds, const float x, const float y) {
+void EnvModuleComponent::setControlAndLabelVisAndBounds(SiScSlider &control, juce::Rectangle<float> &labelBounds, const float x, const float y, float skewFactor) {
     addAndMakeVisible(control);
+    control.setSkewFactor(skewFactor);
     control.setBounds(x,
-                    y - 5,
+                      y - 5,
                     bigRotarySize,
                     bigRotarySize);
     labelBounds.setBounds(x,
@@ -151,21 +173,47 @@ void EnvModuleComponent::setControlAndLabelVisAndBounds(SiScSlider &control, juc
 }
 
 void EnvModuleComponent::setEnvPath() {
-    const juce::Point startPt = {envBounds.getX(), envBounds.getBottom()};
-    const juce::Point endPt = {envBounds.getRight(), envBounds.getBottom()};
+    const float del = delay.getValue();
+    const float atk = attack.getValue();
+    const float hld = hold.getValue();
+    const float dec = decay.getValue();
+    const float sus = sustain.getValue();
+    const float rel = release.getValue();
+    const float visualLength = del + atk + hld + dec + rel;
+    const float actualLength = innerEnvBounds.getWidth();
+
+    const juce::Point startPt = {innerEnvBounds.getX() + ((del / visualLength) * actualLength),
+                                 innerEnvBounds.getBottom()};
+    const juce::Point atkPt = {innerEnvBounds.getX() + (((del + atk) / visualLength) * actualLength),
+                               innerEnvBounds.getY()};
+    const juce::Point hldPt = {innerEnvBounds.getX() + (((del + atk + hld) / visualLength) * actualLength),
+                               innerEnvBounds.getY()};
+    const juce::Point decPt = {innerEnvBounds.getX() + (((del + atk + hld + dec) / visualLength) * actualLength),
+                               (innerEnvBounds.getHeight() * (1 - sus)) + innerEnvBounds.getY()};
+    const juce::Point endPt = {innerEnvBounds.getRight(),
+                               innerEnvBounds.getBottom()};
+
+    envPath.clear();
+    envPathClosed.clear();
 
     envPath.startNewSubPath(startPt);
-    envPath.lineTo(envBounds.getCentreX(), envBounds.getY());
+    envPath.lineTo(atkPt);
+    envPath.lineTo(hldPt);
+    envPath.lineTo(decPt);
     envPath.lineTo(endPt); // visual path
 
     envPathClosed.startNewSubPath(startPt);
-    envPathClosed.lineTo(envBounds.getCentreX(), envBounds.getY());
+    envPathClosed.lineTo(atkPt);
+    envPathClosed.lineTo(hldPt);
+    envPathClosed.lineTo(decPt);
     envPathClosed.lineTo(endPt);
     envPathClosed.closeSubPath(); // closed path, used to clip gradient
 }
 
 void EnvModuleComponent::setHeaderDesignPath() {
     const auto startPt = headerBounds.getX() + (headerBounds.getHeight() / 2);
+
+    headerDesignPath.clear();
 
     headerDesignPath.startNewSubPath(body.getX(), startPt);
     headerDesignPath.lineTo(body.getRight(), startPt);
@@ -184,10 +232,10 @@ void EnvModuleComponent::setVisualGradient() {
 juce::Array<InJack *> EnvModuleComponent::getInJacks() {
     juce::Array<InJack*> inJacks;
 
-    inJacks.add(&triggerInJack);
     inJacks.add(&delay.getInJack());
     inJacks.add(&attack.getInJack());
     inJacks.add(&hold.getInJack());
+    inJacks.add(&triggerInJack);
     inJacks.add(&decay.getInJack());
     inJacks.add(&sustain.getInJack());
     inJacks.add(&release.getInJack());
