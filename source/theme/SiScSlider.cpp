@@ -1,7 +1,7 @@
 #include "SiScSlider.h"
 
-SiScSlider::SiScSlider(juce::Slider::SliderStyle sliderStyle, float startValue, float endValue, float defaultValue, Colors &colorsRef, float step, std::initializer_list<double> snapPoints, IndicatorType indicatorType) : inJack(colorsRef, "sliderIn"), // ayo pause ????
-    snapValues(snapPoints), indicatorType(indicatorType) {
+SiScSlider::SiScSlider(SliderStyle sliderStyle, SliderType sliderType, float startValue, float endValue, float defaultValue, Colors &colorsRef, float step, std::initializer_list<double> snapPoints, IndicatorType indicatorType) : inJack(colorsRef, "sliderIn"), // ayo pause ????
+    snapValues(snapPoints), indicatorType(indicatorType), sliderType(sliderType) {
     setSliderStyle(sliderStyle);
     setRange(startValue, endValue, step);
     setTextBoxStyle(juce::Slider::NoTextBox, false, 0, 0);
@@ -89,6 +89,10 @@ std::optional<double> SiScSlider::getLatchedValue() const {
 
 IndicatorType SiScSlider::getIndicatorType() const {
     return indicatorType;
+}
+
+SliderType SiScSlider::getSliderType() const {
+    return sliderType;
 }
 
 InJack& SiScSlider::getInJack() {

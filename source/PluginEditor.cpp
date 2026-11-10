@@ -61,7 +61,7 @@ void PluginEditor::resized()
     const auto bounds = getLocalBounds();
 
     connectionOverlay.setBounds (bounds);
-    connectionOverlay.setInterceptsMouseClicks(false, false);
+    connectionOverlay.setInterceptsMouseClicks(false, true);
 
     canvasContainer.setBounds (bounds);
     //canvasContainer.setScrollOnDragMode (juce::Viewport::ScrollOnDragMode::all);

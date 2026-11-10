@@ -20,87 +20,51 @@ void ConnectionOverlay::paint(juce::Graphics &g) {
     }
 
     for (const auto& connection : highlightedConnections) {
-        if (connection.isConnectionShown) {
-            if (connection.isSelected) {
-                g.setColour(connection.connectionColor);
+        if (connection->isConnectionShown) {
+            if (connection->isSelected) {
+                g.setColour(connection->connectionColor);
             } else {
-                g.setColour(connection.connectionColor.withAlpha(0.4f));
+                g.setColour(connection->connectionColor.withAlpha(0.4f));
             }
 
-            g.fillEllipse(connection.startPt.getX() - (pointSize / 2),
-                          connection.startPt.getY() - (pointSize / 2),
+            g.fillEllipse(connection->startPt.getX() - (pointSize / 2),
+                          connection->startPt.getY() - (pointSize / 2),
                           pointSize, pointSize);
 
-            g.strokePath(connection.connectionPath, juce::PathStrokeType(2.f));
+            g.strokePath(connection->connectionPath, juce::PathStrokeType(2.f));
 
-            g.fillEllipse(connection.endPt.getX() - (pointSize / 2),
-                      connection.endPt.getY() - (pointSize / 2),
+            g.fillEllipse(connection->endPt.getX() - (pointSize / 2),
+                      connection->endPt.getY() - (pointSize / 2),
                       pointSize,
                       pointSize);
         }
     }
 }
 
-void ConnectionOverlay::mouseMove(const juce::MouseEvent &e, const juce::Point<float> mousePos, float scrollDeltaY) {
-    highlightedConnections.clear();
-
-    if (e.mods.isCtrlDown()) {
-
-        if (scrollDeltaY > 0) {
-            selection++;
-        } else if (scrollDeltaY < 0) {
-            selection--;
-        }
-
-        ctrlWasDown = true;
-        Jack* hoveredJack = nullptr;
-        auto mouseInGlobal = mousePos.roundToInt();
-
-        for (auto& connection : connections) {
-            if (connection.startJack->getScreenBounds().contains(mouseInGlobal)) {
-                hoveredJack = connection.startJack;
-                break;
-            }
-            if (connection.endJack->getScreenBounds().contains(mouseInGlobal)) {
-                hoveredJack = connection.endJack;
-                break;
-            }
-        }
-
-        if (hoveredJack != nullptr) {
-            grabKeyboardFocus();
-
-            for (auto& connection : connections) {
-                if (connection.startJack == hoveredJack || connection.endJack == hoveredJack) {
-                    connection.isConnectionShown = true;
-                    highlightedConnections.push_back(connection);
-                }
-            }
-        }
-
-        const int selectionSize = static_cast<int>(highlightedConnections.size());
-
-        if (selectionSize > 0) {
-            selection = ((selection % selectionSize) + selectionSize) % selectionSize;
-
-            for (int i = 0; i < selectionSize; i++) {
-                if (i == selection) {
-                    highlightedConnections[i].isSelected = true;
-                } else {
-                    highlightedConnections[i].isSelected = false;
-                }
-            }
-        }
-
-        repaint();
-
-    } else if (ctrlWasDown) {
-        for (auto& connection : connections) {
-            connection.isConnectionShown = false;
-            connection.isSelected = false;
-        }
-        repaint();
+void ConnectionOverlay::mouseMove(const juce::MouseEvent& e, juce::Point<float> mousePos, float scrollDeltaY)
+{
+    if (! e.mods.isCtrlDown()) {
+        if (ctrlWasDown) clearHighlights();
+        return;
     }
+
+    ctrlWasDown = true;
+
+    if (scrollDeltaY > 0)      ++selection;
+    else if (scrollDeltaY < 0) --selection;
+
+    const auto mouseInGlobal = mousePos.roundToInt();
+    hoveredJack = nullptr;
+
+    for (auto& c : connections) {
+        if (c.startJack->getScreenBounds().contains(mouseInGlobal)) { hoveredJack = c.startJack; break; }
+        if (c.endJack->getScreenBounds().contains(mouseInGlobal))   { hoveredJack = c.endJack;   break; }
+    }
+
+    if (hoveredJack != nullptr)
+        grabKeyboardFocus();
+
+    rebuildHighlights();
 }
 
 void ConnectionOverlay::beginConnection(OutJack &outJack, bool isInCanvas) {
@@ -177,6 +141,7 @@ void ConnectionOverlay::endConnection() {
                 liveConnection.connectionPath.startNewSubPath(liveConnection.startPt);
                 liveConnection.connectionPath.lineTo(liveConnection.endPt);
 
+                highlightedConnections.clear();
                 connections.push_back(liveConnection);
 
                 if (connectDSP) {
@@ -218,36 +183,98 @@ bool ConnectionOverlay::keyPressed (const juce::KeyPress& key)
         return false;
 
     const auto selected = std::ranges::find_if(highlightedConnections,
-                                               [] (const Connection& c) { return c.isSelected; });
+                                               [] (const Connection* c) { return c->isSelected; });
 
     if (selected == highlightedConnections.end())
         return false;
 
     // Copy before erasing: selected points into highlightedConnections.
-    const Connection& toRemove = *selected;
+    const Connection* toRemove = *selected;
 
     if (disconnectDSP) {
-        disconnectDSP(selected->startJack->getID(),
-                      selected->startJack->getPort(),
-                      selected->endJack->getID(),
-                      selected->endJack->getPort());
+        disconnectDSP(toRemove->startJack->getID(),
+                      toRemove->startJack->getPort(),
+                      toRemove->endJack->getID(),
+                      toRemove->endJack->getPort());
     }
 
     const auto it = std::ranges::find_if(connections,
                                          [&] (const Connection& c)
                                          {
-                                             return c.startJack == toRemove.startJack
-                                                    && c.endJack == toRemove.endJack;
+                                             return c.startJack == toRemove->startJack
+                                                    && c.endJack == toRemove->endJack;
                                          });
 
     if (it != connections.end())
     {
         it->startJack->decrementNumConnections();
         it->startJack->repaint();
-        connections.erase(it);
-        highlightedConnections.erase(selected);
+
+        connections.erase(it);  // every pointer in highlightedConnections is now stale
+        selection = 0;
+        rebuildHighlights();    // collect fresh pointers and update the slider
+    }
+
+    return true;
+}
+
+void ConnectionOverlay::modifierKeysChanged (const juce::ModifierKeys& mods)
+{
+    if (! mods.isCtrlDown() && ctrlWasDown)
+        clearHighlights();
+}
+
+void ConnectionOverlay::clearHighlights()
+{
+    ctrlWasDown = false;
+    modulationSlider.setVisible (false);
+    highlightedConnections.clear();
+
+    for (auto& c : connections) {
+        c.isConnectionShown = false;
+        c.isSelected = false;
     }
 
     repaint();
-    return true;
+}
+
+void ConnectionOverlay::rebuildHighlights()
+{
+    highlightedConnections.clear();
+
+    for (auto& c : connections) {
+        c.isConnectionShown = false;
+        c.isSelected = false;
+    }
+
+    if (hoveredJack != nullptr)
+        for (auto& c : connections)
+            if (c.startJack == hoveredJack || c.endJack == hoveredJack) {
+                c.isConnectionShown = true;
+                highlightedConnections.push_back(&c);
+            }
+
+    const int n = static_cast<int>(highlightedConnections.size());
+
+    if (n == 0) {
+        modulationSlider.setVisible(false);
+        repaint();
+        return;
+    }
+
+    selection = ((selection % n) + n) % n;
+    auto* sel = highlightedConnections[selection];
+    sel->isSelected = true;
+
+    auto topLeft = sel->startJack->getScreenBounds().getTopLeft();
+    if (sel->isStartInCanvas)
+        topLeft = getLocalPoint(nullptr, topLeft);
+
+    modulationSlider.setBounds(topLeft.x, topLeft.y,
+                               sel->startJack->getWidth(), sel->startJack->getHeight());
+    modulationSlider.setValue(sel->modAmount, juce::dontSendNotification);
+    modulationSlider.setColour(juce::Slider::rotarySliderFillColourId, colors.getColor(ThemeColors::visuals));
+    modulationSlider.setVisible(true);
+
+    repaint();
 }

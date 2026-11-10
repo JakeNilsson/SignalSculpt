@@ -24,162 +24,190 @@ void SiScLookAndFeel::drawComboBox(juce::Graphics &g, int width, int height, boo
 void SiScLookAndFeel::drawRotarySlider(juce::Graphics &g, int x, int y, int width, int height, float sliderPos, const float rotaryStartAngle, const float rotaryEndAngle, juce::Slider &slider) {
     auto fill    = slider.findColour (juce::Slider::rotarySliderFillColourId);
 
-    constexpr auto knobIndicDiff = 10;
+    if (auto* siScSlider = dynamic_cast<SiScSlider*> (&slider)) {
+        if (siScSlider->getSliderType() == SliderType::standard) {
 
-    auto bounds = juce::Rectangle<int> (x, y, width, height).toFloat();
-    bounds.reduce(knobIndicDiff, knobIndicDiff);
+            constexpr auto knobIndicDiff = 10;
 
-    auto radius = juce::jmin (bounds.getWidth(), bounds.getHeight()) / 2.0f;
-    auto toAngle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
-    auto lineW = 2.f;
-    auto arcRadius = radius - lineW * 0.5f;
+            auto bounds = juce::Rectangle<int> (x, y, width, height).toFloat();
+            bounds.reduce(knobIndicDiff, knobIndicDiff);
 
-    juce::Path valueArc;
+            auto radius = juce::jmin (bounds.getWidth(), bounds.getHeight()) / 2.0f;
+            auto toAngle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
+            auto lineW = 2.f;
+            auto arcRadius = radius - lineW * 0.5f;
 
-    const auto rotaryParams = slider.getRotaryParameters();
-    if (rotaryParams.stopAtEnd) {
-        valueArc.addCentredArc (bounds.getCentreX(),
-                                bounds.getCentreY(),
-                                arcRadius,
-                                arcRadius,
-                                0.0f,
-                                rotaryStartAngle,
-                                toAngle,
-                                true);
-    } else {
-        valueArc.addCentredArc (bounds.getCentreX(),
-                            bounds.getCentreY(),
-                            arcRadius,
-                            arcRadius,
-                            0.0f,
-                            rotaryStartAngle,
-                            rotaryEndAngle,
-                            true);
-    }
+            juce::Path valueArc;
 
-    g.setColour (fill);
-    g.strokePath (valueArc, juce::PathStrokeType (lineW, juce::PathStrokeType::curved, juce::PathStrokeType::square));
-
-    auto notchBGOvershoot = 4.0f;
-    auto notchOvershoot = 1.5f;
-    auto notchBGRadius = arcRadius + notchBGOvershoot;
-    auto notchRadius = arcRadius + notchOvershoot;
-
-    juce::Point<float> notchBGEnd (bounds.getCentreX() + notchBGRadius * std::cos (toAngle - juce::MathConstants<float>::halfPi),
-                                  bounds.getCentreY() + notchBGRadius * std::sin (toAngle - juce::MathConstants<float>::halfPi));
-
-    juce::Path notchBG;
-    notchBG.startNewSubPath (bounds.getCentreX(), bounds.getCentreY());
-    notchBG.lineTo (notchBGEnd);
-
-    juce::Point<float> notchEnd (bounds.getCentreX() + notchRadius * std::cos (toAngle - juce::MathConstants<float>::halfPi),
-                                  bounds.getCentreY() + notchRadius * std::sin (toAngle - juce::MathConstants<float>::halfPi));
-
-    juce::Path notch;
-    notch.startNewSubPath (bounds.getCentreX(), bounds.getCentreY());
-    notch.lineTo (notchEnd);
-
-    g.setColour (colors.getColor(ThemeColors::tabBG));
-    g.strokePath(notchBG, juce::PathStrokeType(static_cast<float>(11)));
-
-    g.setColour (fill);
-    g.strokePath(notch, juce::PathStrokeType(static_cast<float>(1)));
-
-    auto tabCircleBounds = bounds.reduced(3);
-    g.setColour (colors.getColor(ThemeColors::tabBG));
-    g.fillEllipse(tabCircleBounds);
-
-    auto jackBounds = bounds.reduced(5);
-
-    if (auto* siScSlider = dynamic_cast<SiScSlider*> (&slider))
-    {
-        siScSlider->addAndMakeVisible(siScSlider->inJack);
-        siScSlider->inJack.setBounds(jackBounds.toNearestInt());
-        siScSlider->inJack.setInterceptsMouseClicks(false, false);
-
-        const auto snapValues= siScSlider->getSnapValues();
-        const auto indicatorType = siScSlider->getIndicatorType();
-        const auto latchedValue = siScSlider->getLatchedValue();
-
-        bounds.expand(knobIndicDiff, knobIndicDiff);
-
-        if (indicatorType == IndicatorType::circle) {
-            constexpr auto circleWH = 4.f;
-            auto indicatorRadius = arcRadius + knobIndicDiff - (circleWH / 2);
-            float indicatorAngle;
-            juce::Rectangle<float> indicatorBounds;
-            juce::Point<float> topLeftBounds;
-
-            for (const auto value : snapValues) {
-                bool isLoopedPoint = false;
-
-                if (!rotaryParams.stopAtEnd && latchedValue.has_value()) {
-                    isLoopedPoint = (juce::approximatelyEqual(value, slider.getMinimum()) &&
-                                     juce::approximatelyEqual(latchedValue.value(), slider.getMaximum()));
-                }
-
-                bool isDirectMatch = latchedValue.has_value() &&
-                          juce::approximatelyEqual(value, latchedValue.value());
-
-                if (isDirectMatch || isLoopedPoint) {
-                    g.setColour(fill);
-                } else {
-                    g.setColour (colors.getColor(ThemeColors::canvasBG));
-                }
-
-                indicatorAngle = rotaryStartAngle + static_cast<float>(slider.valueToProportionOfLength(value)) * (rotaryEndAngle - rotaryStartAngle);
-
-                topLeftBounds.setXY(bounds.getCentreX() + indicatorRadius * std::cos (indicatorAngle - juce::MathConstants<float>::halfPi) - (circleWH / 2),
-                                    bounds.getCentreY() + indicatorRadius * std::sin (indicatorAngle - juce::MathConstants<float>::halfPi) - (circleWH / 2));
-
-                indicatorBounds.setBounds(topLeftBounds.getX(), topLeftBounds.getY(), circleWH, circleWH);
-
-                g.fillEllipse(indicatorBounds);
+            const auto rotaryParams = slider.getRotaryParameters();
+            if (rotaryParams.stopAtEnd) {
+                valueArc.addCentredArc (bounds.getCentreX(),
+                                        bounds.getCentreY(),
+                                        arcRadius,
+                                        arcRadius,
+                                        0.0f,
+                                        rotaryStartAngle,
+                                        toAngle,
+                                        true);
+            } else {
+                valueArc.addCentredArc (bounds.getCentreX(),
+                                    bounds.getCentreY(),
+                                    arcRadius,
+                                    arcRadius,
+                                    0.0f,
+                                    rotaryStartAngle,
+                                    rotaryEndAngle,
+                                    true);
             }
-        } else if (indicatorType == IndicatorType::line) {
-            constexpr auto lineL = 5.f;
-            constexpr auto lineW = 2.f;
-            auto indicatorRadius = arcRadius + knobIndicDiff - lineL;
-            auto outerRadius = indicatorRadius + lineL;
 
-            float indicatorAngle;
-            juce::Point<float> startPt;
-            juce::Point<float> endPt;
+            g.setColour (fill);
+            g.strokePath (valueArc, juce::PathStrokeType (lineW, juce::PathStrokeType::curved, juce::PathStrokeType::square));
 
-            for (const auto value : snapValues) {
-                bool isLoopedPoint = false;
+            auto notchBGOvershoot = 4.0f;
+            auto notchOvershoot = 1.5f;
+            auto notchBGRadius = arcRadius + notchBGOvershoot;
+            auto notchRadius = arcRadius + notchOvershoot;
 
-                if (!rotaryParams.stopAtEnd && latchedValue.has_value()) {
-                    isLoopedPoint = (juce::approximatelyEqual(value, slider.getMinimum()) &&
-                                     juce::approximatelyEqual(latchedValue.value(), slider.getMaximum()));
+            juce::Point<float> notchBGEnd (bounds.getCentreX() + notchBGRadius * std::cos (toAngle - juce::MathConstants<float>::halfPi),
+                                          bounds.getCentreY() + notchBGRadius * std::sin (toAngle - juce::MathConstants<float>::halfPi));
+
+            juce::Path notchBG;
+            notchBG.startNewSubPath (bounds.getCentreX(), bounds.getCentreY());
+            notchBG.lineTo (notchBGEnd);
+
+            juce::Point<float> notchEnd (bounds.getCentreX() + notchRadius * std::cos (toAngle - juce::MathConstants<float>::halfPi),
+                                          bounds.getCentreY() + notchRadius * std::sin (toAngle - juce::MathConstants<float>::halfPi));
+
+            juce::Path notch;
+            notch.startNewSubPath (bounds.getCentreX(), bounds.getCentreY());
+            notch.lineTo (notchEnd);
+
+            g.setColour (colors.getColor(ThemeColors::tabBG));
+            g.strokePath(notchBG, juce::PathStrokeType(static_cast<float>(11)));
+
+            g.setColour (fill);
+            g.strokePath(notch, juce::PathStrokeType(static_cast<float>(1)));
+
+            auto tabCircleBounds = bounds.reduced(3);
+            g.setColour (colors.getColor(ThemeColors::tabBG));
+            g.fillEllipse(tabCircleBounds);
+
+            auto jackBounds = bounds.reduced(5);
+
+            siScSlider->addAndMakeVisible(siScSlider->inJack);
+            siScSlider->inJack.setBounds(jackBounds.toNearestInt());
+            siScSlider->inJack.setInterceptsMouseClicks(false, false);
+
+            const auto snapValues= siScSlider->getSnapValues();
+            const auto indicatorType = siScSlider->getIndicatorType();
+            const auto latchedValue = siScSlider->getLatchedValue();
+
+            bounds.expand(knobIndicDiff, knobIndicDiff);
+
+            if (indicatorType == IndicatorType::circle) {
+                constexpr auto circleWH = 4.f;
+                auto indicatorRadius = arcRadius + knobIndicDiff - (circleWH / 2);
+                float indicatorAngle;
+                juce::Rectangle<float> indicatorBounds;
+                juce::Point<float> topLeftBounds;
+
+                for (const auto value : snapValues) {
+                    bool isLoopedPoint = false;
+
+                    if (!rotaryParams.stopAtEnd && latchedValue.has_value()) {
+                        isLoopedPoint = (juce::approximatelyEqual(value, slider.getMinimum()) &&
+                                         juce::approximatelyEqual(latchedValue.value(), slider.getMaximum()));
+                    }
+
+                    bool isDirectMatch = latchedValue.has_value() &&
+                              juce::approximatelyEqual(value, latchedValue.value());
+
+                    if (isDirectMatch || isLoopedPoint) {
+                        g.setColour(fill);
+                    } else {
+                        g.setColour (colors.getColor(ThemeColors::canvasBG));
+                    }
+
+                    indicatorAngle = rotaryStartAngle + static_cast<float>(slider.valueToProportionOfLength(value)) * (rotaryEndAngle - rotaryStartAngle);
+
+                    topLeftBounds.setXY(bounds.getCentreX() + indicatorRadius * std::cos (indicatorAngle - juce::MathConstants<float>::halfPi) - (circleWH / 2),
+                                        bounds.getCentreY() + indicatorRadius * std::sin (indicatorAngle - juce::MathConstants<float>::halfPi) - (circleWH / 2));
+
+                    indicatorBounds.setBounds(topLeftBounds.getX(), topLeftBounds.getY(), circleWH, circleWH);
+
+                    g.fillEllipse(indicatorBounds);
                 }
+            } else if (indicatorType == IndicatorType::line) {
+                constexpr auto lineL = 5.f;
+                constexpr auto lineW = 2.f;
+                auto indicatorRadius = arcRadius + knobIndicDiff - lineL;
+                auto outerRadius = indicatorRadius + lineL;
 
-                bool isDirectMatch = latchedValue.has_value() &&
-                          juce::approximatelyEqual(value, latchedValue.value());
+                float indicatorAngle;
+                juce::Point<float> startPt;
+                juce::Point<float> endPt;
 
-                if (isDirectMatch || isLoopedPoint) {
-                    g.setColour(fill);
-                } else {
-                    g.setColour (colors.getColor(ThemeColors::canvasBG));
+                for (const auto value : snapValues) {
+                    bool isLoopedPoint = false;
+
+                    if (!rotaryParams.stopAtEnd && latchedValue.has_value()) {
+                        isLoopedPoint = (juce::approximatelyEqual(value, slider.getMinimum()) &&
+                                         juce::approximatelyEqual(latchedValue.value(), slider.getMaximum()));
+                    }
+
+                    bool isDirectMatch = latchedValue.has_value() &&
+                              juce::approximatelyEqual(value, latchedValue.value());
+
+                    if (isDirectMatch || isLoopedPoint) {
+                        g.setColour(fill);
+                    } else {
+                        g.setColour (colors.getColor(ThemeColors::canvasBG));
+                    }
+
+                    indicatorAngle = rotaryStartAngle + static_cast<float>(slider.valueToProportionOfLength(value)) * (rotaryEndAngle - rotaryStartAngle);
+
+                    const auto cosA = std::cos (indicatorAngle - juce::MathConstants<float>::halfPi);
+                    const auto sinA = std::sin (indicatorAngle - juce::MathConstants<float>::halfPi);
+
+                    startPt.setXY (bounds.getCentreX() + indicatorRadius * cosA,
+                                    bounds.getCentreY() + indicatorRadius * sinA);
+
+                    endPt.setXY (bounds.getCentreX() + outerRadius * cosA,
+                                  bounds.getCentreY() + outerRadius * sinA);
+
+                    juce::Path indicatorLine;
+                    indicatorLine.startNewSubPath (startPt);
+                    indicatorLine.lineTo (endPt);
+
+                    g.strokePath (indicatorLine, juce::PathStrokeType (lineW));
                 }
-
-                indicatorAngle = rotaryStartAngle + static_cast<float>(slider.valueToProportionOfLength(value)) * (rotaryEndAngle - rotaryStartAngle);
-
-                const auto cosA = std::cos (indicatorAngle - juce::MathConstants<float>::halfPi);
-                const auto sinA = std::sin (indicatorAngle - juce::MathConstants<float>::halfPi);
-
-                startPt.setXY (bounds.getCentreX() + indicatorRadius * cosA,
-                                bounds.getCentreY() + indicatorRadius * sinA);
-
-                endPt.setXY (bounds.getCentreX() + outerRadius * cosA,
-                              bounds.getCentreY() + outerRadius * sinA);
-
-                juce::Path indicatorLine;
-                indicatorLine.startNewSubPath (startPt);
-                indicatorLine.lineTo (endPt);
-
-                g.strokePath (indicatorLine, juce::PathStrokeType (lineW));
             }
+        } else if (siScSlider->getSliderType() == SliderType::modulation) {
+            constexpr auto knobIndicDiff = 3;
+
+            auto bounds = juce::Rectangle<int> (x, y, width, height).toFloat();
+            bounds.reduce(knobIndicDiff, knobIndicDiff);
+
+            auto radius = juce::jmin (bounds.getWidth(), bounds.getHeight()) / 2.0f;
+            auto mid = 0.5f;
+            auto midAngle = rotaryStartAngle + mid * (rotaryEndAngle - rotaryStartAngle);
+            auto toAngle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
+            auto lineW = 2.f;
+            auto arcRadius = radius - lineW * 0.5f;
+
+            juce::Path valueArc;
+
+            valueArc.addCentredArc(bounds.getCentreX(),
+                       bounds.getCentreY(),
+                       arcRadius,
+                       arcRadius,
+                       0.0f,
+                       juce::jmin(midAngle, toAngle),
+                       juce::jmax(midAngle, toAngle),
+                       true);
+
+            g.setColour (fill);
+            g.strokePath (valueArc, juce::PathStrokeType (lineW, juce::PathStrokeType::curved, juce::PathStrokeType::square));
         }
     }
 }

@@ -10,9 +10,15 @@ enum class IndicatorType : size_t {
     line,
 };
 
+enum class SliderType : size_t {
+    standard,
+    modulation,
+};
+
 class SiScSlider : public juce::Slider {
 public:
     SiScSlider(SliderStyle sliderStyle,
+        SliderType sliderType,
         float startValue,
         float endValue,
         float defaultValue,
@@ -29,12 +35,14 @@ public:
     [[nodiscard]] std::vector<double> getSnapValues() const;
     [[nodiscard]] std::optional<double> getLatchedValue() const;
     [[nodiscard]] IndicatorType getIndicatorType() const;
+    [[nodiscard]] SliderType getSliderType() const;
     [[nodiscard]] InJack& getInJack();
 
     InJack inJack;
 private:
     std::vector<double> snapValues;
     IndicatorType indicatorType;
+    SliderType sliderType;
     double snapDistance;
     double prevValue;
     std::optional<double> latchedValue;

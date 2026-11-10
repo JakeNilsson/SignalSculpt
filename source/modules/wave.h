@@ -15,6 +15,7 @@ public:
         shapeSpec(colorsRef),
 
         phase(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
+        SliderType::standard,
             0,
             juce::MathConstants<double>::twoPi,
             0,
@@ -24,6 +25,7 @@ public:
             IndicatorType::circle),
 
         freq(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
+        SliderType::standard,
             0,
             20000,
             261.63, // middle C
@@ -33,6 +35,7 @@ public:
             IndicatorType::none),
 
         mix(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
+        SliderType::standard,
             0,
             100,
             80,
@@ -42,6 +45,7 @@ public:
             IndicatorType::none),
 
         det(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
+        SliderType::standard,
             0,
             100,
             20,
@@ -51,6 +55,7 @@ public:
             IndicatorType::none),
 
         voices(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
+        SliderType::standard,
             1,
             16,
             1,

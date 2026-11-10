@@ -12,6 +12,7 @@ public:
         ModuleComponent(colorsRef, 2.f, 2.f, "Envelope"),
 
         delay(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
+              SliderType::standard,
             0,
             4,
             0,
@@ -21,6 +22,7 @@ public:
             IndicatorType::none),
 
         attack(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
+        SliderType::standard,
             0,
             32,
             0,
@@ -30,6 +32,7 @@ public:
             IndicatorType::none),
 
         hold(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
+        SliderType::standard,
             0,
             4,
             0,
@@ -39,6 +42,7 @@ public:
             IndicatorType::none),
 
         decay(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
+        SliderType::standard,
             0,
             32,
             1,
@@ -48,6 +52,7 @@ public:
             IndicatorType::none),
 
         sustain(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
+        SliderType::standard,
             0,
             1,
             1,
@@ -57,6 +62,7 @@ public:
             IndicatorType::none),
 
         release(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
+        SliderType::standard,
             0,
             32,
             0.089,
