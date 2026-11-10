@@ -30,7 +30,8 @@ class ConnectionOverlay : public juce::Component {
 public:
     ConnectionOverlay(Colors& colorsRef,
                       juce::Viewport& canvasContainerRef,
-                      juce::AudioProcessorEditor& editorRef) : colors(colorsRef),
+                      juce::AudioProcessorEditor& editorRef) : globalWatcher(*this),
+                                                               colors(colorsRef),
                                                                canvasContainer(canvasContainerRef),
                                                                editor(editorRef),
                                                                modulationSlider(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
@@ -52,23 +53,22 @@ public:
                                                     0.0,    // offset
                                                     false); // userCanPressKeyToSwapMode
 
-        modulationSlider.getInJack().onMouseMove =
-        [this] (const juce::MouseEvent& e, juce::Point<float> screenPos, float dy)
-        {
-            mouseMove (e, screenPos, dy);
-        };
-
         modulationSlider.onValueChange = [this]
         {
             for (auto* c : highlightedConnections)
                 if (c->isSelected)
                     c->modAmount = modulationSlider.getValue();
         };
+
+        juce::Desktop::getInstance().addGlobalMouseListener(&globalWatcher);
+    }
+
+    ~ConnectionOverlay() override
+    {
+        juce::Desktop::getInstance().removeGlobalMouseListener(&globalWatcher);
     }
 
     void paint(juce::Graphics &g) override;
-
-    void mouseMove(const juce::MouseEvent &e, const juce::Point<float> mousePos, float scrollDeltaY);
 
     void beginConnection(OutJack& outJack, bool isInCanvas);
     void updateConnection(juce::Point<float> cursorLoc);
@@ -90,8 +90,25 @@ public:
     std::function<void (int, int, int, int)> connectDSP;
     std::function<void (int, int, int, int)> disconnectDSP;
 
+    void handleHover(juce::ModifierKeys mods, juce::Point<float> screenPos, float scrollDeltaY);
+
 private:
     void rebuildHighlights();
+
+    struct GlobalWatcher : juce::MouseListener {
+        explicit GlobalWatcher(ConnectionOverlay& o) : owner(o) {}
+
+        void mouseMove(const juce::MouseEvent& e) override {
+            owner.handleHover(e.mods, e.getScreenPosition().toFloat(), 0.f);
+        }
+        void mouseWheelMove(const juce::MouseEvent& e, const juce::MouseWheelDetails& w) override {
+            owner.handleHover(e.mods, e.getScreenPosition().toFloat(), w.deltaY);
+        }
+
+        ConnectionOverlay& owner;
+    };
+
+    GlobalWatcher globalWatcher;
 
     Jack* hoveredJack = nullptr;
     bool isDragging = false;

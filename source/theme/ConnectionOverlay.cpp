@@ -41,32 +41,6 @@ void ConnectionOverlay::paint(juce::Graphics &g) {
     }
 }
 
-void ConnectionOverlay::mouseMove(const juce::MouseEvent& e, juce::Point<float> mousePos, float scrollDeltaY)
-{
-    if (! e.mods.isCtrlDown()) {
-        if (ctrlWasDown) clearHighlights();
-        return;
-    }
-
-    ctrlWasDown = true;
-
-    if (scrollDeltaY > 0)      ++selection;
-    else if (scrollDeltaY < 0) --selection;
-
-    const auto mouseInGlobal = mousePos.roundToInt();
-    hoveredJack = nullptr;
-
-    for (auto& c : connections) {
-        if (c.startJack->getScreenBounds().contains(mouseInGlobal)) { hoveredJack = c.startJack; break; }
-        if (c.endJack->getScreenBounds().contains(mouseInGlobal))   { hoveredJack = c.endJack;   break; }
-    }
-
-    if (hoveredJack != nullptr)
-        grabKeyboardFocus();
-
-    rebuildHighlights();
-}
-
 void ConnectionOverlay::beginConnection(OutJack &outJack, bool isInCanvas) {
     liveConnection.connectionPath.clear();
     isDragging = true;
@@ -277,4 +251,29 @@ void ConnectionOverlay::rebuildHighlights()
     modulationSlider.setVisible(true);
 
     repaint();
+}
+
+void ConnectionOverlay::handleHover(juce::ModifierKeys mods, juce::Point<float> screenPos, float scrollDeltaY) {
+    if (! mods.isCtrlDown()) {
+        if (ctrlWasDown) clearHighlights();
+        return;
+    }
+
+    ctrlWasDown = true;
+
+    if (scrollDeltaY > 0)      ++selection;
+    else if (scrollDeltaY < 0) --selection;
+
+    const auto mouseInGlobal = screenPos.roundToInt();
+    hoveredJack = nullptr;
+
+    for (auto& c : connections) {
+        if (c.startJack->getScreenBounds().contains(mouseInGlobal)) { hoveredJack = c.startJack; break; }
+        if (c.endJack->getScreenBounds().contains(mouseInGlobal))   { hoveredJack = c.endJack;   break; }
+    }
+
+    if (hoveredJack != nullptr)
+        grabKeyboardFocus();
+
+    rebuildHighlights();
 }

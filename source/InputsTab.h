@@ -137,10 +137,6 @@ public:
             overlay.endConnection ();
         };
 
-        audIn.onMouseMove = [this] (const juce::MouseEvent& e, const juce::Point<float> mousePos, float scrollDeltaY) {
-            overlay.mouseMove(e, mousePos, scrollDeltaY);
-        };
-
         noteIn.onDragStart = [this] (OutJack& outJack, const juce::MouseEvent&) {
             overlay.beginConnection (outJack, true);
         };
@@ -151,10 +147,6 @@ public:
 
         noteIn.onDragEnd = [this] (const juce::MouseEvent&) {
             overlay.endConnection ();
-        };
-
-        noteIn.onMouseMove = [this] (const juce::MouseEvent& e, const juce::Point<float> mousePos, float scrollDeltaY) {
-            overlay.mouseMove(e, mousePos, scrollDeltaY);
         };
 
         gateIn.onDragStart = [this] (OutJack& outJack, const juce::MouseEvent&) {
@@ -168,10 +160,6 @@ public:
         gateIn.onDragEnd = [this] (const juce::MouseEvent&) {
             overlay.endConnection ();
         }; // PLS STOP COPY PASTING IT. make a function for it dumahh
-
-        gateIn.onMouseMove = [this] (const juce::MouseEvent& e, const juce::Point<float> mousePos, float scrollDeltaY) {
-            overlay.mouseMove(e, mousePos, scrollDeltaY);
-        };
     }
 
 private:

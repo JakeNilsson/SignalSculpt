@@ -54,16 +54,6 @@ public:
                         overlay.endConnection ();
                     };
 
-                    newChild->getOutJack().onMouseMove = [this] (const juce::MouseEvent& e, const juce::Point<float> mousePos, const float scrollDeltaY) {
-                        overlay.mouseMove(e, mousePos, scrollDeltaY);
-                    };
-
-                    for (const auto child : newChild->getInJacks()) {
-                        child->onMouseMove = [this] (const juce::MouseEvent& e, const juce::Point<float> mousePos, const float scrollDeltaY) {
-                            overlay.mouseMove(e, mousePos, scrollDeltaY);
-                        };
-                    }
-
                     break;
                 } case 2 : {
                     moduleHandler.addModuleComponent(ModuleType::Envelope);
@@ -99,16 +89,6 @@ public:
                     newChild->getOutJack().onDragEnd = [this] (const juce::MouseEvent&) {
                         overlay.endConnection ();
                     };
-
-                    newChild->getOutJack().onMouseMove = [this] (const juce::MouseEvent& e, const juce::Point<float> mousePos, const float scrollDeltaY) {
-                        overlay.mouseMove(e, mousePos, scrollDeltaY);
-                    };
-
-                    for (const auto child : newChild->getInJacks()) {
-                        child->onMouseMove = [this] (const juce::MouseEvent& e, const juce::Point<float> mousePos, const float scrollDeltaY) {
-                            overlay.mouseMove(e, mousePos, scrollDeltaY);
-                        };
-                    }
 
                     break;
                 } default : {
