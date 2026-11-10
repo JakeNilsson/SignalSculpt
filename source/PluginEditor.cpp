@@ -34,6 +34,10 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     connectionOverlay.disconnectDSP = [this] (int srcID, int srcPort, int dstID, int dstPort) {
         processorRef.disconnect(srcID, srcPort, dstID, dstPort);
     };
+
+    connectionOverlay.onSetModulationParameter = [this] (int srcID, int srcPort, int dstID, int dstPort, double modAmount) {
+        processorRef.setModulationParameter(srcID, srcPort, dstID, dstPort, modAmount);
+    };
 }
 
 PluginEditor::~PluginEditor()

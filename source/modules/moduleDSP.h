@@ -1,9 +1,12 @@
 #pragma once
+
 #include <vector>
+#include <atomic>
 #include <algorithm>
 #include <array>
 #include <cassert>
 #include <cstddef>
+#include <juce_audio_basics/juce_audio_basics.h>
 
 struct Frame {float left = 0.0f; float right = 0.0f; };
 
@@ -11,6 +14,35 @@ struct PortFrames {
     static constexpr int maxChannels = 8; // maybe make this a user-settable variable later?
     std::array<Frame, maxChannels> channels {};
     int numChannels = 1;
+};
+
+struct Cable {
+    static constexpr double rampSeconds = 0.02;
+
+    const PortFrames* source = nullptr;
+    std::atomic<double> mod { 1.f };
+    juce::LinearSmoothedValue<float> smoothedMod;
+    float current = 1.f;
+
+    Cable (const PortFrames* s, double m, double sampleRate) noexcept : source (s), mod (m) {
+        smoothedMod.reset(sampleRate, rampSeconds);
+        smoothedMod.setCurrentAndTargetValue(static_cast<float>(m));
+        current = static_cast<float>(m);
+    }
+
+    // std::atomic can't be copied, so copy its value by hand.
+    // This is what lets push_back / erase work.
+    Cable (const Cable& o) noexcept
+        : source (o.source), mod (o.mod.load (std::memory_order_relaxed)),
+          smoothedMod(o.smoothedMod), current(o.current){}
+
+    Cable& operator= (const Cable& o) noexcept {
+        source = o.source;
+        mod.store (o.mod.load (std::memory_order_relaxed), std::memory_order_relaxed);
+        smoothedMod = o.smoothedMod;
+        current = o.current;
+        return *this;
+    }
 };
 
 class ModuleDSP {
@@ -21,11 +53,13 @@ public:
 
     ModuleDSP& operator= (const ModuleDSP&) = delete;
 
-    void prepare(const double newSampleRate) {
+    void prepare (const double newSampleRate) {
         sampleRate = newSampleRate;
+        for (auto& port : inputs)
+            for (auto& cable : port)
+                cable.smoothedMod.reset (sampleRate, Cable::rampSeconds);
         onPrepare();
     }
-
     virtual void setParameter (int /*paramId*/, float /*value*/) noexcept {}
 
     [[nodiscard]] int getNumInputs() const noexcept {return static_cast<int>(inputs.size());}
@@ -38,8 +72,8 @@ public:
 
         int channelCount = 1;
 
-        for (const auto& input : inputs[static_cast<size_t>(port)]) {
-            channelCount = std::max(channelCount, input->numChannels);
+        for (const auto& cable : inputs[static_cast<size_t>(port)]) {
+            channelCount = std::max(channelCount, cable.source->numChannels);
         }
 
         return channelCount;
@@ -57,11 +91,11 @@ public:
         return &outputs[static_cast<std::size_t> (port)].channels[static_cast<size_t>(channel)];
     }
 
-    [[nodiscard]] bool setInput (const int port, const PortFrames* source) noexcept {
+    [[nodiscard]] bool setInput (const int port, const PortFrames* source, const double modAmount = 1) noexcept {
         if (port < 0 || port >= getNumInputs())
             return false;                                   // no such port
 
-        inputs[static_cast<std::size_t> (port)].push_back(source);
+        inputs[static_cast<std::size_t> (port)].emplace_back(source, modAmount, sampleRate);
         return true;
     }
 
@@ -69,9 +103,23 @@ public:
         if (port < 0 || port >= getNumInputs())
             return false;                                   // no such port
 
-        const auto srcIt = std::ranges::find_if(inputs[static_cast<std::size_t>(port)], [source] (const PortFrames* pf) { return pf == source; });
+        auto& cables = inputs[static_cast<size_t>(port)];
+        const auto it = std::ranges::find(cables, source, &Cable::source);
 
-        inputs[static_cast<std::size_t> (port)].erase(srcIt);
+        if (it == cables.end()) return false;
+        cables.erase (it);
+        return true;
+    }
+
+    [[nodiscard]] bool setModAmount (const int port, const PortFrames* source, const double modAmount) noexcept {
+        if (port < 0 || port >= getNumInputs())
+            return false;
+
+        auto& cables = inputs[static_cast<size_t> (port)];
+        const auto it = std::ranges::find (cables, source, &Cable::source);
+
+        if (it == cables.end()) return false;
+        it->mod.store (modAmount, std::memory_order_relaxed);
         return true;
     }
 
@@ -79,8 +127,24 @@ public:
         return outputChannels;
     }
 
+    void recalcOutputChannels() noexcept {
+        int n = 1;
+        for (int p = 0; p < getNumInputs(); ++p)
+            n = std::max (n, inChannels (p));
+        outputChannels = n;
+    }
+
     void setOutputChannels(const int newOutputChannels) noexcept {
         outputChannels = newOutputChannels;
+    }
+
+    void process() noexcept {
+        for (auto& port : inputs)
+            for (auto& cable : port) {
+                cable.smoothedMod.setTargetValue (static_cast<float> (cable.mod.load (std::memory_order_relaxed)));
+                cable.current = cable.smoothedMod.getNextValue();
+            }
+        tick();
     }
 
     virtual void tick() noexcept = 0;
@@ -95,13 +159,12 @@ public:
 
 protected:
     ModuleDSP(const int numInputs, const int numOutputs) :
-        inputs(static_cast<std::size_t>(std::max(0, numInputs)),
-            std::vector<const PortFrames*>(0, nullptr)),
-        outputs(static_cast<std::size_t>(std::max(0, numOutputs)))
+        inputs  (static_cast<std::size_t> (std::max (0, numInputs))),
+        outputs (static_cast<std::size_t> (std::max (0, numOutputs)))
     {}
 
     void setOutChannels(const int port, const int numChannels) noexcept {
-        outputs[static_cast<size_t>(port)].numChannels = std::max(std::min(1, numChannels), PortFrames::maxChannels);
+        outputs[static_cast<size_t>(port)].numChannels = std::clamp (numChannels, 1, PortFrames::maxChannels);
     }
 
     virtual void onPrepare() {} // to be appended by derived classes
@@ -109,15 +172,15 @@ protected:
     [[nodiscard]] Frame inStereo (const int port, int channel) const noexcept {
         assert (port >= 0 && port < getNumInputs() &&
                 channel >= 0 && channel < getMaxChannels());
-        Frame sum = {.left = 0, .right = 0};
+        Frame sum = {};
 
-        for (const auto input : inputs[static_cast<size_t>(port)]) {
-            if (input->numChannels <= channel) {
-                channel = channel % input->numChannels; // round robin style, maybe make it a user global setting?
-            }
+        for (const auto& cable : inputs[static_cast<size_t>(port)]) {
+            const auto* src = cable.source;
+            const int ch = channel < src->numChannels ? channel : channel % src->numChannels;
+            const float m = cable.current;
 
-            sum.left += input->channels[static_cast<size_t>(channel)].left;
-            sum.right += input->channels[static_cast<size_t>(channel)].right;
+            sum.left  += src->channels[static_cast<size_t> (ch)].left  * static_cast<float>(m);
+            sum.right += src->channels[static_cast<size_t> (ch)].right * static_cast<float>(m);
         }
         return sum;
     }
@@ -147,7 +210,7 @@ protected:
     [[nodiscard]] double getSampleRate() const noexcept { return sampleRate; }
 
 private:
-    std::vector<std::vector<const PortFrames*>> inputs;
+    std::vector<std::vector<Cable>>  inputs;
     std::vector<PortFrames> outputs;
 
     double sampleRate = 44100.0;

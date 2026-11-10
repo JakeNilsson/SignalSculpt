@@ -46,7 +46,7 @@ int SignalGraph::addModule(const ModuleType moduleType) {
     return counter;
 }
 
-void SignalGraph::connect(const int src_id, const int src_port, const int dst_id, const int dst_port) {
+void SignalGraph::connect(const int src_id, const int src_port, const int dst_id, const int dst_port) { // can take mod amount if needed
     const PortFrames *output = nullptr;
 
     for (const auto node : nodes) {
@@ -55,13 +55,15 @@ void SignalGraph::connect(const int src_id, const int src_port, const int dst_id
         }
     }
 
+    if (output == nullptr) { jassertfalse; return; }
+
     for (const auto node : nodes) {
         if (node->id == dst_id) {
             if (!node->module->setInput(dst_port, output)) {
                 jassertfalse;
             }
 
-            node->module->setOutputChannels(std::max(output->numChannels, node->module->getOutputChannels()));
+            node->module->recalcOutputChannels();
         }
     }
 }
@@ -75,13 +77,36 @@ void SignalGraph::disconnect(const int src_id, const int src_port, const int dst
         }
     }
 
+    if (output == nullptr) { jassertfalse; return; }
+
     for (const auto node : nodes) {
         if (node->id == dst_id) {
             if (!node->module->removeInput(dst_port, output)) {
                 jassertfalse;
             }
 
-            node->module->setOutputChannels(std::max(output->numChannels, node->module->getOutputChannels()));
+            node->module->recalcOutputChannels();
+            return;
+        }
+    }
+}
+
+void SignalGraph::setModAmount(int src_id, int src_port, int dst_id, int dst_port, double modAmount) {
+    const PortFrames *output = nullptr;
+
+    for (const auto node : nodes) {
+        if (node->id == src_id) {
+            output = node->module->getOutput(src_port);
+        }
+    }
+
+    if (output == nullptr) { jassertfalse; return; }
+
+    for (const auto node : nodes) {
+        if (node->id == dst_id) {
+            if (!node->module->setModAmount(dst_port, output, modAmount)) {
+                jassertfalse;
+            }
         }
     }
 }
@@ -149,8 +174,8 @@ void SignalGraph::process(juce::AudioBuffer<float> &buffer, juce::MidiBuffer &mi
 
         audioIn->directInStereo (static_cast<int>(StaticIDs::AudIn), { .left = left, .right = right });
 
-        for (const auto node : nodes) {
-            node->module->tick();
+        for (const auto node : nodes){
+            node->module->process();
         }
 
         const Frame* f = audioOut->getOutputFrame(StaticIO::staticOut, 0);

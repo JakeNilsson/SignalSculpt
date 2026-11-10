@@ -22,6 +22,7 @@ public:
         smoothPhase.reset(getSampleRate(), rampLength);
         smoothFreq.reset(getSampleRate(), rampLength);
         smoothMix.reset(getSampleRate(), rampLength);
+        smoothDet.reset (getSampleRate(), rampLength);
     }
 
     void setParameter(const int paramID, const float value) noexcept override {
@@ -37,22 +38,18 @@ public:
             }
             case phaseIn: {
                 phase.store (value, std::memory_order_relaxed);
-                smoothPhase.setTargetValue(phase);
                 break;
             }
             case freqIn: {
                 freq.store(value, std::memory_order_relaxed);
-                smoothFreq.setTargetValue(freq);
                 break;
             }
             case mixIn: {
                 mix.store(value, std::memory_order_relaxed);
-                smoothMix.setTargetValue(mix);
                 break;
             }
             case detIn: {
                 det.store(value, std::memory_order_relaxed);
-                smoothDet.setTargetValue(det);
                 break;
             }
             case voicesIn: {
@@ -67,6 +64,11 @@ public:
     }
 
     void tick() noexcept override {
+        smoothFreq .setTargetValue (freq .load (std::memory_order_relaxed));
+        smoothPhase.setTargetValue (phase.load (std::memory_order_relaxed));
+        smoothMix  .setTargetValue (mix  .load (std::memory_order_relaxed));
+        smoothDet  .setTargetValue (det  .load (std::memory_order_relaxed));
+
         const int channelsOut = std::min (getOutputChannels(), getMaxChannels());
 
         PortFrames output;
@@ -78,6 +80,7 @@ public:
         const auto baseFreq = smoothFreq.getNextValue();
         const auto baseDet = smoothDet.getNextValue();
         const auto baseMix = smoothMix.getNextValue();
+        const auto basePhase = smoothPhase.getNextValue();
 
         for (int i = 0; i < channelsOut; ++i) {
             float sumL = 0.0f;
@@ -94,11 +97,12 @@ public:
             const auto trueShapeType = std::min(static_cast<int>(std::max(1, static_cast<int>(waveChoice + static_cast<int>(inShapeType * 4)))), 4);
             // const auto trueShapeSpec = std::min(static_cast<int>(std::max(1, static_cast<int>(waveSpec + inShapeSpec))), 1);
             // for truePhase, don't clamp - make sure wrap around is allowed, since that's how the knob is built
-            const auto trueFreq = std::min(std::max(0.f, baseFreq + (inFreq * 20000.f)), 20000.f);
-            // const auto trueFreq = baseFreq * std::exp2 (inFreq);
+            const auto trueFreq = std::clamp (baseFreq + inFreq * 20000.f, -20000.f, 20000.f);
             const auto trueMix = std::min(std::max(0.f, baseMix + (inMix * 100.f)), 100.f);
             const auto trueDet = std::min(std::max(0.f, baseDet + (inDet * 100.f)), 100.f);
             const auto trueVoices = std::min(static_cast<int>(std::max(1, voices + static_cast<int>(inVoices * 16))), 16);
+
+            const float pm = twoPi * (basePhase + inPhase);
 
             for (int j = 0; j < trueVoices; ++j) {
                 const float t = (trueVoices == 1)
@@ -112,10 +116,10 @@ public:
                     trueFreq * std::pow(2.0f, cents / 1200.0f);
 
                 float& p = voicePhases[i][j];
-                p += twoPi * frequency / sampRate;
-                if (p >= twoPi) p -= twoPi;
+                p += twoPi * frequency / static_cast<float> (sampRate);
+                p -= twoPi * std::floor (p / twoPi);
 
-                const float s = wave (p, static_cast<WaveType> (trueShapeType));
+                const float s = wave (p + pm, static_cast<WaveType> (trueShapeType));
                 sumL += s * t;
                 sumR += s * (1 - t);
             }
@@ -133,7 +137,8 @@ public:
 
     static float wave(const float wavePhase, const WaveType type) noexcept {
         constexpr float twoPi = 2.0f * juce::MathConstants<float>::pi;
-        const float cycle = std::fmod(wavePhase, twoPi) / twoPi;
+        float cycle = wavePhase / twoPi;
+        cycle -= std::floor (cycle);
 
         switch (type) {
             case blank : {

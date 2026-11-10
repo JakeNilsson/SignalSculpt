@@ -95,6 +95,10 @@ public:
                     // unimplemented, may not be necessary?
                 }
             }
+            // const auto newChild = moduleComponents.getLast();
+            // considering adding this to maybe give multiple modules the same settings?
+            // could reduce copy-paste by a lot...
+
             moduleList.setSelectedId(0);
         };
     }

@@ -53,11 +53,20 @@ public:
                                                     0.0,    // offset
                                                     false); // userCanPressKeyToSwapMode
 
-        modulationSlider.onValueChange = [this]
-        {
-            for (auto* c : highlightedConnections)
-                if (c->isSelected)
+        modulationSlider.onValueChange = [this] {
+            for (auto* c : highlightedConnections) {
+                if (c->isSelected) {
                     c->modAmount = modulationSlider.getValue();
+
+                    if (onSetModulationParameter) {
+                        onSetModulationParameter(c->startJack->getID(),
+                                                 c->startJack->getPort(),
+                                                 c->endJack->getID(),
+                                                 c->endJack->getPort(),
+                                                 c->modAmount);
+                    }
+                }
+            }
         };
 
         juce::Desktop::getInstance().addGlobalMouseListener(&globalWatcher);
@@ -89,6 +98,7 @@ public:
 
     std::function<void (int, int, int, int)> connectDSP;
     std::function<void (int, int, int, int)> disconnectDSP;
+    std::function<void (int, int, int, int, double)> onSetModulationParameter;
 
     void handleHover(juce::ModifierKeys mods, juce::Point<float> screenPos, float scrollDeltaY);
 

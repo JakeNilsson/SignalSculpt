@@ -35,6 +35,7 @@ public:
 
     void connect(int src_id, int src_port, int dst_id, int dst_port);
     void disconnect(int src_id, int src_port, int dst_id, int dst_port);
+    void setModAmount(int src_id, int src_port, int dst_id, int dst_port, double modAmount);
 
 private:
     void incrementCounter() {

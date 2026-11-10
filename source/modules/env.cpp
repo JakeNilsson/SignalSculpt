@@ -181,8 +181,8 @@ void EnvModuleComponent::setEnvPath() {
     const auto rel = static_cast<float>(release.getValue());
     float visualLength = del + atk + hld + dec + rel;
 
-    if (visualLength < 1) {
-        visualLength = 1.f;
+    if (visualLength < 0.01) {
+        visualLength = 0.01f;
     }
     const float actualLength = innerEnvBounds.getWidth();
 
