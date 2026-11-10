@@ -61,7 +61,17 @@ public:
         if (port < 0 || port >= getNumInputs())
             return false;                                   // no such port
 
-        inputs[static_cast<std::size_t> (port)].push_back(source);   // nullptr is a valid "disconnect"
+        inputs[static_cast<std::size_t> (port)].push_back(source);
+        return true;
+    }
+
+    [[nodiscard]] bool removeInput (const int port, const PortFrames* source) noexcept {
+        if (port < 0 || port >= getNumInputs())
+            return false;                                   // no such port
+
+        const auto srcIt = std::ranges::find_if(inputs[static_cast<std::size_t>(port)], [source] (const PortFrames* pf) { return pf == source; });
+
+        inputs[static_cast<std::size_t> (port)].erase(srcIt);
         return true;
     }
 

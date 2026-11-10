@@ -30,6 +30,10 @@ PluginEditor::PluginEditor (PluginProcessor& p)
     connectionOverlay.connectDSP = [this] (int srcID, int srcPort, int dstID, int dstPort) {
         processorRef.connect(srcID, srcPort, dstID, dstPort);
     };
+
+    connectionOverlay.disconnectDSP = [this] (int srcID, int srcPort, int dstID, int dstPort) {
+        processorRef.disconnect(srcID, srcPort, dstID, dstPort);
+    };
 }
 
 PluginEditor::~PluginEditor()

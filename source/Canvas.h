@@ -9,18 +9,16 @@ class Canvas : public juce::Component {
 public:
     explicit Canvas (Colors& colorsRef,
         juce::Viewport& canvasContainerRef,
-        juce::AudioProcessorEditor& editorRef,
         ConnectionOverlay& overlayRef) : colors(colorsRef),
                                          moduleHandler(colors, moduleComponents),
                                          canvasContainer(canvasContainerRef),
-                                         editor(editorRef),
                                          overlay(overlayRef) {
         moduleList.addItemList({"Wave", "Envelope"}, 1);
 
         moduleList.onChange = [this] {
             moduleListWasShowing = false;
 
-            switch(auto selectedId = moduleList.getSelectedId()) {
+            switch(moduleList.getSelectedId()) {
                 case 1 : {
                     moduleHandler.addModuleComponent(ModuleType::Wave);
                     const auto newChild = moduleComponents.getLast();
@@ -38,22 +36,33 @@ public:
                     newChild->setPaths();
                     newChild->repaint();
 
-                    newChild->onParameterChanged = [this] (int moduleID, int paramID, float value) {
+                    overlay.addInJacks(newChild->getInJacks());
+
+                    newChild->onParameterChanged = [this] (const int moduleID, const int paramID, const float value) {
                         if (onSetDspParameter) onSetDspParameter(moduleID, paramID, value);
                     };
 
-                    newChild->getOutJack().onDragStart = [this, newChild] (OutJack& outJack, const juce::MouseEvent&) {
-                        overlay.addInJacks(newChild->getInJacks());
+                    newChild->getOutJack().onDragStart = [this] (OutJack& outJack, const juce::MouseEvent&) {
                         overlay.beginConnection (outJack, true);
                     };
 
-                    newChild->getOutJack().onDrag = [this] (OutJack& outJack, const juce::Point<float> mousePos) {
+                    newChild->getOutJack().onDrag = [this] (const juce::Point<float> mousePos) {
                         overlay.updateConnection (mousePos);
                     };
 
-                    newChild->getOutJack().onDragEnd = [this] (OutJack& outJack, const juce::MouseEvent&) {
-                        overlay.cancelConnection ();
+                    newChild->getOutJack().onDragEnd = [this] (const juce::MouseEvent&) {
+                        overlay.endConnection ();
                     };
+
+                    newChild->getOutJack().onMouseMove = [this] (const juce::MouseEvent& e, const juce::Point<float> mousePos, const float scrollDeltaY) {
+                        overlay.mouseMove(e, mousePos, scrollDeltaY);
+                    };
+
+                    for (const auto child : newChild->getInJacks()) {
+                        child->onMouseMove = [this] (const juce::MouseEvent& e, const juce::Point<float> mousePos, const float scrollDeltaY) {
+                            overlay.mouseMove(e, mousePos, scrollDeltaY);
+                        };
+                    }
 
                     break;
                 } case 2 : {
@@ -73,22 +82,33 @@ public:
                     newChild->setPaths();
                     newChild->repaint();
 
-                    newChild->onParameterChanged = [this] (int moduleID, int paramID, float value) {
+                    overlay.addInJacks(newChild->getInJacks());
+
+                    newChild->onParameterChanged = [this] (const int moduleID, const int paramID, const float value) {
                         if (onSetDspParameter) onSetDspParameter(moduleID, paramID, value);
                     };
 
-                    newChild->getOutJack().onDragStart = [this, newChild] (OutJack& outJack, const juce::MouseEvent&) {
-                        overlay.addInJacks(newChild->getInJacks());
+                    newChild->getOutJack().onDragStart = [this] (OutJack& outJack, const juce::MouseEvent&) {
                         overlay.beginConnection (outJack, true);
                     };
 
-                    newChild->getOutJack().onDrag = [this] (OutJack& outJack, const juce::Point<float> mousePos) {
+                    newChild->getOutJack().onDrag = [this] (const juce::Point<float> mousePos) {
                         overlay.updateConnection (mousePos);
                     };
 
-                    newChild->getOutJack().onDragEnd = [this] (OutJack& outJack, const juce::MouseEvent&) {
-                        overlay.cancelConnection ();
+                    newChild->getOutJack().onDragEnd = [this] (const juce::MouseEvent&) {
+                        overlay.endConnection ();
                     };
+
+                    newChild->getOutJack().onMouseMove = [this] (const juce::MouseEvent& e, const juce::Point<float> mousePos, const float scrollDeltaY) {
+                        overlay.mouseMove(e, mousePos, scrollDeltaY);
+                    };
+
+                    for (const auto child : newChild->getInJacks()) {
+                        child->onMouseMove = [this] (const juce::MouseEvent& e, const juce::Point<float> mousePos, const float scrollDeltaY) {
+                            overlay.mouseMove(e, mousePos, scrollDeltaY);
+                        };
+                    }
 
                     break;
                 } default : {
@@ -99,7 +119,7 @@ public:
         };
     }
 
-    void mouseMove (const juce::MouseEvent& e) override
+    void mouseMove (const juce::MouseEvent &e) override
     {
         auto pos = e.position; // already relative to this component
         float blockX = std::floor (pos.x / gridSizePx) * gridSizePx;
@@ -130,7 +150,7 @@ public:
         plusHoriz = {};
     }
 
-    void mouseDown(const juce::MouseEvent &event) override {
+    void mouseDown(const juce::MouseEvent&) override {
         mouseIsDown = true;
         repaint (lastMouseBlock.getSmallestIntegerContainer());
     }
@@ -156,7 +176,7 @@ public:
         mouseIsDown = false;
     }
 
-    void mouseDrag(const juce::MouseEvent& event) override {
+    void mouseDrag(const juce::MouseEvent&) override {
         mouseDragged = true;
     }
 
@@ -184,16 +204,24 @@ public:
 
         juce::Line<float> gridLines;
 
-        for (float x = firstX; x < clipRight; x += gridSizePx) {
+        for (int i = 0; ; ++i) {
+            const float x = firstX + static_cast<float>(i) * gridSizePx;
+            if (!(x < clipRight))
+                break;
+
             gridLines.setStart(x, top + startGridOffset);
             gridLines.setEnd(x, bottom);
-            g.drawDashedLine (gridLines, dashLengths, 2, 2.f, 0);
+            g.drawDashedLine(gridLines, dashLengths, 2, 2.f, 0);
         }
 
-        for (float y = firstY; y < clipBottom; y += gridSizePx) {
+        for (int i = 0; ; ++i) {
+            const float y = firstY + static_cast<float>(i) * gridSizePx;
+            if (!(y < clipBottom))
+                break;
+
             gridLines.setStart(left + startGridOffset, y);
             gridLines.setEnd(right, y);
-            g.drawDashedLine (gridLines, dashLengths, 2, 2.f, 0);
+            g.drawDashedLine(gridLines, dashLengths, 2, 2.f, 0);
         }
 
         g.setColour(mouseIsDown ? colors.getColor(ThemeColors::neutral).withAlpha(0.3f) : colors.getColor(ThemeColors::tabBG).withAlpha(0.25f));
@@ -233,7 +261,6 @@ private:
     ModuleHandler moduleHandler;
 
     juce::Viewport& canvasContainer;
-    juce::AudioProcessorEditor& editor;
     ConnectionOverlay& overlay;
 
     juce::OwnedArray<juce::Path> connections;

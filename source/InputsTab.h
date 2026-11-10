@@ -129,37 +129,49 @@ public:
             overlay.beginConnection (outJack, true);
         };
 
-        audIn.onDrag = [this] (OutJack&, const juce::Point<float> mousePos) {
+        audIn.onDrag = [this] (const juce::Point<float> mousePos) {
             overlay.updateConnection (mousePos);
         };
 
-        audIn.onDragEnd = [this] (OutJack&, const juce::MouseEvent&) {
-            overlay.cancelConnection ();
+        audIn.onDragEnd = [this] (const juce::MouseEvent&) {
+            overlay.endConnection ();
+        };
+
+        audIn.onMouseMove = [this] (const juce::MouseEvent& e, const juce::Point<float> mousePos, float scrollDeltaY) {
+            overlay.mouseMove(e, mousePos, scrollDeltaY);
         };
 
         noteIn.onDragStart = [this] (OutJack& outJack, const juce::MouseEvent&) {
             overlay.beginConnection (outJack, true);
         };
 
-        noteIn.onDrag = [this] (OutJack&, const juce::Point<float> mousePos) {
+        noteIn.onDrag = [this] (const juce::Point<float> mousePos) {
             overlay.updateConnection (mousePos);
         };
 
-        noteIn.onDragEnd = [this] (OutJack&, const juce::MouseEvent&) {
-            overlay.cancelConnection ();
+        noteIn.onDragEnd = [this] (const juce::MouseEvent&) {
+            overlay.endConnection ();
+        };
+
+        noteIn.onMouseMove = [this] (const juce::MouseEvent& e, const juce::Point<float> mousePos, float scrollDeltaY) {
+            overlay.mouseMove(e, mousePos, scrollDeltaY);
         };
 
         gateIn.onDragStart = [this] (OutJack& outJack, const juce::MouseEvent&) {
             overlay.beginConnection (outJack, true);
         };
 
-        gateIn.onDrag = [this] (OutJack&, const juce::Point<float> mousePos) {
+        gateIn.onDrag = [this] (const juce::Point<float> mousePos) {
             overlay.updateConnection (mousePos);
         };
 
-        gateIn.onDragEnd = [this] (OutJack&, const juce::MouseEvent&) {
-            overlay.cancelConnection ();
+        gateIn.onDragEnd = [this] (const juce::MouseEvent&) {
+            overlay.endConnection ();
         }; // PLS STOP COPY PASTING IT. make a function for it dumahh
+
+        gateIn.onMouseMove = [this] (const juce::MouseEvent& e, const juce::Point<float> mousePos, float scrollDeltaY) {
+            overlay.mouseMove(e, mousePos, scrollDeltaY);
+        };
     }
 
 private:

@@ -79,7 +79,7 @@ public:
     void setOscPath();
 
     void setVisualGradient() override;
-    void setControlBounds(std::vector<juce::Rectangle<float>>) override;
+    void setControlBounds(const std::vector<juce::Rectangle<float>>&) override;
 
     void connectListener (juce::Slider& slider, int control) const;
     void connectListener (juce::ComboBox& comboBox, int control) const;

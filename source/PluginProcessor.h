@@ -42,7 +42,9 @@ public:
 
     int addModule(ModuleType moduleType);
 
-    void connect(int srcID, int srcPort, int dstID, int dstPort) {signalGraph.connect(srcID, srcPort, dstID, dstPort);} ;
+    void connect(int srcID, int srcPort, int dstID, int dstPort) {signalGraph.connect(srcID, srcPort, dstID, dstPort);}
+    void disconnect(int srcID, int srcPort, int dstID, int dstPort) {signalGraph.disconnect(srcID, srcPort, dstID, dstPort);}
+
     void setParameter (int moduleId, int paramId, float value) { signalGraph.setParameter (moduleId, paramId, value); }
 
 private:

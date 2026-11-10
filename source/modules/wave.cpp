@@ -142,7 +142,7 @@ void WaveModuleComponent::onPathsReady() {
     setOscPath();
 }
 
-void WaveModuleComponent::setControlBounds(std::vector<juce::Rectangle<float>> controlBounds) {
+void WaveModuleComponent::setControlBounds(const std::vector<juce::Rectangle<float>>& controlBounds) {
     const auto leftKnobX = controlBounds[0].getX() + IOInsetX + (bigRotarySize / 2);
     const auto centerKnobX = controlBounds[0].getCentreX();
     const auto rightKnobX = controlBounds[0].getRight() - IOInsetX - (bigRotarySize / 2);

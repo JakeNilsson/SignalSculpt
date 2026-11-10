@@ -66,6 +66,26 @@ void SignalGraph::connect(const int src_id, const int src_port, const int dst_id
     }
 }
 
+void SignalGraph::disconnect(const int src_id, const int src_port, const int dst_id, const int dst_port) {
+    const PortFrames *output = nullptr;
+
+    for (const auto node : nodes) {
+        if (node->id == src_id) {
+            output = node->module->getOutput(src_port);
+        }
+    }
+
+    for (const auto node : nodes) {
+        if (node->id == dst_id) {
+            if (!node->module->removeInput(dst_port, output)) {
+                jassertfalse;
+            }
+
+            node->module->setOutputChannels(std::max(output->numChannels, node->module->getOutputChannels()));
+        }
+    }
+}
+
 void SignalGraph::setParameter(const int moduleId, const int paramId, const float value) {
     for (const auto node : nodes) {
         if (node->id == moduleId) {

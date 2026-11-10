@@ -89,7 +89,7 @@ public:
     void setHeaderDesignPath() override;
     void setEnvPath();
     void setVisualGradient() override;
-    void setControlBounds(std::vector<juce::Rectangle<float>>) override;
+    void setControlBounds(const std::vector<juce::Rectangle<float>>&) override;
     void setControlAndLabelVisAndBounds(SiScSlider& control, juce::Rectangle<float>& labelBounds, float x, float y, float skewFactor = 1);
 
     juce::Array<InJack*> getInJacks() override;

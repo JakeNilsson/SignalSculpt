@@ -20,6 +20,17 @@ SiScSlider::SiScSlider(juce::Slider::SliderStyle sliderStyle, float startValue, 
     }
 }
 
+void SiScSlider::mouseMove (const juce::MouseEvent& e) {
+    Slider::mouseMove (e);                        // keep the normal behaviour
+    if (inJack.onMouseMove) inJack.onMouseMove (e, e.getScreenPosition().toFloat(), scrollDeltaY);
+    scrollDeltaY = 0.f;
+}
+
+void SiScSlider::mouseWheelMove(const juce::MouseEvent &e, const juce::MouseWheelDetails &wheel) {
+    scrollDeltaY = wheel.deltaY;
+    mouseMove(e);
+}
+
 double SiScSlider::snapValue(double attemptedValue, DragMode dragMode) {
     if (getInterval() > 0) {
         attemptedValue = floor(attemptedValue);

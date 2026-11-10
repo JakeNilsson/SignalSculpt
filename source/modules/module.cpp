@@ -79,19 +79,6 @@ void ModuleComponent::setPaths() {
                            innerBounds.getWidth(),
                            innerBounds.getHeight() - body.getHeight() - doubleDividerWidth);
 
-    auto baseTypeface = juce::Typeface::createSystemTypefaceFor(
-            BinaryData::kantumruyProVar_ttf, BinaryData::kantumruyProVar_ttfSize
-        );
-
-    juce::FontVariableSetting regularSetting[] {
-        { juce::FontFeatureTag("wght"), 400.0f }
-    };
-
-    auto regularTypeface = baseTypeface->cloneWithVariableSettings(regularSetting);
-
-    auto fontOptions = juce::FontOptions(regularTypeface).withPointHeight(32.0f);
-    moduleFont = juce::Font(fontOptions);
-
     visualColor = colors.getColor(ThemeColors::visuals);
     comboBoxTextColor = colors.getColor(ThemeColors::neutral);
 

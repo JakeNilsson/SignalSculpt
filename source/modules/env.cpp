@@ -128,7 +128,7 @@ void EnvModuleComponent::connectListener(SiScSlider &slider, int control) {
     };
 }
 
-void EnvModuleComponent::setControlBounds(std::vector<juce::Rectangle<float>> controlBounds) {
+void EnvModuleComponent::setControlBounds(const std::vector<juce::Rectangle<float>>& controlBounds) {
     const float leftX = controlBounds[0].getX();
     const float leftMiddleX = controlBounds[0].getX() + (controlBounds[0].getWidth() / 4);
     const float middleX = controlBounds[0].getCentreX();

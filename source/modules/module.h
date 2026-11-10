@@ -5,14 +5,14 @@
 class ModuleComponent : public juce::Component {
 public:
     explicit ModuleComponent(Colors &colorsRef,
-                             const float blockSizeX,
-                             const float blockSizeY,
-                             const juce::String& name)
+                             const float modBlockSizeX,
+                             const float modBlockSizeY,
+                             const juce::String& moduleName)
                           :  colors(colorsRef),
-                             name(name, name),
+                             name(moduleName, moduleName),
                              outJack(colorsRef, "moduleOut"),
-                             blockSizeX(blockSizeX),
-                             blockSizeY(blockSizeY){
+                             blockSizeX(modBlockSizeX),
+                             blockSizeY(modBlockSizeY){
         statusColor = colors.getColor(ThemeColors::neutral);
     }
 
@@ -44,7 +44,7 @@ public:
     virtual void setHeaderDesignPath() {}
     virtual void onPathsReady() {}
 
-    virtual void setControlBounds(std::vector<juce::Rectangle<float>>) {}
+    virtual void setControlBounds(const std::vector<juce::Rectangle<float>>&) {}
 
     void drawStateButton(juce::Graphics &g, juce::Point<float> mousePos) const;
 
@@ -92,7 +92,7 @@ protected:
     juce::Colour visualColor;
     juce::Colour comboBoxTextColor;
 
-    juce::Font moduleFont;
+    juce::Font moduleFont { makeKantumruyFont(32.f) };
 
     OutJack outJack;
 

@@ -101,6 +101,10 @@ public:
         outputsFont = juce::Font(fontOptions);
 
         overlay.addInJacks(&audOut); // MOVE THIS. this is actually a terrible place to put it long-term, but it works for now
+
+        audOut.onMouseMove = [this] (const juce::MouseEvent& e, const juce::Point<float> mousePos, float scrollDeltaY) {
+            overlay.mouseMove(e, mousePos, scrollDeltaY);
+        };
     }
 
 private:
