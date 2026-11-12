@@ -1,32 +1,37 @@
 #include "../helpers/moduleHandler.h"
 #include "../modules/wave.h"
 #include "../modules/env.h"
+#include "../modules/filter.h"
 
 /*void ModuleHandler::addModule(Module *module) {
     modules.add(module);
 }*/
 
 void ModuleHandler::addModuleComponent(ModuleType moduleType) {
-    counter++;
+    ModuleComponent* newChild;
 
     switch (moduleType) {
+        case ModuleType::None : {
+            return;
+        }
         case ModuleType::Wave : {
-            const auto waveComponent = new WaveModuleComponent(colors);
-
-            waveComponent->setJackIDs(counter);
-
-            moduleComponents.add(waveComponent);
+            newChild = new WaveModuleComponent(colors);
             break;
         } case ModuleType::Envelope : {
-            const auto envComponent = new EnvModuleComponent(colors);
-
-            envComponent->setJackIDs(counter);
-
-            moduleComponents.add(envComponent);
+            newChild = new EnvModuleComponent(colors);
+            break;
+        } case ModuleType::Filter : {
+            newChild = new FilterModuleComponent(colors);
             break;
         }
         default : { // unimplemented, is it necessary?
-
+            jassertfalse;
+            return;
         }
     }
+
+    ++counter;
+
+    newChild->setJackIDs(counter);
+    moduleComponents.add(newChild);
 }

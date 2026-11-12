@@ -13,91 +13,62 @@ public:
                                          moduleHandler(colors, moduleComponents),
                                          canvasContainer(canvasContainerRef),
                                          overlay(overlayRef) {
-        moduleList.addItemList({"Wave", "Envelope"}, 1);
+        moduleList.addItemList({"Wave", "Envelope", "Filter"}, juce::toUnderlyingType(ModuleType::None) + 1);
 
         moduleList.onChange = [this] {
             moduleListWasShowing = false;
+            auto moduleType = ModuleType::None;
 
             switch(moduleList.getSelectedId()) {
-                case 1 : {
-                    moduleHandler.addModuleComponent(ModuleType::Wave);
-                    const auto newChild = moduleComponents.getLast();
-                    addAndMakeVisible(newChild);
-
-                    if (onCreateDspModule) {
-                        newChild->setModuleID(onCreateDspModule(ModuleType::Wave));
-                    }
-
-                    lastMouseBlockOnExit.expand(10.f, 10.f);
-                    lastMouseBlockOnExit.setWidth(lastMouseBlockOnExit.getWidth() * newChild->getBlockSizeX());
-                    lastMouseBlockOnExit.setHeight(lastMouseBlockOnExit.getHeight() * newChild->getBlockSizeY());
-
-                    newChild->setBounds(lastMouseBlockOnExit.toNearestInt());
-                    newChild->setPaths();
-                    newChild->repaint();
-
-                    overlay.addInJacks(newChild->getInJacks());
-
-                    newChild->onParameterChanged = [this] (const int moduleID, const int paramID, const float value) {
-                        if (onSetDspParameter) onSetDspParameter(moduleID, paramID, value);
-                    };
-
-                    newChild->getOutJack().onDragStart = [this] (OutJack& outJack, const juce::MouseEvent&) {
-                        overlay.beginConnection (outJack, true);
-                    };
-
-                    newChild->getOutJack().onDrag = [this] (const juce::Point<float> mousePos) {
-                        overlay.updateConnection (mousePos);
-                    };
-
-                    newChild->getOutJack().onDragEnd = [this] (const juce::MouseEvent&) {
-                        overlay.endConnection ();
-                    };
-
+                case juce::toUnderlyingType(ModuleType::None) : {
+                    return;
+                } case juce::toUnderlyingType(ModuleType::Wave) : {
+                    moduleType = ModuleType::Wave;
                     break;
-                } case 2 : {
-                    moduleHandler.addModuleComponent(ModuleType::Envelope);
-                    const auto newChild = moduleComponents.getLast();
-                    addAndMakeVisible(newChild);
-
-                    if (onCreateDspModule) {
-                        newChild->setModuleID(onCreateDspModule(ModuleType::Envelope));
-                    }
-
-                    lastMouseBlockOnExit.expand(10.f, 10.f);
-                    lastMouseBlockOnExit.setWidth(lastMouseBlockOnExit.getWidth() * newChild->getBlockSizeX());
-                    lastMouseBlockOnExit.setHeight(lastMouseBlockOnExit.getHeight() * newChild->getBlockSizeY());
-
-                    newChild->setBounds(lastMouseBlockOnExit.toNearestInt());
-                    newChild->setPaths();
-                    newChild->repaint();
-
-                    overlay.addInJacks(newChild->getInJacks());
-
-                    newChild->onParameterChanged = [this] (const int moduleID, const int paramID, const float value) {
-                        if (onSetDspParameter) onSetDspParameter(moduleID, paramID, value);
-                    };
-
-                    newChild->getOutJack().onDragStart = [this] (OutJack& outJack, const juce::MouseEvent&) {
-                        overlay.beginConnection (outJack, true);
-                    };
-
-                    newChild->getOutJack().onDrag = [this] (const juce::Point<float> mousePos) {
-                        overlay.updateConnection (mousePos);
-                    };
-
-                    newChild->getOutJack().onDragEnd = [this] (const juce::MouseEvent&) {
-                        overlay.endConnection ();
-                    };
-
+                } case juce::toUnderlyingType(ModuleType::Envelope) : {
+                    moduleType = ModuleType::Envelope;
+                    break;
+                } case juce::toUnderlyingType(ModuleType::Filter) : {
+                    moduleType = ModuleType::Filter;
                     break;
                 } default : {
-                    // unimplemented, may not be necessary?
+                    return;
                 }
             }
-            // const auto newChild = moduleComponents.getLast();
-            // considering adding this to maybe give multiple modules the same settings?
-            // could reduce copy-paste by a lot...
+
+            moduleHandler.addModuleComponent(moduleType);
+            const auto newChild = moduleComponents.getLast();
+            addAndMakeVisible(newChild);
+
+            if (onCreateDspModule) {
+                newChild->setModuleID(onCreateDspModule(moduleType));
+            }
+
+            lastMouseBlockOnExit.expand(10.f, 10.f);
+            lastMouseBlockOnExit.setWidth(lastMouseBlockOnExit.getWidth() * newChild->getBlockSizeX());
+            lastMouseBlockOnExit.setHeight(lastMouseBlockOnExit.getHeight() * newChild->getBlockSizeY());
+
+            newChild->setBounds(lastMouseBlockOnExit.toNearestInt());
+            newChild->setPaths();
+            newChild->repaint();
+
+            overlay.addInJacks(newChild->getInJacks());
+
+            newChild->onParameterChanged = [this] (const int moduleID, const int paramID, const float value) {
+                if (onSetDspParameter) onSetDspParameter(moduleID, paramID, value);
+            };
+
+            newChild->getOutJack().onDragStart = [this] (OutJack& outJack, const juce::MouseEvent&) {
+                overlay.beginConnection (outJack, true);
+            };
+
+            newChild->getOutJack().onDrag = [this] (const juce::Point<float> mousePos) {
+                overlay.updateConnection (mousePos);
+            };
+
+            newChild->getOutJack().onDragEnd = [this] (const juce::MouseEvent&) {
+                overlay.endConnection ();
+            };
 
             moduleList.setSelectedId(0);
         };

@@ -1,6 +1,7 @@
 #include "../helpers/SignalGraph.h"
 #include "../modules/waveDSP.h"
 #include "../modules/envDSP.h"
+#include "../modules/filterDSP.h"
 #include "../modules/staticIO.h"
 
 SignalGraph::SignalGraph() {
@@ -33,6 +34,14 @@ int SignalGraph::addModule(const ModuleType moduleType) {
                 new Node {
                     .id = counter,
                     .module = std::make_unique<EnvDSP>(sampleRate, counter)
+                }
+            );
+            break;
+        } case ModuleType::Filter : {
+            nodes.add(
+                new Node {
+                    .id = counter,
+                    .module = std::make_unique<FilterDSP>(sampleRate, counter)
                 }
             );
             break;
