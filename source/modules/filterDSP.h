@@ -4,7 +4,7 @@
 
 class FilterDSP : public ModuleDSP {
 public:
-    enum Input  { filterIn, filterTypeIn, filterSpecIn, numInputPorts };
+    enum Input  { signalIn, filterTypeIn, filterSpecIn, resIn, cutIn, mixIn, blendIn, numInputPorts };
     enum Output { filterOut, numOutputPorts };
 
     FilterDSP(const double sampleRate, const int ID) : ModuleDSP(numInputPorts, numOutputPorts) {

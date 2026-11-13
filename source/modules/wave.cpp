@@ -237,7 +237,7 @@ void WaveModuleComponent::setOscPath() {
     oscWavePath.startNewSubPath(startPt);
     oscWavePathClosed.startNewSubPath(startPt);
 
-    for (auto x = startPt.getX() - 10; x < oscBounds.getRight() + 10; x++) {
+    for (int x = startPt.getX() - 10; x < oscBounds.getRight() + 10; x++) {
         const auto t = (x - startPt.getX()) / width;
         const auto y = amplitude * std::sin(t * juce::MathConstants<float>::twoPi) + startPt.getY();
 
