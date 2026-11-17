@@ -60,6 +60,11 @@ public:
 
         signalInJack.setPort(FilterDSP::signalIn);
 
+        res.getInJack().setPort(FilterDSP::resIn);
+        cut.getInJack().setPort(FilterDSP::cutIn);
+        mix.getInJack().setPort(FilterDSP::mixIn);
+        blend.getInJack().setPort(FilterDSP::blendIn);
+
         outJack.setPort(FilterDSP::filterOut);
     }
 

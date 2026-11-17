@@ -240,7 +240,7 @@ void FilterModuleComponent::setFilterPath() {
     constexpr float fs = 48000.f;                     // ideally the real sample rate
     constexpr float pi = juce::MathConstants<float>::pi;
 
-    const auto resonance = std::max (0.01f, static_cast<float> (res.getValue()));
+    const auto resonance = res.getValue();
     const auto cutoff = juce::jlimit (8.0f, 0.49f * fs, static_cast<float> (cut.getValue()));
 
     const float gc = std::tan (pi * cutoff / fs);
@@ -282,9 +282,14 @@ void FilterModuleComponent::setHeaderDesignPath() {
 }
 
 void FilterModuleComponent::setJackIDs(const int ID) {
-    signalInJack.setID (ID);
     filterType.getInJack().setID (ID);
     filterSpec.getInJack().setID (ID);
+
+    signalInJack.setID (ID);
+    res.getInJack().setID (ID);
+    cut.getInJack().setID (ID);
+    mix.getInJack().setID (ID);
+    blend.getInJack().setID (ID);
 
     outJack.setID (ID);
 }
@@ -292,9 +297,14 @@ void FilterModuleComponent::setJackIDs(const int ID) {
 juce::Array<InJack *> FilterModuleComponent::getInJacks() {
     juce::Array<InJack *> inJacks;
 
-    inJacks.add(&signalInJack);
     inJacks.add(&filterType.getInJack());
     inJacks.add(&filterSpec.getInJack());
+
+    inJacks.add(&signalInJack);
+    inJacks.add(&res.getInJack());
+    inJacks.add(&cut.getInJack());
+    inJacks.add(&mix.getInJack());
+    inJacks.add(&blend.getInJack());
 
     return inJacks;
 }
