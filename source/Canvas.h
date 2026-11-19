@@ -16,13 +16,7 @@ public:
 
     void mouseMove (const juce::MouseEvent &e) override
     {
-        auto pos = e.position; // already relative to this component
-        float blockX = std::floor (pos.x / gridSizePx) * gridSizePx;
-        float blockY = std::floor (pos.y / gridSizePx) * gridSizePx;
-        juce::Rectangle<float> block (blockX, blockY, gridSizePx, gridSizePx);
-        block.reduce(10.f, 10.f);
-
-        if (block != lastMouseBlock)
+        if (const auto block = blockAt (e.position).reduced (10.f); block != lastMouseBlock)
         {
             repaint (lastMouseBlock.getSmallestIntegerContainer());
             repaint (block.getSmallestIntegerContainer());
@@ -39,27 +33,28 @@ public:
     void mouseExit (const juce::MouseEvent&) override
     {
         repaint (lastMouseBlock.getSmallestIntegerContainer());
-        lastMouseBlockOnExit = lastMouseBlock;
         lastMouseBlock = {};
         plusVert = {};
         plusHoriz = {};
     }
 
-    void mouseDown(const juce::MouseEvent&) override {
+    void mouseDown (const juce::MouseEvent& e) override
+    {
+        pressStartedHere = true;
+        mouseMove (e);   // refresh the hover square
         mouseIsDown = true;
         repaint (lastMouseBlock.getSmallestIntegerContainer());
     }
 
-    void mouseUp(const juce::MouseEvent&) override {
-        if (mouseDragged) {
-            mouseDragged = false;
-        } else {
-            showModuleMenu();
-        }
+    void mouseUp (const juce::MouseEvent& e) override
+    {
+        if (pressStartedHere && ! mouseDragged)
+            showModuleMenu (blockAt (e.position));
 
-        repaint (lastMouseBlock.getSmallestIntegerContainer());
-
+        pressStartedHere = false;
+        mouseDragged = false;
         mouseIsDown = false;
+        repaint (lastMouseBlock.getSmallestIntegerContainer());
     }
 
     void mouseDrag(const juce::MouseEvent&) override {
@@ -118,10 +113,8 @@ public:
         g.drawLine (plusHoriz, 4);
     }
 
-    void showModuleMenu()
+    void showModuleMenu(const juce::Rectangle<float> targetBlock)
     {
-        const auto targetBlock = lastMouseBlock;
-
         juce::PopupMenu menu;
         menu.addItem (juce::toUnderlyingType (ModuleType::Wave),     "Wave");
         menu.addItem (juce::toUnderlyingType (ModuleType::Envelope), "Envelope");
@@ -130,13 +123,11 @@ public:
         menu.showMenuAsync (juce::PopupMenu::Options()
                         .withTargetComponent (this)
                         .withMousePosition(),
-            [safeThis = juce::Component::SafePointer<Canvas> (this), targetBlock] (const int result)
-            {
-                if (safeThis == nullptr || result == 0)
-                    return;
-
+                        [safeThis = juce::Component::SafePointer<Canvas> (this), targetBlock] (const int result)
+        {
+            if (safeThis != nullptr && result != 0)
                 safeThis->addModuleAt (static_cast<ModuleType> (result), targetBlock);
-            });
+        });
     }
 
     void addModuleAt (const ModuleType moduleType, juce::Rectangle<float> block)
@@ -151,7 +142,6 @@ public:
         if (onCreateDspModule)
             newChild->setModuleID (onCreateDspModule (moduleType));
 
-        block.expand (10.f, 10.f);   // undo the reduce() from mouseMove
         block.setWidth  (block.getWidth()  * newChild->getBlockSizeX());
         block.setHeight (block.getHeight() * newChild->getBlockSizeY());
 
@@ -182,6 +172,13 @@ public:
         };
     }
 
+    [[nodiscard]] juce::Rectangle<float> blockAt (const juce::Point<float> pos) const
+    {
+        const float x = std::floor (pos.x / gridSizePx) * gridSizePx;
+        const float y = std::floor (pos.y / gridSizePx) * gridSizePx;
+        return { x, y, gridSizePx, gridSizePx };
+    }
+
     std::function<int (ModuleType)> onCreateDspModule;   // returns the new module's ID
     std::function<void (int)>       onRemoveDspModule;
 
@@ -195,16 +192,14 @@ private:
 
     bool mouseIsDown = false;
     bool mouseDragged = false;
+    bool pressStartedHere = false;
 
     Colors& colors;
 
     float plusOffset = 40.f;
     juce::Rectangle<float> lastMouseBlock;
-    juce::Rectangle<float> lastMouseBlockOnExit;
     juce::Line<float> plusVert;
     juce::Line<float> plusHoriz;
-
-    juce::ComboBox moduleList;
 
     juce::OwnedArray<ModuleComponent> moduleComponents;
     ModuleHandler moduleHandler;
