@@ -235,6 +235,10 @@ void FilterModuleComponent::setFilterPath() {
     const float top = filterBounds.getY(),  bottom = filterBounds.getBottom();
     const float width = filterBounds.getWidth();
 
+    if (width < 0.01) {
+        return;
+    }
+
     constexpr float minDb = -24.f, maxDb = 24.f;
     constexpr float minFreq = 20.f, maxFreq = 20000.f;
     constexpr float fs = 48000.f;                     // ideally the real sample rate

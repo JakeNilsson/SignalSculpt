@@ -117,7 +117,7 @@ void ModuleComponent::drawStateButton(juce::Graphics &g, const juce::Point<float
 
         g.fillPath(stateButtonPath);
 
-        mouseDownOnButton ?
+        stateButtonDown ?
         g.setColour(colors.getColor(ThemeColors::output)) :
         g.setColour(colors.getColor(ThemeColors::tabBG));
 
