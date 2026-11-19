@@ -83,6 +83,9 @@ public:
     void updateConnection(juce::Point<float> cursorLoc);
     void endConnection();
     static void removeConnection(const Connection& connectionToRemove, std::vector<Connection>& connectionList);
+    void removeConnectionsForModule(const int id);
+
+    std::vector<Connection>& getConnections();
 
     bool keyPressed(const juce::KeyPress &key) override;
     void modifierKeysChanged (const juce::ModifierKeys& mods) override;
@@ -94,6 +97,11 @@ public:
 
     void addInJacks(const juce::Array<InJack*>& newInJacks) {
         inJacks.addArray(newInJacks);
+    }
+
+    void removeInJacks(const juce::Array<InJack*>& inJackSegment) {
+        for (auto* j : inJackSegment)
+            inJacks.removeFirstMatchingValue (j);
     }
 
     std::function<void (int, int, int, int)> connectDSP;

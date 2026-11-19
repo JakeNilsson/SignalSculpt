@@ -23,7 +23,7 @@ public:
     void drawBodyBG(juce::Graphics &g);
     virtual void drawBody(juce::Graphics&) {}
 
-    virtual void setVisualGradient() {};
+    virtual void setVisualGradient() {}
 
     [[nodiscard]] float getBlockSizeX() const {
         return blockSizeX;
@@ -47,6 +47,7 @@ public:
     virtual void setControlBounds(const std::vector<juce::Rectangle<float>>&) {}
 
     void drawStateButton(juce::Graphics &g, juce::Point<float> mousePos) const;
+    void drawDeleteButton(juce::Graphics &g, juce::Point<float> mousePos) const;
 
     void mouseEnter(const juce::MouseEvent &event) override;
     void mouseMove(const juce::MouseEvent &event) override;
@@ -68,6 +69,7 @@ public:
     virtual void setJackIDs(int ID) = 0;
 
     std::function<void (int moduleId, int paramId, float value)> onParameterChanged;
+    std::function<void (int moduleId)> onDelete;
 
 protected:
     Colors &colors;
@@ -77,8 +79,12 @@ protected:
 
     juce::Path headerPath;
     juce::Path headerDesignPath;
+
     juce::Path stateButtonPath;
     juce::Path stateButtonBorderPath;
+
+    juce::Path deleteButtonPath;
+    juce::Path deleteButtonBorderPath;
 
     juce::Rectangle<float> innerBounds;
     juce::Rectangle<float> headerBounds;
@@ -120,4 +126,7 @@ private:
     float headerHeight = 0.0f;
     const float dividerWidth = 4.f;
     const float borderWidth = 4.f;
+
+    bool stateButtonDown = false;
+    bool deleteButtonDown = false;
 };

@@ -2,6 +2,7 @@
 #include "../theme/Colors.h"
 #include "../modules/module.h"
 #include "moduleIDs.h"
+#include "../theme/ConnectionOverlay.h"
 
 class ModuleHandler {
 public:
@@ -9,8 +10,8 @@ public:
         colors (colorsRef),
         moduleComponents (moduleComponentsRef) {}
 
-    /*void addModule (Module *module);*/
     void addModuleComponent (ModuleType moduleType);
+    void removeModuleComponent (int id, ConnectionOverlay& overlay) const;
 
 private:
     Colors &colors;

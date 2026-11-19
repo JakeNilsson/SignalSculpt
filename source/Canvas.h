@@ -54,6 +54,10 @@ public:
 
             overlay.addInJacks(newChild->getInJacks());
 
+            newChild->onDelete = [this] (const int moduleID) {
+                moduleHandler.removeModuleComponent(moduleID, overlay);
+            };
+
             newChild->onParameterChanged = [this] (const int moduleID, const int paramID, const float value) {
                 if (onSetDspParameter) onSetDspParameter(moduleID, paramID, value);
             };

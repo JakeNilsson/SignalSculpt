@@ -32,6 +32,7 @@ public:
     void process(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages);
 
     int addModule(ModuleType moduleType);
+    void removeModule(const int id);
 
     void connect(int src_id, int src_port, int dst_id, int dst_port);
     void disconnect(int src_id, int src_port, int dst_id, int dst_port);

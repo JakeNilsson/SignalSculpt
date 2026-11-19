@@ -146,6 +146,32 @@ void ConnectionOverlay::removeConnection(const Connection& connectionToRemove, s
     }
 }
 
+void ConnectionOverlay::removeConnectionsForModule(const int moduleID) {
+    clearHighlights();
+    hoveredJack = nullptr;
+
+    for (const auto& c : connections) {
+        if (c.startJack->getID() == moduleID || c.endJack->getID() == moduleID) {
+            if (disconnectDSP)
+                disconnectDSP (c.startJack->getID(), c.startJack->getPort(),
+                               c.endJack->getID(),   c.endJack->getPort());
+
+            c.startJack->decrementNumConnections();
+            c.startJack->repaint();
+        }
+    }
+
+    std::erase_if (connections, [moduleID] (const Connection& c) {
+        return c.startJack->getID() == moduleID || c.endJack->getID() == moduleID;
+    });
+
+    repaint();
+}
+
+std::vector<Connection>& ConnectionOverlay::getConnections() {
+    return connections;
+}
+
 bool ConnectionOverlay::keyPressed (const juce::KeyPress& key)
 {
     const auto mods = key.getModifiers();

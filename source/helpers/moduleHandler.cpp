@@ -35,3 +35,18 @@ void ModuleHandler::addModuleComponent(ModuleType moduleType) {
     newChild->setJackIDs(counter);
     moduleComponents.add(newChild);
 }
+
+void ModuleHandler::removeModuleComponent (const int id, ConnectionOverlay& overlay) const {
+    int index = -1;
+    for (int i = 0; i < moduleComponents.size(); ++i)
+        if (moduleComponents[i]->getModuleID() == id) { index = i; break; }
+
+    if (index < 0) { jassertfalse; return; }
+
+    auto* mod = moduleComponents[index];
+
+    overlay.removeConnectionsForModule (id);
+    overlay.removeInJacks (mod->getInJacks());
+
+    moduleComponents.remove (index);
+}

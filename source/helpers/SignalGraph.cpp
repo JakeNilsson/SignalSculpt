@@ -55,6 +55,10 @@ int SignalGraph::addModule(const ModuleType moduleType) {
     return counter;
 }
 
+void SignalGraph::removeModule(const int id) {
+    // to be developed
+}
+
 void SignalGraph::connect(const int src_id, const int src_port, const int dst_id, const int dst_port) { // can take mod amount if needed
     const PortFrames *output = nullptr;
 

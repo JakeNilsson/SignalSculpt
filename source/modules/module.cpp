@@ -10,6 +10,7 @@ void ModuleComponent::paint(juce::Graphics &g) {
 void ModuleComponent::drawHeader(juce::Graphics &g) const {
     const auto mousePos = getMouseXYRelative();
     drawStateButton(g, mousePos.toFloat());
+    drawDeleteButton(g, mousePos.toFloat());
 
     g.setColour(colors.getColor(ThemeColors::tabBG));
     g.fillPath(headerPath);
@@ -54,7 +55,7 @@ void ModuleComponent::setPaths() {
     const auto doubleBorderWidth = borderWidth * 2;
     headerHeight = (innerBounds.getHeight() / 7) - halfDividerWidth;
 
-    headerPath.startNewSubPath(innerBounds.getTopRight());
+    headerPath.startNewSubPath(innerBounds.getRight() - headerHeight, innerBounds.getY());
     headerPath.lineTo(innerBounds.getRight(), innerBounds.getY() + headerHeight);
     headerPath.lineTo(innerBounds.getX(), innerBounds.getY() + headerHeight);
     headerPath.lineTo(innerBounds.getX() + headerHeight, innerBounds.getY());
@@ -69,6 +70,16 @@ void ModuleComponent::setPaths() {
     stateButtonBorderPath.lineTo(innerBounds.getX() + halfBorderWidth, innerBounds.getY() + headerHeight - doubleDividerWidth - doubleBorderWidth);
     stateButtonBorderPath.lineTo(innerBounds.getX() + headerHeight - doubleDividerWidth - doubleBorderWidth, innerBounds.getY() + halfBorderWidth);
     stateButtonBorderPath.closeSubPath();
+
+    deleteButtonPath.startNewSubPath(innerBounds.getTopRight());
+    deleteButtonPath.lineTo(innerBounds.getRight(), innerBounds.getY() + headerHeight - doubleDividerWidth - borderWidth);
+    deleteButtonPath.lineTo(innerBounds.getRight() - headerHeight + doubleDividerWidth + borderWidth, innerBounds.getY());
+    deleteButtonPath.closeSubPath();
+
+    deleteButtonBorderPath.startNewSubPath(innerBounds.getRight() - halfBorderWidth, innerBounds.getY() + halfBorderWidth);
+    deleteButtonBorderPath.lineTo(innerBounds.getRight() - halfBorderWidth, innerBounds.getY() + headerHeight - doubleDividerWidth - doubleBorderWidth);
+    deleteButtonBorderPath.lineTo(innerBounds.getRight() - headerHeight + doubleDividerWidth + doubleBorderWidth, innerBounds.getY() + halfBorderWidth);
+    deleteButtonBorderPath.closeSubPath();
 
     body.setBounds(innerBounds.getX(), innerBounds.getY(),
                    innerBounds.getWidth(), innerBounds.getHeight());
@@ -114,8 +125,31 @@ void ModuleComponent::drawStateButton(juce::Graphics &g, const juce::Point<float
     }
 }
 
+void ModuleComponent::drawDeleteButton(juce::Graphics &g, const juce::Point<float> mousePos) const {
+    if (deleteButtonPath.contains(mousePos)) {
+        if (mouseDownOnButton) {
+            g.setColour(colors.getColor(ThemeColors::tabBG));
+            g.fillPath(deleteButtonPath);
+
+            g.setColour(colors.getColor(ThemeColors::remove));
+            g.strokePath(deleteButtonBorderPath, juce::PathStrokeType(borderWidth));
+        } else {
+            g.setColour(colors.getColor(ThemeColors::remove));
+            g.fillPath(deleteButtonPath);
+
+            g.setColour(colors.getColor(ThemeColors::tabBG));
+            g.strokePath(deleteButtonBorderPath, juce::PathStrokeType(borderWidth));
+        }
+    } else {
+        g.setColour(colors.getColor(ThemeColors::remove));
+        g.fillPath(deleteButtonPath);
+        g.strokePath(deleteButtonBorderPath, juce::PathStrokeType(borderWidth));
+    }
+}
+
 void ModuleComponent::mouseEnter(const juce::MouseEvent &event) {
-    if (auto mousePos = event.getPosition().toFloat(); stateButtonPath.contains(mousePos)) {
+    if (auto mousePos = event.getPosition().toFloat(); stateButtonPath.contains(mousePos) ||
+                                                                 deleteButtonPath.contains(mousePos)) {
         repaint();
     }
 }
@@ -123,10 +157,10 @@ void ModuleComponent::mouseEnter(const juce::MouseEvent &event) {
 void ModuleComponent::mouseMove(const juce::MouseEvent &event) {
     auto mousePos = event.getPosition().toFloat();
 
-    if (stateButtonPath.contains(mousePos) && !mouseOver) {
+    if ((stateButtonPath.contains(mousePos) || deleteButtonPath.contains(mousePos)) && !mouseOver) {
         mouseOver = true;
         repaint();
-    } else if (!stateButtonPath.contains(mousePos) && mouseOver) {
+    } else if ((!stateButtonPath.contains(mousePos) && !deleteButtonPath.contains(mousePos)) && mouseOver) {
         mouseOver = false;
         repaint();
     }
@@ -141,7 +175,9 @@ void ModuleComponent::mouseExit(const juce::MouseEvent&) {
 
 void ModuleComponent::mouseDown(const juce::MouseEvent &event) {
     auto mousePos = event.getPosition().toFloat();
-    if (stateButtonPath.contains(mousePos) && !mouseDownOnButton) {
+    if (stateButtonPath.contains(mousePos)) stateButtonDown = true;
+    if (deleteButtonPath.contains(mousePos)) deleteButtonDown = true;
+    if ((stateButtonDown || deleteButtonDown) && !mouseDownOnButton) {
         mouseDownOnButton = true;
         repaint();
     }
@@ -150,16 +186,25 @@ void ModuleComponent::mouseDown(const juce::MouseEvent &event) {
 void ModuleComponent::mouseUp(const juce::MouseEvent&) {
     if (mouseDownOnButton) {
         mouseDownOnButton = false;
-        if (state) {
-            state = false;
-            statusColor = colors.getColor(ThemeColors::canvasBG);
-            comboBoxTextColor = colors.getColor(ThemeColors::tabBG);
-            visualColor = colors.getColor(ThemeColors::tabBG);
-        } else {
-            state = true;
-            statusColor = colors.getColor(ThemeColors::neutral);
-            comboBoxTextColor = colors.getColor(ThemeColors::neutral);
-            visualColor = colors.getColor(ThemeColors::visuals);
+
+        if (stateButtonDown) {
+            if (state) {
+                state = false;
+                statusColor = colors.getColor(ThemeColors::canvasBG);
+                comboBoxTextColor = colors.getColor(ThemeColors::tabBG);
+                visualColor = colors.getColor(ThemeColors::tabBG);
+            } else {
+                state = true;
+                statusColor = colors.getColor(ThemeColors::neutral);
+                comboBoxTextColor = colors.getColor(ThemeColors::neutral);
+                visualColor = colors.getColor(ThemeColors::visuals);
+            }
+
+            stateButtonDown = false;
+        } else if (deleteButtonDown) {
+            deleteButtonDown = false;
+
+            if (onDelete) onDelete(getModuleID());
         }
 
         repaint();
