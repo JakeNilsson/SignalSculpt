@@ -134,6 +134,16 @@ void SignalGraph::setParameter(const int moduleId, const int paramId, const floa
     jassertfalse;  // no module with the given ID
 }
 
+void SignalGraph::setDspState(int moduleId, bool state) {
+    for (const auto node : nodes) {
+        if (node->id == moduleId) {
+            node->module->setState(state);
+            return;
+        }
+    }
+    jassertfalse;  // no module with the given ID
+}
+
 void SignalGraph::process(juce::AudioBuffer<float> &buffer, juce::MidiBuffer &midiMessages) {
 
     const auto numChannels = buffer.getNumChannels();

@@ -46,6 +46,7 @@ public:
     void disconnect(int srcID, int srcPort, int dstID, int dstPort) {signalGraph.disconnect(srcID, srcPort, dstID, dstPort);}
 
     void setParameter(int moduleId, int paramId, float value) { signalGraph.setParameter (moduleId, paramId, value); }
+    void setDspState(int moduleId, bool state) { signalGraph.setDspState (moduleId, state); }
     void setModulationParameter(int srcID, int srcPort, int dstID, int dstPort, double modAmount) {signalGraph.setModAmount(srcID, srcPort, dstID, dstPort, modAmount);}
 
 private:

@@ -60,6 +60,12 @@ public:
         for (int i = 0; i < channelsOut; i++) {
             const auto [left, right] = inStereo(signalIn, i);
 
+            if (!isEnabled) {
+                output.channels[i] = {.left = left, .right = right};
+
+                continue;
+            }
+
             const float inRes = inMono(resIn, i) * (19.5f / 2.f);
             const float inCut = inMono(cutIn, i) * ((0.49f * sampRate - 8) / 2);
             const float inMix = inMono(mixIn, i) * 50.f;

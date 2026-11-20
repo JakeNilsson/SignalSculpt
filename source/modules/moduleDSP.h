@@ -62,6 +62,10 @@ public:
     }
     virtual void setParameter (int /*paramId*/, float /*value*/) noexcept {}
 
+    void setState(const bool newState) {
+        isEnabled = newState;
+    }
+
     [[nodiscard]] int getNumInputs() const noexcept {return static_cast<int>(inputs.size());}
     [[nodiscard]] int getNumCables(const int id) const noexcept {return static_cast<int>(inputs[static_cast<size_t>(id)].size());}
     [[nodiscard]] int getNumOutputs() const noexcept {return static_cast<int>(outputs.size());}
@@ -208,6 +212,8 @@ protected:
     }
 
     [[nodiscard]] double getSampleRate() const noexcept { return sampleRate; }
+
+    bool isEnabled = true;
 
 private:
     std::vector<std::vector<Cable>>  inputs;

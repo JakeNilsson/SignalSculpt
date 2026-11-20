@@ -159,6 +159,10 @@ public:
             if (onSetDspParameter) onSetDspParameter(moduleID, paramID, value);
         };
 
+        newChild->setDSPState = [this] (const int moduleID, const bool state) {
+            if (onSetDspState) onSetDspState(moduleID, state);
+        };
+
         newChild->getOutJack().onDragStart = [this] (OutJack& outJack, const juce::MouseEvent&) {
             overlay.beginConnection (outJack, true);
         };
@@ -183,6 +187,7 @@ public:
     std::function<void (int)>       onRemoveDspModule;
 
     std::function<void (int, int, float)> onSetDspParameter;
+    std::function<void (int, bool)> onSetDspState;
 
 private:
     float gridSizePx = 160.f;

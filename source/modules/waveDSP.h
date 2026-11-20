@@ -64,15 +64,20 @@ public:
     }
 
     void tick() noexcept override {
-        smoothFreq .setTargetValue (freq .load (std::memory_order_relaxed));
-        smoothPhase.setTargetValue (phase.load (std::memory_order_relaxed));
-        smoothMix  .setTargetValue (mix  .load (std::memory_order_relaxed));
-        smoothDet  .setTargetValue (det  .load (std::memory_order_relaxed));
-
         const int channelsOut = std::min (getOutputChannels(), getMaxChannels());
 
         PortFrames output;
         output.numChannels = channelsOut;
+
+        if (!isEnabled) {
+            out(waveOut, output);
+            return;
+        }
+
+        smoothFreq .setTargetValue (freq .load (std::memory_order_relaxed));
+        smoothPhase.setTargetValue (phase.load (std::memory_order_relaxed));
+        smoothMix  .setTargetValue (mix  .load (std::memory_order_relaxed));
+        smoothDet  .setTargetValue (det  .load (std::memory_order_relaxed));
 
         constexpr auto twoPi = juce::MathConstants<float>::twoPi;
         const auto sampRate = getSampleRate();

@@ -58,6 +58,11 @@ public:
         PortFrames output;
         output.numChannels = channelsOut;
 
+        if (!isEnabled) {
+            out(envOut, output);
+            return;
+        }
+
         for (int i = 0; i < channelsOut; i++) {
             const float gate = inMono(gateIn, i);
 

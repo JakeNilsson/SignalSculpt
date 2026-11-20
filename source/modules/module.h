@@ -70,6 +70,7 @@ public:
 
     std::function<void (int moduleId, int paramId, float value)> onParameterChanged;
     std::function<void (int moduleId)> onDelete;
+    std::function<void (int moduleId, bool state)> setDSPState;
 
 protected:
     Colors &colors;

@@ -200,6 +200,7 @@ void ModuleComponent::mouseUp(const juce::MouseEvent&) {
                 visualColor = colors.getColor(ThemeColors::visuals);
             }
 
+            if (setDSPState) setDSPState(getModuleID(), state);
             stateButtonDown = false;
         } else if (deleteButtonDown) {
             deleteButtonDown = false;

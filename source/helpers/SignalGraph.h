@@ -28,6 +28,7 @@ public:
     }
 
     void setParameter (int moduleId, int paramId, float value);
+    void setDspState (int moduleId, bool state);
 
     void process(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages);
 
