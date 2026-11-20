@@ -6,11 +6,11 @@ juce::Point<float> ConnectionOverlay::centerOf (const juce::Component& jack) con
 }
 
 bool ConnectionOverlay::isInView (const juce::Point<float> point) const {
-    return (canvasContainer.getBoundsInParent().reduced(15).contains(point.toInt()));
+    return (canvasContainer.getBoundsInParent().reduced(60).contains(point.toInt()));
 }
 
 juce::Point<float> ConnectionOverlay::clipToView(const juce::Point<float> point) const {
-    const juce::Rectangle<int> viewPortBounds = canvasContainer.getBoundsInParent().reduced(15);
+    const juce::Rectangle<int> viewPortBounds = canvasContainer.getBoundsInParent().reduced(60);
 
     float x = static_cast<float>(std::clamp(point.toInt().getX(), viewPortBounds.getX(), viewPortBounds.getRight()));
     float y = static_cast<float>(std::clamp(point.toInt().getY(), viewPortBounds.getY(), viewPortBounds.getBottom()));
