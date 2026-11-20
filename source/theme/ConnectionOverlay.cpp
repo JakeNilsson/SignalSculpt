@@ -6,7 +6,16 @@ juce::Point<float> ConnectionOverlay::centerOf (const juce::Component& jack) con
 }
 
 bool ConnectionOverlay::isInView (const juce::Point<float> point) const {
-    return (canvasContainer.contains(point));
+    return (canvasContainer.getBoundsInParent().reduced(15).contains(point.toInt()));
+}
+
+juce::Point<float> ConnectionOverlay::clipToView(const juce::Point<float> point) const {
+    const juce::Rectangle<int> viewPortBounds = canvasContainer.getBoundsInParent().reduced(15);
+
+    float x = static_cast<float>(std::clamp(point.toInt().getX(), viewPortBounds.getX(), viewPortBounds.getRight()));
+    float y = static_cast<float>(std::clamp(point.toInt().getY(), viewPortBounds.getY(), viewPortBounds.getBottom()));
+
+    return {x, y};
 }
 
 void ConnectionOverlay::paint(juce::Graphics &g) {
@@ -35,21 +44,38 @@ void ConnectionOverlay::paint(juce::Graphics &g) {
                 g.setColour(connection->connectionColor.withAlpha(0.4f));
             }
 
-            const auto start = centerOf (*connection->startJack);
-            const auto end   = centerOf (*connection->endJack);
+            auto start = centerOf (*connection->startJack);
+            auto end   = centerOf (*connection->endJack);
 
-            if (isInView(start)) DBG("start is in view"); else DBG("start is not in view");
-
-            g.fillEllipse(start.getX() - (pointSize / 2),
+            if (isInView(start) || !connection->isStartInCanvas) {
+                g.fillEllipse(start.getX() - (pointSize / 2),
                       start.getY() - (pointSize / 2),
                       pointSize, pointSize);
+            } else {
+                start = clipToView(start);
+
+                g.fillRect(start.getX() - (pointSize / 2),
+                      start.getY() - (pointSize / 2),
+                      pointSize, pointSize);
+            }
+
 
             g.strokePath(connection->connectionPath, juce::PathStrokeType(2.f));
 
-            g.fillEllipse(end.getX() - (pointSize / 2),
+            if (isInView(end) || !connection->isEndInCanvas) {
+                g.fillEllipse(end.getX() - (pointSize / 2),
                   end.getY() - (pointSize / 2),
                   pointSize,
                   pointSize);
+            } else {
+                end = clipToView(end);
+
+                g.fillRect(end.getX() - (pointSize / 2),
+                  end.getY() - (pointSize / 2),
+                  pointSize,
+                  pointSize);
+            }
+
         }
     }
 }
@@ -264,8 +290,20 @@ void ConnectionOverlay::rebuildHighlights()
                 c.endPt = centerOf (*c.endJack);
 
                 c.connectionPath.clear();
-                c.connectionPath.startNewSubPath(c.startPt);
-                c.connectionPath.lineTo(c.endPt);
+
+                auto newStart = c.startPt;
+                auto newEnd = c.endPt;
+
+                if (c.isStartInCanvas) {
+                    newStart = clipToView (newStart);
+                }
+
+                if (c.isEndInCanvas) {
+                    newEnd = clipToView (newEnd);
+                }
+
+                c.connectionPath.startNewSubPath(newStart);
+                c.connectionPath.lineTo(newEnd);
 
                 highlightedConnections.push_back(&c);
             }
@@ -286,11 +324,13 @@ void ConnectionOverlay::rebuildHighlights()
     if (sel->isStartInCanvas)
         topLeft = getLocalPoint(nullptr, topLeft);
 
-    modulationSlider.setBounds(topLeft.x, topLeft.y,
-                               sel->startJack->getWidth(), sel->startJack->getHeight());
-    modulationSlider.setValue(sel->modAmount, juce::dontSendNotification);
-    modulationSlider.setColour(juce::Slider::rotarySliderFillColourId, colors.getColor(ThemeColors::visuals));
-    modulationSlider.setVisible(true);
+    if (isInView(sel->startPt) || !sel->isStartInCanvas) {
+        modulationSlider.setBounds(topLeft.x, topLeft.y,
+                                   sel->startJack->getWidth(), sel->startJack->getHeight());
+        modulationSlider.setValue(sel->modAmount, juce::dontSendNotification);
+        modulationSlider.setColour(juce::Slider::rotarySliderFillColourId, colors.getColor(ThemeColors::visuals));
+        modulationSlider.setVisible(true);
+    }
 
     repaint();
 }

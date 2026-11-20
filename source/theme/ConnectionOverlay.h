@@ -112,12 +112,13 @@ public:
     void handleHover(juce::ModifierKeys mods, juce::Point<float> screenPos, float scrollDeltaY);
 
 private:
-    [[nodiscard]] juce::Point<float> centerOf (const juce::Component& jack) const;
-    [[nodiscard]] bool isInView (const juce::Point<float> point) const;
+    [[nodiscard]] juce::Point<float> centerOf (const Component& jack) const;
+    [[nodiscard]] bool isInView (juce::Point<float> point) const;
+    [[nodiscard]] juce::Point<float> clipToView (juce::Point<float> point) const;
 
     void rebuildHighlights();
 
-    struct GlobalWatcher : juce::MouseListener {
+    struct GlobalWatcher : MouseListener {
         explicit GlobalWatcher(ConnectionOverlay& o) : owner(o) {}
 
         void mouseMove(const juce::MouseEvent& e) override {
