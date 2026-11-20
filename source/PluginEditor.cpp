@@ -9,6 +9,7 @@ PluginEditor::PluginEditor (PluginProcessor& p)
 
     addAndMakeVisible(canvasContainer);
     canvasContainer.setViewedComponent(&canvas, false);
+    canvasContainer.setScrollBarsShown(false, false, true, true);
 
     addAndMakeVisible(inputsTab);
     addAndMakeVisible(outputsTab);
@@ -67,7 +68,8 @@ void PluginEditor::resized()
     connectionOverlay.setBounds (bounds);
     connectionOverlay.setInterceptsMouseClicks(false, true);
 
-    canvasContainer.setBounds (bounds);
+    const auto canvasContainerBounds = setInversePos(bounds, 75, 75, 70, 70);
+    canvasContainer.setBounds (canvasContainerBounds);
     //canvasContainer.setScrollOnDragMode (juce::Viewport::ScrollOnDragMode::all);
 
     canvas.setBounds (0, 0,

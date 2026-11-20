@@ -1,6 +1,14 @@
 #include "ConnectionOverlay.h"
 #include <algorithm>
 
+juce::Point<float> ConnectionOverlay::centerOf (const juce::Component& jack) const {
+    return getLocalPoint (&jack, jack.getLocalBounds().toFloat().getCentre());
+}
+
+bool ConnectionOverlay::isInView (const juce::Point<float> point) const {
+    return (canvasContainer.contains(point));
+}
+
 void ConnectionOverlay::paint(juce::Graphics &g) {
     if (liveConnection.isConnectionShown) {
         g.setColour(liveConnection.connectionColor);
@@ -27,16 +35,21 @@ void ConnectionOverlay::paint(juce::Graphics &g) {
                 g.setColour(connection->connectionColor.withAlpha(0.4f));
             }
 
-            g.fillEllipse(connection->startPt.getX() - (pointSize / 2),
-                          connection->startPt.getY() - (pointSize / 2),
-                          pointSize, pointSize);
+            const auto start = centerOf (*connection->startJack);
+            const auto end   = centerOf (*connection->endJack);
+
+            if (isInView(start)) DBG("start is in view"); else DBG("start is not in view");
+
+            g.fillEllipse(start.getX() - (pointSize / 2),
+                      start.getY() - (pointSize / 2),
+                      pointSize, pointSize);
 
             g.strokePath(connection->connectionPath, juce::PathStrokeType(2.f));
 
-            g.fillEllipse(connection->endPt.getX() - (pointSize / 2),
-                      connection->endPt.getY() - (pointSize / 2),
-                      pointSize,
-                      pointSize);
+            g.fillEllipse(end.getX() - (pointSize / 2),
+                  end.getY() - (pointSize / 2),
+                  pointSize,
+                  pointSize);
         }
     }
 }
@@ -46,13 +59,8 @@ void ConnectionOverlay::beginConnection(OutJack &outJack, bool isInCanvas) {
     isDragging = true;
     liveConnection.isStartInCanvas = isInCanvas;
 
-    if (isInCanvas) {
-        const auto jackCenterInGlobal = outJack.localPointToGlobal(outJack.getLocalBounds().getCentre().toFloat());
-        liveConnection.startPt = getLocalPoint (nullptr, jackCenterInGlobal);
-        liveConnection.startJack = &outJack;
-    } else {
-        //liveConnection.startPt = outJack.localCentreToGlobal();
-    }
+    liveConnection.startPt = centerOf (outJack);
+    liveConnection.startJack = &outJack;
 
     liveConnection.isConnectionShown = true;
     liveConnection.connectionColor = colors.getColor(ThemeColors::visuals);
@@ -96,7 +104,7 @@ void ConnectionOverlay::endConnection() {
     for (const auto& inJack : inJacks) {
         if (inJack->getHovering()) {
             bool repeat = false;
-            liveConnection.endPt = getLocalPoint(nullptr, inJack->getScreenBounds().getCentre().toFloat());
+            liveConnection.endPt = centerOf (*inJack);
 
             for (const auto& connection : connections) {
                 if (connection.startPt == liveConnection.startPt &&
@@ -251,6 +259,14 @@ void ConnectionOverlay::rebuildHighlights()
         for (auto& c : connections)
             if (c.startJack == hoveredJack || c.endJack == hoveredJack) {
                 c.isConnectionShown = true;
+
+                c.startPt = centerOf (*c.startJack);
+                c.endPt = centerOf (*c.endJack);
+
+                c.connectionPath.clear();
+                c.connectionPath.startNewSubPath(c.startPt);
+                c.connectionPath.lineTo(c.endPt);
+
                 highlightedConnections.push_back(&c);
             }
 

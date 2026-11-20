@@ -33,6 +33,7 @@ public:
                       juce::AudioProcessorEditor& editorRef) : globalWatcher(*this),
                                                                colors(colorsRef),
                                                                canvasContainer(canvasContainerRef),
+                                                               canvas(canvasContainer.getViewedComponent()),
                                                                editor(editorRef),
                                                                modulationSlider(juce::Slider::SliderStyle::RotaryHorizontalVerticalDrag,
                                                                SliderType::modulation,
@@ -111,6 +112,9 @@ public:
     void handleHover(juce::ModifierKeys mods, juce::Point<float> screenPos, float scrollDeltaY);
 
 private:
+    [[nodiscard]] juce::Point<float> centerOf (const juce::Component& jack) const;
+    [[nodiscard]] bool isInView (const juce::Point<float> point) const;
+
     void rebuildHighlights();
 
     struct GlobalWatcher : juce::MouseListener {
@@ -139,6 +143,7 @@ private:
     juce::Array<InJack*> inJacks;
     Colors& colors;
     juce::Viewport& canvasContainer;
+    Component* canvas;
     juce::AudioProcessorEditor& editor;
 
     SiScSlider modulationSlider;
