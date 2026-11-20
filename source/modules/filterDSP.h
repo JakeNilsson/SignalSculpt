@@ -57,34 +57,46 @@ public:
         PortFrames output;
         output.numChannels = channelsOut;
 
+        const float modOctaves = 0.5f * std::log2 ((0.49f * sampRate) / 8.f);
+
         for (int i = 0; i < channelsOut; i++) {
             const auto [left, right] = inStereo(signalIn, i);
 
-            if (!isEnabled) {
-                output.channels[i] = {.left = left, .right = right};
+            const float inMix = inMono(mixIn, i) * 50.f;
+            float trueMix = std::clamp((baseMix + inMix), 0.f, 100.f);
+            trueMix = trueMix / 100;
 
+            if (!isEnabled || trueMix == 0.f) {
+                output.channels[i] = {.left = left, .right = right};
                 continue;
             }
 
             const float inRes = inMono(resIn, i) * (19.5f / 2.f);
-            const float inCut = inMono(cutIn, i) * ((0.49f * sampRate - 8) / 2);
-            const float inMix = inMono(mixIn, i) * 50.f;
             const float inBlend = inMono(blendIn, i);
 
             const float trueRes = std::clamp((baseRes + inRes), 0.5f, 20.f);
-
-            const float modOctaves = 0.5f * std::log2 ((0.49f * sampRate) / 8.f);
             const float trueCut = std::clamp (baseCut * std::exp2 (inMono (cutIn, i) * modOctaves),8.f, 0.49f * sampRate);
-
-            const float trueMix = std::clamp((baseMix + inMix), 0.f, 100.f);
             const float trueBlend = std::clamp((baseBlend + inBlend), 0.f, 1.f);
 
-            filter.setCutoffFrequency(trueCut);
-            filter.setResonance(trueRes);
+            if (trueCut != lastCut || trueRes != lastRes) {
+                for (auto* f : { &lowBlendFilter, &midBlendFilter, &highBlendFilter }) {
+                    f->setCutoffFrequency (trueCut);
+                    f->setResonance (trueRes);
+                }
+                lastCut = trueCut;
+                lastRes = trueRes;
+            }
 
             const Frame channelOutput = {
-                .left = filter.processSample(i * 2, left),
-                .right = filter.processSample(i * 2 + 1, right)
+                .left = (((lowBlendFilter.processSample(i * 2, left) * (1 - std::clamp(2 * trueBlend, 0.f, 1.f))) +
+                          (midBlendFilter.processSample(i * 2, left) * (1 - std::abs((2 * trueBlend) - 1))) +
+                          (highBlendFilter.processSample(i * 2, left) * (std::clamp((2 * trueBlend) - 1, 0.f, 1.f)))) *
+                        trueMix) + (left * (1.f - trueMix)),
+
+                .right = (((lowBlendFilter.processSample(i * 2 + 1, right) * (1 - std::clamp(2 * trueBlend, 0.f, 1.f))) +
+                           (midBlendFilter.processSample(i * 2 + 1, right) * (1 - std::abs((2 * trueBlend) - 1))) +
+                           (highBlendFilter.processSample(i * 2 + 1, right) * (std::clamp((2 * trueBlend) - 1, 0.f, 1.f)))) *
+                          trueMix) + (right * (1.f - trueMix))
             };
 
             output.channels[i] = channelOutput;
@@ -97,8 +109,17 @@ public:
                                           .maximumBlockSize = 1,
                                           .numChannels = static_cast<juce::uint32>(getMaxChannels() * 2)}; // *2 for stereo
 
-        filter.prepare(spec);
-        filter.reset();
+        lowBlendFilter.prepare(spec);
+        lowBlendFilter.reset();
+        lowBlendFilter.setType(juce::dsp::StateVariableTPTFilterType::lowpass);
+
+        midBlendFilter.prepare(spec);
+        midBlendFilter.reset();
+        midBlendFilter.setType(juce::dsp::StateVariableTPTFilterType::bandpass);
+
+        highBlendFilter.prepare(spec);
+        highBlendFilter.reset();
+        highBlendFilter.setType(juce::dsp::StateVariableTPTFilterType::highpass);
 
         smoothRes.reset(getSampleRate(), rampLength);
         smoothCut.reset(getSampleRate(), rampLength);
@@ -122,7 +143,12 @@ private:
     std::atomic<float> blend { 0 };
     juce::LinearSmoothedValue<float> smoothBlend { 0 };
 
-    juce::dsp::StateVariableTPTFilter<float> filter;
+    juce::dsp::StateVariableTPTFilter<float> lowBlendFilter;
+    juce::dsp::StateVariableTPTFilter<float> midBlendFilter;
+    juce::dsp::StateVariableTPTFilter<float> highBlendFilter;
+
+    float lastCut = -1.f;
+    float lastRes = -1.f;
 
     float rampLength = 0.05f;
 };

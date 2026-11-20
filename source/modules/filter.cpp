@@ -1,4 +1,5 @@
 #include "filter.h"
+#include <complex>
 
 void FilterModuleComponent::drawBody(juce::Graphics &g) {
     drawFilterVisual(g);
@@ -232,7 +233,7 @@ void FilterModuleComponent::setFilterPath() {
     filterWavePathClosed.clear();
 
     const float left = filterBounds.getX(),  right  = filterBounds.getRight();
-    const float top = filterBounds.getY(),  bottom = filterBounds.getBottom();
+    const float top  = filterBounds.getY(),  bottom = filterBounds.getBottom();
     const float width = filterBounds.getWidth();
 
     constexpr float minDb = -24.f, maxDb = 24.f;
@@ -240,8 +241,15 @@ void FilterModuleComponent::setFilterPath() {
     constexpr float fs = 48000.f;                     // ideally the real sample rate
     constexpr float pi = juce::MathConstants<float>::pi;
 
-    const auto resonance = res.getValue();
-    const auto cutoff = juce::jlimit (8.0f, 0.49f * fs, static_cast<float> (cut.getValue()));
+    const float resonance = std::max (0.5f, static_cast<float> (res.getValue()));
+    const float cutoff    = juce::jlimit (8.0f, 0.49f * fs, static_cast<float> (cut.getValue()));
+    const float mixAmt    = juce::jlimit (0.f, 1.f, static_cast<float> (mix.getValue()) / 100.f);
+    const float blendAmt  = juce::jlimit (0.f, 1.f, static_cast<float> (blend.getValue()));
+
+    // Same blend weights as FilterDSP::tick
+    const float wLow  = 1.f - std::clamp (2.f * blendAmt, 0.f, 1.f);
+    const float wMid  = 1.f - std::abs   (2.f * blendAmt - 1.f);
+    const float wHigh = std::clamp (2.f * blendAmt - 1.f, 0.f, 1.f);
 
     const float gc = std::tan (pi * cutoff / fs);
 
@@ -252,18 +260,23 @@ void FilterModuleComponent::setFilterPath() {
     {
         const float norm = static_cast<float> (i) / static_cast<float> (numPoints);
         const float freq = minFreq * std::pow (maxFreq / minFreq, norm);
+        const float w    = std::tan (pi * freq / fs) / gc;
 
-        const float w = std::tan (pi * freq / fs) / gc;
-        const float a = 1.0f - w * w;
-        const float b = w / resonance;
-        const float mag = 1.0f / std::sqrt (a * a + b * b);
+        const std::complex<float> D (1.f - w * w, w / resonance);
+        const auto lowPass  = 1.f / D;
+        const auto bandPass = std::complex<float> (0.f, w) / D;
+        const auto highPass = -(w * w) / D;
+
+        const auto wet = wLow * lowPass + wMid * bandPass + wHigh * highPass;
+        const auto H   = (1.f - mixAmt) + mixAmt * wet;    // dry has gain 1 and no phase shift
+        const float mag = std::abs (H);
 
         const float db = juce::jlimit (minDb, maxDb, juce::Decibels::gainToDecibels (mag, minDb));
         const float px = left + norm * width;
         const float py = juce::jmap (db, minDb, maxDb, bottom, top);
 
         if (i == 0) filterWavePath.startNewSubPath (px, py);
-        else filterWavePath.lineTo (px, py);
+        else        filterWavePath.lineTo (px, py);
 
         filterWavePathClosed.lineTo (px, py);
     }
